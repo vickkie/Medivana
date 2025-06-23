@@ -98,9 +98,3 @@ eas build -p android --profile <your profile>
 ### Contributing
 
 If you'd like to contribute to this project, please follow the guidelines outlined in MIT license
-
-### License
-
-This project is licensed under the MIT License.
-
-Feel free to adjust any sections as needed!
