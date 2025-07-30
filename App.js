@@ -43,11 +43,9 @@ import {
   SystemMessages,
   ChatListScreen,
   ChatScreen,
-  MainCenter,
-  TransactionReceiptScreen,
-  CompanyProfile,
   HelpListScreen,
   HelpAgentChatScreen,
+  Onboarding,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -63,6 +61,7 @@ const Stack = createNativeStackNavigator();
 
 // Array of screen definitions
 const screens = [
+  { name: "Onboarding", component: Onboarding, options: { headerShown: false } },
   { name: "Bottom Navigation", component: BottomTabNavigation, options: { headerShown: false } },
   { name: "Home", component: Home, options: { headerShown: false } },
   { name: "Login", component: LoginPage, options: { headerShown: false } },
@@ -85,8 +84,7 @@ const screens = [
   { name: "OrderDetails", component: OrderDetails, options: { headerShown: false } },
   { name: "ChatListScreen", component: ChatListScreen, options: { headerShown: false } },
   { name: "ChatScreen", component: ChatScreen, options: { headerShown: false } },
-  { name: "TransactionReceiptScreen", component: TransactionReceiptScreen, options: { headerShown: false } },
-  { name: "CompanyProfile", component: CompanyProfile, options: { headerShown: false } },
+
   { name: "HelpListScreen", component: HelpListScreen, options: { headerShown: false } },
   { name: "HelpAgentChatScreen", component: HelpAgentChatScreen, options: { headerShown: false } },
 ];
@@ -128,7 +126,7 @@ export default function App() {
                 <WishProvider>
                   <NavigationContainer>
                     <PushNotification />
-                    <Stack.Navigator initialRouteName="Bottom Navigation">
+                    <Stack.Navigator initialRouteName="Onboarding">
                       {screens.map((screen, index) => (
                         <Stack.Screen
                           key={index}

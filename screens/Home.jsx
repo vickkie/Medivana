@@ -113,7 +113,7 @@ const Home = () => {
                     </Text>
                   </View>
 
-                  <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap}>
+                  <TouchableOpacity onPress={() => navigation.navigate("Onboarding")} style={styles.buttonWrap}>
                     <Icon name="cart" size={24} />
                   </TouchableOpacity>
                 </View>

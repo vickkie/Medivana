@@ -15,7 +15,7 @@ import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
-import ProfileCompletion from "./Staff/ProfileCompletion";
+
 import UserProfileCompletion from "./UserProfileCompletion";
 
 // Global axios-retry
