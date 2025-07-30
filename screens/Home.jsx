@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Welcome } from "../components/home";
-import Carousel from "../components/home/Carousel";
+// import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import ProductsRow from "../components/products/ProductsRow";
 import LatestProducts from "../components/products/LatestProducts";
@@ -152,7 +152,7 @@ const Home = () => {
           <View style={styles.lowerWelcomeWrapper}>
             <Welcome />
             <View style={styles.lowerWelcome}>
-              <Carousel />
+              {/* <Carousel /> */}
               <Headings heading={"Latest products"} />
               <ProductsRow refreshList={refreshList} setRefreshList={setRefreshList} />
               <Headings heading={"Featured Products"} />

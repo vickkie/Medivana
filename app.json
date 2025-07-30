@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "Promokings",
-    "slug": "promokings",
-    "version": "1.4.7",
+    "name": "Medivana",
+    "slug": "medivana",
+    "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/icon-home.png",
+    "icon": "./assets/icons/medivana-light.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash-main.png",
+      "image": "./assets/icons/medivana-whitephone.png",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
@@ -19,37 +19,37 @@
         "UIStatusBarHidden": false,
         "UIStatusBarStyle": "UIStatusBarStyleDefault"
       },
-      "bundleIdentifier": "com.uzitrake.promokings"
+ 
+      "bundleIdentifier": "com.uzitrake.medivana"
     },
     "android": {
       "versionCode": 7,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon-home.png",
+        "foregroundImage": "./assets/icons/medivana-adaptive.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.uzitrake.promokings"
+      "package": "com.uzitrake.medivana"
     },
     "web": {
-      "favicon": "./assets/promoking-logoq.png"
+      "favicon": "./assets/icons/medivana-splash-light.png"
     },
     "updates": {
-      "url": "https://github.com/vickkie/Promokings"
+      "url": "https://github.com/vickkie/Medivana"
     },
     "extra": {
       "eas": {
-        "projectId": "963b311f-f10e-4395-81da-d500fc41924c"
+        "projectId": "7e9be3e9-bc5d-442e-aa32-586bbba904a1"
       }
     },
     "owner": "killoy",
     "plugins": [
-     [
-      "onesignal-expo-plugin",
-      {
-      "mode": "development"
-      }
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ],
+      "expo-font"
     ]
-   ]
-
-
   }
 }
