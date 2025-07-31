@@ -32,6 +32,7 @@ import HelpAgentChatScreen from "./HelpAgentChatScreen";
 import Onboarding from "./Onboarding";
 import VerificationCode from "./VerificationCode";
 import RequestCode from "./RequestCode";
+import ResetPassword from "./ResetPassword";
 
 // Export only user screens
 export {
@@ -68,4 +69,5 @@ export {
   Onboarding,
   VerificationCode,
   RequestCode,
+  ResetPassword,
 };

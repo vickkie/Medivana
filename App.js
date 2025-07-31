@@ -48,6 +48,7 @@ import {
   Onboarding,
   VerificationCode,
   RequestCode,
+  ResetPassword,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -90,6 +91,7 @@ const screens = [
   { name: "RequestCode", component: RequestCode, options: { headerShown: false } },
   { name: "HelpListScreen", component: HelpListScreen, options: { headerShown: false } },
   { name: "HelpAgentChatScreen", component: HelpAgentChatScreen, options: { headerShown: false } },
+  { name: "ResetPassword", component: ResetPassword, options: { headerShown: false } },
 ];
 
 export default function App() {

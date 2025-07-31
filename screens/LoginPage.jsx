@@ -226,7 +226,7 @@ const LoginPage = ({ navigation }) => {
                     </TouchableOpacity>
                     <Text style={styles.rememberMeText}>Remember Me</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.forgotPassword}>
+                  <TouchableOpacity style={styles.forgotPassword} onPress={() => navigation.navigate("ResetPassword")}>
                     <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
                   </TouchableOpacity>
                 </View>
@@ -263,7 +263,7 @@ const LoginPage = ({ navigation }) => {
 
                 <View style={styles.registration}>
                   <Text style={styles.registrationText}>Don't have an account?</Text>
-                  <TouchableOpacity style={styles.registrationText} onPress={() => navigation.navigate("RequestCode")}>
+                  <TouchableOpacity style={styles.registrationText} onPress={() => navigation.navigate("Register")}>
                     <Text style={styles.registrationText2}> Create an Account</Text>
                   </TouchableOpacity>
                 </View>
