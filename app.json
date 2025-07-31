@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "Medivana",
+    "slug": "medivana",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icons/medivana-light.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/icons/medivana-whitephone.png",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "UIStatusBarHidden": false,
+        "UIStatusBarStyle": "UIStatusBarStyleDefault"
+      },
+ 
+      "bundleIdentifier": "com.uzitrake.medivana"
+    },
+    "android": {
+      "versionCode": 7,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icons/medivana-adaptive.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.uzitrake.medivana"
+    },
+    "web": {
+      "favicon": "./assets/icons/medivana-splash-light.png"
+    },
+    "updates": {
+      "url": "https://github.com/vickkie/Medivana"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7e9be3e9-bc5d-442e-aa32-586bbba904a1"
+      }
+    },
+    "owner": "killoy",
+    "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ],
+      "expo-font"
+    ]
+  }
+}
