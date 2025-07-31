@@ -15,6 +15,7 @@ import usePost2 from "../hook/usePost2";
 import IntlPhoneInput from "react-native-intl-phone-input";
 import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
+import CustomButton from "../components/Button";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -195,13 +196,15 @@ const Register = ({ navigation }) => {
   }, [finalPhoneNumber]);
 
   return (
-    <ScrollView>
+    <ScrollView style={{ backgroundColor: COLORS.themew }}>
       <SafeAreaView style={{ marginHorizontal: 20 }}>
         <View>
           <BackBtn onPress={() => navigation.goBack()} />
-          <Image source={require("../assets/images/promoshop1.webp")} style={styles.cover} />
+          <Image source={require("../assets/icons/medivana-splash-light.png")} style={styles.cover} />
 
-          <Text style={styles.title}>Promokings SignUp</Text>
+          <Text style={styles.title}>
+            Sign up and <Text style={styles.title2}>Improve your health today</Text>
+          </Text>
 
           <Formik
             initialValues={{
@@ -228,8 +231,6 @@ const Register = ({ navigation }) => {
             }) => (
               <View>
                 <View style={styles.wrapper}>
-                  <Text style={styles.label}>UserName</Text>
-
                   <View style={styles.inputWrapper(touched.username ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="face-man-profile"
@@ -238,7 +239,7 @@ const Register = ({ navigation }) => {
                       color={COLORS.gray}
                     />
                     <TextInput
-                      placeholder="Username"
+                      placeholder="Enter your username"
                       onFocus={() => setFieldTouched("username")}
                       onBlur={() => setFieldTouched("username", "")}
                       autoCapitalize="none"
@@ -253,8 +254,6 @@ const Register = ({ navigation }) => {
                 </View>
 
                 <View style={styles.wrapper}>
-                  <Text style={styles.label}>Email</Text>
-
                   <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="email-outline"
@@ -263,7 +262,7 @@ const Register = ({ navigation }) => {
                       color={COLORS.gray}
                     />
                     <TextInput
-                      placeholder="Enter email"
+                      placeholder="Enter your email"
                       onFocus={() => setFieldTouched("email")}
                       onBlur={() => setFieldTouched("email", "")}
                       autoCapitalize="none"
@@ -277,26 +276,24 @@ const Register = ({ navigation }) => {
                   {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                 </View>
 
-                <Text style={styles.label}>Phone Number</Text>
-
-                <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
-                  <IntlPhoneInput
-                    ref={(ref) => (phoneInput = ref)}
-                    customModal={renderCustomModal}
-                    defaultCountry="KE"
-                    lang="EN"
-                    onChangeText={({ dialCode, unmaskedPhoneNumber }) => {
-                      setFieldValue("phoneNumber", `${dialCode}${unmaskedPhoneNumber}`);
-                      setfinalPhoneNumber(unmaskedPhoneNumber);
-                    }}
-                    flagStyle={styles.flagWidth}
-                    containerStyle={styles.input22}
-                  />
+                <View style={styles.wrapper2}>
+                  <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
+                    <IntlPhoneInput
+                      ref={(ref) => (phoneInput = ref)}
+                      customModal={renderCustomModal}
+                      defaultCountry="KE"
+                      lang="EN"
+                      onChangeText={({ dialCode, unmaskedPhoneNumber }) => {
+                        setFieldValue("phoneNumber", `${dialCode}${unmaskedPhoneNumber}`);
+                        setfinalPhoneNumber(unmaskedPhoneNumber);
+                      }}
+                      flagStyle={styles.flagWidth}
+                      containerStyle={styles.input22}
+                    />
+                  </View>
                 </View>
 
                 <View style={styles.wrapper}>
-                  <Text style={styles.label}>Password</Text>
-
                   <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="lock-outline"
@@ -306,7 +303,7 @@ const Register = ({ navigation }) => {
                     />
                     <TextInput
                       secureTextEntry={obsecureText}
-                      placeholder="Password"
+                      placeholder="Enter your password"
                       onFocus={() => setFieldTouched("password")}
                       onBlur={() => setFieldTouched("password", "")}
                       autoCapitalize="none"
@@ -329,8 +326,6 @@ const Register = ({ navigation }) => {
                 </View>
 
                 <View style={styles.wrapper}>
-                  <Text style={styles.label}>Confirm Password</Text>
-
                   <View style={styles.inputWrapper(touched.confirmPassword ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="lock-outline"
@@ -340,7 +335,7 @@ const Register = ({ navigation }) => {
                     />
                     <TextInput
                       secureTextEntry={obsecureText}
-                      placeholder="Confirm Password"
+                      placeholder="Confirm your password"
                       onFocus={() => setFieldTouched("confirmPassword")}
                       onBlur={() => setFieldTouched("confirmPassword", "")}
                       autoCapitalize="none"
@@ -364,19 +359,13 @@ const Register = ({ navigation }) => {
                   )}
                 </View>
 
-                <Button
-                  title={"S I G N U P"}
+                <CustomButton
+                  title={"Sign up"}
                   onPress={isValid ? handleSubmit : inValidForm}
+                  titleStyle={{ fontFamily: "lufgaMedium" }}
                   isValid={isValid}
                   loader={loader}
                 />
-
-                {allowSupplierRegister && (
-                  <Text style={styles.registration} onPress={() => navigation.navigate("SupplierRegister")}>
-                    <Text>or </Text>
-                    <Text style={styles.registration2}>Supplier Registration</Text>
-                  </Text>
-                )}
               </View>
             )}
           </Formik>
@@ -397,12 +386,19 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontFamily: "bold",
-    fontSize: SIZES.xLarge,
+    fontFamily: "medium",
+    fontSize: SIZES.large,
     color: COLORS.primary,
     alignItems: "center",
     textAlign: "center",
     marginBottom: SIZES.xLarge,
+  },
+  title2: {
+    fontFamily: "bold",
+    fontSize: SIZES.large,
+    color: COLORS.primary,
+    alignItems: "center",
+    textAlign: "center",
   },
 
   wrapper: {
@@ -416,12 +412,24 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
 
+  wrapper2: {
+    backgroundColor: COLORS.red,
+    padding: 2,
+    borderColor: COLORS.lightWhite,
+    backgroundColor: COLORS.lightWhite,
+    borderWidth: 0.5,
+    marginBottom: 7,
+    borderRadius: 100,
+    overflow: "hidden",
+  },
+
   inputWrapper: (borderColor) => ({
     borderColor: borderColor,
     backgroundColor: COLORS.lightWhite,
     borderWidth: 1,
+    marginBottom: 7,
     height: 55,
-    borderRadius: 12,
+    borderRadius: 100,
     flexDirection: "row",
     paddingHorizontal: 15,
     alignItems: "center",
@@ -513,5 +521,11 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+
+  input22: {
+    backgroundColor: COLORS.lightWhite,
+    borderRadius: 100,
+    overflow: "hidden",
   },
 });

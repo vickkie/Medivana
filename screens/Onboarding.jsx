@@ -51,7 +51,9 @@ const Onboarding = () => {
             paddingHorizontal: 30,
             paddingTop: 60,
             paddingVertical: 20,
+            elevation: 0,
             gap: 40,
+            overflow: "hidden",
           }}
         >
           {/* Header Text */}
@@ -83,6 +85,7 @@ const Onboarding = () => {
                 height: 260,
                 backgroundColor: "#24252B",
                 borderRadius: 8,
+                elevation: 2,
               }}
             />
 
@@ -148,6 +151,7 @@ const Onboarding = () => {
             borderBottomRightRadius: 100,
             justifyContent: "center",
             alignItems: "center",
+            elevation: 3,
           }}
         >
           <Image source={item.image} style={{ height: "100%", width: "80%", resizeMode: "contain" }} />

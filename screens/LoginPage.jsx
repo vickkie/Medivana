@@ -38,7 +38,7 @@ const LoginPage = ({ navigation }) => {
   const { login, getRole, hasRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [obsecureText, setObsecureText] = useState(false);
 
   React.useEffect(() => {
