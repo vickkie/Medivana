@@ -91,14 +91,22 @@ const screens = [
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    bold: require("./assets/fonts/Outfit/Outfit-Bold.ttf"),
-    extrabold: require("./assets/fonts/Outfit/Outfit-ExtraBold.ttf"),
-    light: require("./assets/fonts/Outfit/Outfit-Light.ttf"),
-    medium: require("./assets/fonts/Outfit/Outfit-Medium.ttf"),
-    semibold: require("./assets/fonts/Outfit/Outfit-SemiBold.ttf"),
-    regular: require("./assets/fonts/Outfit/Outfit-Regular.ttf"),
-    thin: require("./assets/fonts/Outfit/Outfit-Thin.ttf"),
+    bold: require("./assets/fonts/Urbanist/static/Urbanist-Bold.ttf"),
+    extrabold: require("./assets/fonts/Urbanist/static/Urbanist-ExtraBold.ttf"),
+    light: require("./assets/fonts/Urbanist/static/Urbanist-Light.ttf"),
+    lightItalic: require("./assets/fonts/Urbanist/static/Urbanist-LightItalic.ttf"),
+    medium: require("./assets/fonts/Urbanist/static/Urbanist-Medium.ttf"),
+    semibold: require("./assets/fonts/Urbanist/static/Urbanist-SemiBold.ttf"),
+    regular: require("./assets/fonts/Urbanist/static/Urbanist-Regular.ttf"),
+    thin: require("./assets/fonts/Urbanist/static/Urbanist-Thin.ttf"),
+    thinItalic: require("./assets/fonts/Urbanist/static/Urbanist-ThinItalic.ttf"),
+    italic: require("./assets/fonts/Urbanist/static/Urbanist-Italic.ttf"),
     GtAlpine: require("./assets/fonts/GT-Alpina-Light-Italic.ttf"),
+    lufga: require("./assets/fonts/lufga/LufgaRegular.ttf"),
+    lufgaBold: require("./assets/fonts/lufga/LufgaBold.ttf"),
+    lufgaMedium: require("./assets/fonts/lufga/LufgaMedium.ttf"),
+    lufgaSemiBold: require("./assets/fonts/lufga/LufgaSemiBold.ttf"),
+    lufgaLight: require("./assets/fonts/lufga/LufgaLight.ttf"),
   });
 
   useEffect(() => {

@@ -19,6 +19,7 @@ import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
+import { APP_NAME } from "@env";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -37,6 +38,7 @@ const LoginPage = ({ navigation }) => {
   const { login, getRole, hasRole } = useContext(AuthContext);
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
+  const [rememberMe, setRememberMe] = useState(false);
   const [obsecureText, setObsecureText] = useState(false);
 
   React.useEffect(() => {
@@ -116,9 +118,11 @@ const LoginPage = ({ navigation }) => {
 
   return (
     <ScrollView>
-      <StatusBar barStyle="dark-content" backgroundColor={COLORS.themey} />
+      <StatusBar barStyle="dark-content" backgroundColor={COLORS.themew} />
 
-      <SafeAreaView style={{ marginHorizontal: 21 }}>
+      <SafeAreaView
+        style={{ marginHorizontal: 0, paddingHorizontal: 21, backgroundColor: COLORS.white, height: SIZES.height }}
+      >
         <View>
           <BackBtn
             onPress={() => {
@@ -133,8 +137,9 @@ const LoginPage = ({ navigation }) => {
             }}
           />
 
-          <Image source={require("../assets/images/promoshop1.webp")} style={styles.cover} />
-          <Text style={styles.title}>Promokings Login</Text>
+          <Image source={require("../assets/icons/medivana-splash-light.png")} style={styles.cover} />
+          <Text style={styles.title}>{APP_NAME}</Text>
+          <Text style={styles.subtitle}>Welcome Back</Text>
 
           <Formik
             initialValues={{ email: "", password: "", staffId: "" }}
@@ -154,34 +159,8 @@ const LoginPage = ({ navigation }) => {
               setFieldValue,
             }) => (
               <View>
-                <View style={styles.chooseWrapper}>
-                  <TouchableOpacity
-                    style={[styles.chooseUser, styles.chooseBox]}
-                    onPress={() => {
-                      setUserType("customer");
-                      handleReset();
-                    }}
-                  >
-                    <View>
-                      <Text style={styles.choiceText}>Customer</Text>
-                    </View>
-                    <Icon name={userType === "customer" ? "check" : "checkempty"} size={18} />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.chooseStaff, styles.chooseBox]}
-                    onPress={() => {
-                      setUserType("staff");
-                      handleReset();
-                    }}
-                  >
-                    <View>
-                      <Text style={styles.choiceText}>Other</Text>
-                    </View>
-                    <Icon name={userType === "staff" ? "check" : "checkempty"} size={18} />
-                  </TouchableOpacity>
-                </View>
+                {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                 <View style={styles.wrapper}>
-                  <Text style={styles.label}>Email</Text>
                   <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="email-outline"
@@ -189,8 +168,9 @@ const LoginPage = ({ navigation }) => {
                       style={styles.iconStyle}
                       color={COLORS.gray}
                     />
+
                     <TextInput
-                      placeholder="Enter email"
+                      placeholder="Enter your email"
                       onFocus={() => setFieldTouched("email")}
                       onBlur={() => setFieldTouched("email", "")}
                       keyboardType="email-address"
@@ -201,36 +181,10 @@ const LoginPage = ({ navigation }) => {
                       onChangeText={(text) => setFieldValue("email", text.trim())}
                     />
                   </View>
-                  {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                 </View>
-
-                {userType === "staff" && (
-                  <View style={styles.wrapper}>
-                    <Text style={styles.label}>Staff ID</Text>
-                    <View style={styles.inputWrapper(touched.staffId ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="identifier"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
-                      <TextInput
-                        placeholder="Enter Staff ID"
-                        onFocus={() => setFieldTouched("staffId")}
-                        onBlur={() => setFieldTouched("staffId", "")}
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        style={{ flex: 1 }}
-                        value={values.staffId}
-                        onChangeText={handleChange("staffId")}
-                      />
-                    </View>
-                    {touched.staffId && errors.staffId && <Text style={styles.errorMessage}>{errors.staffId}</Text>}
-                  </View>
-                )}
+                {touched.password && errors.password && <Text style={styles.errorMessage}>{errors.password}</Text>}
 
                 <View style={styles.wrapper}>
-                  <Text style={styles.label}>Password</Text>
                   <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
                     <MaterialCommunityIcons
                       name="lock-outline"
@@ -238,9 +192,10 @@ const LoginPage = ({ navigation }) => {
                       style={styles.iconStyle}
                       color={COLORS.gray}
                     />
+
                     <TextInput
                       secureTextEntry={obsecureText}
-                      placeholder="Password"
+                      placeholder="Enter your password"
                       onFocus={() => setFieldTouched("password")}
                       onBlur={() => setFieldTouched("password", "")}
                       autoCapitalize="none"
@@ -258,19 +213,60 @@ const LoginPage = ({ navigation }) => {
                       <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
                     </TouchableOpacity>
                   </View>
-                  {touched.password && errors.password && <Text style={styles.errorMessage}>{errors.password}</Text>}
+                </View>
+                <View style={styles.rememberMe}>
+                  <TouchableOpacity style={styles.rememberMeItem} onPress={() => setRememberMe(!rememberMe)}>
+                    <TouchableOpacity
+                      style={styles.rememberMeBox}
+                      onPress={() => {
+                        setRememberMe(!rememberMe);
+                      }}
+                    >
+                      <Icon name={rememberMe ? "check" : "checkempty"} size={18} />
+                    </TouchableOpacity>
+                    <Text style={styles.rememberMeText}>Remember Me</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.forgotPassword}>
+                    <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                  </TouchableOpacity>
                 </View>
 
                 <CustomButton
                   loader={loader}
-                  title={"L O G I N"}
+                  title={"Login"}
+                  titleStyle={{ fontFamily: "lufgaMedium" }}
                   onPress={isValid ? handleSubmit : inValidForm}
                   isValid={isValid}
                 />
 
-                <Text style={styles.registration} onPress={() => navigation.navigate("Register")}>
-                  Create an Account
-                </Text>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.divider} />
+
+                  <View style={styles.or}>
+                    <Text style={styles.orText}>OR</Text>
+                  </View>
+                  <View style={styles.divider} />
+                </View>
+
+                <View style={styles.socialLogin}>
+                  <TouchableOpacity style={styles.socialLoginItem}>
+                    <Icon name="google" size={20} color={COLORS.gray} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.socialLoginItem}>
+                    <Icon name="apple" size={20} color={COLORS.gray} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.socialLoginItem}>
+                    <Icon name="facebook" size={20} color={COLORS.gray} />
+                  </TouchableOpacity>
+                </View>
+
+                <View style={styles.registration}>
+                  <Text style={styles.registrationText}>Don't have an account?</Text>
+                  <TouchableOpacity style={styles.registrationText} onPress={() => navigation.navigate("Register")}>
+                    <Text style={styles.registrationText2}> Create an Account</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
             )}
           </Formik>
@@ -292,8 +288,17 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontFamily: "bold",
+    fontFamily: "medium",
     fontSize: SIZES.xLarge,
+    color: COLORS.primary,
+    alignItems: "center",
+    textAlign: "center",
+    marginBottom: SIZES.xLarge,
+    marginTop: -13,
+  },
+  subtitle: {
+    fontFamily: "regular",
+    fontSize: SIZES.large,
     color: COLORS.primary,
     alignItems: "center",
     textAlign: "center",
@@ -302,7 +307,7 @@ const styles = StyleSheet.create({
   },
 
   wrapper: {
-    marginBottom: 10,
+    marginBottom: 15,
   },
 
   label: {
@@ -317,7 +322,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightWhite,
     borderWidth: 1,
     height: 55,
-    borderRadius: 12,
+    borderRadius: 36,
     flexDirection: "row",
     paddingHorizontal: 15,
     alignItems: "center",
@@ -336,33 +341,89 @@ const styles = StyleSheet.create({
   },
 
   registration: {
-    marginTop: 2,
+    marginTop: 10,
     textAlign: "center",
     marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   chooseWrapper: {
     flexDirection: "row",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    gap: SIZES.xLarge,
+  },
+  rememberMe: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: -10,
+    gap: SIZES.xLarge,
+  },
+  rememberMeItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: 10,
     gap: SIZES.xLarge,
   },
-  chooseBox: {
-    borderBlockColor: COLORS.black,
-    borderWidth: 0.2,
-    backgroundColor: COLORS.lightWhite,
-    width: SIZES.width / 2 - 40,
-    borderRadius: SIZES.medium,
-    alignItems: "center",
-    justifyContent: "space-between",
-    height: SIZES.xxLarge - 5,
-    flexDirection: "row",
-    paddingHorizontal: SIZES.small,
+
+  forgotPassword: {
+    justifyContent: "flex-end",
     marginTop: -10,
+  },
+  rememberMeBox: {
+    width: 20,
+    height: 20,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: COLORS.gray,
   },
   choiceText: {
     color: COLORS.black,
     fontFamily: "bold",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: -10,
+    gap: 10,
+  },
+  divider: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: COLORS.gray,
+    marginVertical: 10,
+    width: "40%",
+  },
+  or: {
+    alignItems: "center",
+  },
+  orText: {
+    fontFamily: "regular",
+    fontSize: SIZES.small,
+    color: COLORS.gray,
+  },
+  socialLogin: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 10,
+    marginBottom: 10,
+    gap: 10,
+  },
+  socialLoginItem: {
+    borderWidth: 4,
+    borderColor: COLORS.gray,
+    borderRadius: 100,
+    padding: 4,
+  },
+  registrationText2: {
+    fontFamily: "bold",
+    fontSize: SIZES.regular,
+    color: COLORS.primary,
   },
 });

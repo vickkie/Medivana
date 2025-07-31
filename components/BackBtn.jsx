@@ -13,7 +13,7 @@ const BackBtn = ({ onPress }) => {
 
 const styles = StyleSheet.create({
   backBtn: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.themeg,
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",

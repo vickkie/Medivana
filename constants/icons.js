@@ -110,6 +110,9 @@ import clipboardfilled from "../assets/svg/clipboard-check.svg";
 import clipboardcheck from "../assets/svg/clipboard-check-light.svg";
 import list from "../assets/svg/list.svg";
 import loadingcircle from "../assets/svg/loading-circle.svg";
+import google from "../assets/svg/google.svg";
+import apple from "../assets/svg/apple.svg";
+import facebook from "../assets/svg/facebook.svg";
 
 const iconMap = {
   list: list,
@@ -220,6 +223,9 @@ const iconMap = {
   login2: Login2,
   favouritebag: Favouritebag,
   checkout: Checkout,
+  google: google,
+  apple: apple,
+  facebook: facebook,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

@@ -2,10 +2,10 @@ import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "rea
 import React from "react";
 import { COLORS, SIZES } from "../constants";
 
-const CustomButton = ({ title, onPress, isValid, loader }) => {
+const CustomButton = ({ title, onPress, isValid, loader, titleStyle }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.btnStyle}>
-      {loader === false ? <Text style={styles.btnText}>{title}</Text> : <ActivityIndicator />}
+      {loader === false ? <Text style={[styles.btnText, titleStyle]}>{title}</Text> : <ActivityIndicator />}
     </TouchableOpacity>
   );
 };
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: SIZES.large,
+    borderRadius: SIZES.xxLarge,
   },
 });
 
