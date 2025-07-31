@@ -114,8 +114,34 @@ import google from "../assets/svg/google.svg";
 import apple from "../assets/svg/apple.svg";
 import facebook from "../assets/svg/facebook.svg";
 import pincode from "../assets/svg/pin-code.svg";
+import doctor from "../assets/svg/health/doctor.svg";
+import heart from "../assets/svg/health/heart.svg";
+import brain from "../assets/svg/health/brain.svg";
+import tooth from "../assets/svg/health/tooth.svg";
+import bones from "../assets/svg/health/bones.svg";
+import nurse from "../assets/svg/health/nurse.svg";
+import skin from "../assets/svg/health/skin.svg";
+import children from "../assets/svg/health/children.svg";
+// import kidney from "../assets/svg/health/kidney.svg";
+// import lungs from "../assets/svg/health/lungs.svg";
+// import stomach from "../assets/svg/health/stomach.svg";
+// import liver from "../assets/svg/health/liver.svg";
+// import pancreas from "../assets/svg/health/pancreas.svg";
 
 const iconMap = {
+  doctor: doctor,
+  heart: heart,
+  brain: brain,
+  tooth: tooth,
+  bones: bones,
+  nurse: nurse,
+  skin: skin,
+  children: children,
+  // kidney: kidney,
+  // lungs: lungs,
+  // stomach: stomach,
+  // liver: liver,
+  // pancreas: pancreas,
   list: list,
   loadingcircle: loadingcircle,
   clipboardcheck: clipboardcheck,
@@ -190,7 +216,6 @@ const iconMap = {
   menu2filled: Menu2filledIcon,
   searchcircle: SearchCircleIcon,
   searchcirclefilled: SearchCircleFilledIcon,
-  heart: HeartIcon,
   heartfilled: HeartFilledIcon,
   close: CloseCircleIcon,
   location: Location,
@@ -228,6 +253,7 @@ const iconMap = {
   apple: apple,
   facebook: facebook,
   pincode: pincode,
+  doctor: doctor,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {

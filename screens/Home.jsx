@@ -11,6 +11,7 @@ import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
 import { useCart } from "../contexts/CartContext";
 import HomeMenu from "../components/bottomsheets/HomeMenu";
+import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
 
 import { COLORS, SIZES } from "../constants";
 import { RefreshControl } from "react-native-gesture-handler";
@@ -24,49 +25,6 @@ const Home = () => {
   const [refreshList, setRefreshList] = useState(false);
   const route = useRoute();
   // console.log("navige", route.key);
-
-  useEffect(() => {
-    if (userData) {
-      if (hasRole("inventory")) {
-        navigation.replace("Inventory Navigation");
-      } else if (hasRole("sales")) {
-        navigation.replace("Sales Navigation");
-      } else if (hasRole("driver")) {
-        navigation.replace("Driver Navigation");
-      } else if (hasRole("finance")) {
-        navigation.replace("Finance Navigation");
-      } else if (hasRole("dispatcher")) {
-        navigation.replace("Dispatch Navigation");
-      } else if (hasRole("supplier")) {
-        navigation.replace("Supplier Navigation");
-      }
-    }
-
-    //!donst work -- temp fix above
-
-    //  const roleRoutes = {
-    //    admin: "Admin Navigation",
-    //    inventory: "Inventory Navigation",
-    //    sales: "Sales Navigation",
-    //    finance: "Finance Navigation",
-    //    customer: "Bottom Navigation",
-    //    driver: "Driver Navigation",
-    //    dispatcher: "Dispatch Navigation",
-    //    supplier: "Supplier Navigation",
-    //  };
-
-    // if (userData) {
-
-    //  const role = getRole(userData)
-    //   if (role in roleRoutes) {
-    //     console.log("Navigating to:", roleRoutes[role]);
-    //     navigation.replace(roleRoutes[role]);
-    //   } else {
-    //     navigation.replace("Bottom Navigation");
-    //   }
-    // }
-    // console.log(userData?.position);
-  }, [userData, hasRole, route.key]);
 
   const renderProfilePicture = () => {
     if (!userLogin) {
@@ -136,11 +94,11 @@ const Home = () => {
         >
           <View style={styles.lowerWelcomeWrapper}>
             <View style={styles.lowerWelcome}>
-              <Carousel />
-              <Headings heading={"Latest products"} />
-              <ProductsRow refreshList={refreshList} setRefreshList={setRefreshList} />
-              <Headings heading={"Featured Products"} />
-              <LatestProducts refreshList={refreshList} setRefreshList={setRefreshList} />
+              {/* <Carousel /> */}
+              <Headings heading={"Doctors Categories"} />
+              <DoctorsCategoriesRow refreshList={refreshList} setRefreshList={setRefreshList} />
+              {/* <Headings heading={"Featured Products"} />
+              <LatestProducts refreshList={refreshList} setRefreshList={setRefreshList} /> */}
             </View>
           </View>
         </ScrollView>
