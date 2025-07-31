@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium + 4,
     color: COLORS.black,
   },
+  seeAll: {
+    fontFamily: "bold",
+    fontSize: SIZES.medium,
+    color: COLORS.primary,
+  },
 });
 
 export default styles;

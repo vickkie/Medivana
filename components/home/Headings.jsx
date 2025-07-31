@@ -19,7 +19,7 @@ const Headings = ({ heading }) => {
             navigation.navigate("ProductList", { routeParam, category: "All Products" });
           }}
         >
-          <Icon name="carousel" size={26} />
+          <Text style={styles.seeAll}>See All</Text>
         </TouchableOpacity>
       </View>
     </View>

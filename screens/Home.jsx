@@ -17,6 +17,7 @@ import { COLORS, SIZES } from "../constants";
 import { RefreshControl } from "react-native-gesture-handler";
 
 import companyInfo from "../assets/data/companyData.json";
+import DoctorsList from "../components/home/DoctorsList";
 
 const Home = () => {
   const { userData, userLogin, hasRole } = useContext(AuthContext);
@@ -97,8 +98,8 @@ const Home = () => {
               {/* <Carousel /> */}
               <Headings heading={"Doctors Categories"} />
               <DoctorsCategoriesRow refreshList={refreshList} setRefreshList={setRefreshList} />
-              {/* <Headings heading={"Featured Products"} />
-              <LatestProducts refreshList={refreshList} setRefreshList={setRefreshList} /> */}
+              <Headings heading={"Featured Doctors"} />
+              <DoctorsList refreshList={refreshList} setRefreshList={setRefreshList} />
             </View>
           </View>
         </ScrollView>

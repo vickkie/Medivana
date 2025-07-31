@@ -64,4 +64,33 @@ const SHADOWS = {
   },
 };
 
-export { COLORS, SIZES, SHADOWS };
+const FONTS = {
+  regular: "Poppins-Regular",
+  medium: "Poppins-Medium",
+  bold: "Poppins-Bold",
+  light: "Poppins-Light",
+
+  h1: {
+    fontSize: 24,
+    color: COLORS.black,
+  },
+  h2: {
+    fontSize: 20,
+    color: COLORS.black,
+  },
+  h3: {
+    fontSize: 18,
+    color: COLORS.black,
+  },
+  h4: {
+    fontSize: 16,
+
+    color: COLORS.black,
+  },
+  h5: {
+    fontSize: 14,
+    color: COLORS.black,
+  },
+};
+
+export { COLORS, SIZES, SHADOWS, FONTS };
