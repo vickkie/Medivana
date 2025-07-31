@@ -1,37 +1,34 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
-import Icon from "../constants/icons";
 
 const validationSchema = Yup.object().shape({
-  password: Yup.string()
-    .min(4, "Code must be at least 4 characters") // adjusted for code entry
-    .required("Required"),
+  code: Yup.string().length(5, "Code must be 5 digits").required("Required"),
 });
 
 const VerificationCode = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
-  const [obsecureText, setObsecureText] = useState(false);
+  const inputs = useRef([]);
 
-  const inValidForm = () => {
-    Alert.alert("Invalid", "Enter the code sent to your email", [{ text: "Retry", onPress: () => {} }]);
+  const focusNext = (index, text) => {
+    if (text && index < 4) inputs.current[index + 1]?.focus();
+  };
+  const focusPrev = (index) => {
+    if (index > 0) inputs.current[index - 1]?.focus();
   };
 
   const handleVerify = async (values) => {
     setLoader(true);
     try {
-      // Your verification endpoint logic here
-      console.log("Code submitted:", values.password);
-      // Simulate success
+      console.log("Code submitted:", values.code);
       Alert.alert("Success", "Code verified!");
-    } catch (error) {
+    } catch {
       Alert.alert("Verification Failed", "Please try again.");
     } finally {
       setLoader(false);
@@ -42,73 +39,74 @@ const VerificationCode = ({ navigation }) => {
     <ScrollView>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.white} />
       <SafeAreaView style={{ paddingHorizontal: 21, backgroundColor: COLORS.white, height: SIZES.height }}>
-        <View>
-          <BackBtn
-            onPress={() => {
-              if (navigation.canGoBack()) {
-                navigation.goBack();
-              } else {
-                navigation.reset({ index: 0, routes: [{ name: "Login" }] });
-              }
-            }}
-          />
+        <BackBtn
+          onPress={() =>
+            navigation.canGoBack() ? navigation.goBack() : navigation.reset({ index: 0, routes: [{ name: "Login" }] })
+          }
+        />
+        <Image source={require("../assets/images/codeview.png")} style={styles.cover} />
+        <Text style={styles.subtitle2}>Verification code has been sent to your email</Text>
 
-          <Image source={require("../assets/images/codeview.png")} style={styles.cover} />
+        <Formik initialValues={{ code: "" }} validationSchema={validationSchema} onSubmit={handleVerify}>
+          {({ handleSubmit, setFieldValue, values, errors, touched }) => (
+            <View>
+              {touched.code && errors.code && <Text style={styles.errorMessage}>{errors.code}</Text>}
 
-          <Text style={styles.subtitle2}>Verification code has been sent to your email</Text>
-
-          <Formik initialValues={{ password: "" }} validationSchema={validationSchema} onSubmit={handleVerify}>
-            {({ handleChange, handleSubmit, touched, errors, setFieldTouched, values, isValid }) => (
-              <View>
-                {touched.password && errors.password && <Text style={styles.errorMessage}>{errors.password}</Text>}
-
-                <View style={styles.wrapper}>
-                  <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
-                    <Icon name="pincode" size={20} style={styles.iconStyle} color={COLORS.gray} />
-                    <TextInput
-                      secureTextEntry={obsecureText}
-                      placeholder="Enter sent code"
-                      onFocus={() => setFieldTouched("password")}
-                      onBlur={() => setFieldTouched("password", "")}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      style={{ flex: 1 }}
-                      value={values.password}
-                      onChangeText={handleChange("password")}
-                      keyboardType={!obsecureText ? "visible-password" : "name-phone-pad"}
-                    />
-                    <TouchableOpacity onPress={() => setObsecureText(!obsecureText)}>
-                      <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <CustomButton
-                  loader={loader}
-                  title={"Verify"}
-                  titleStyle={{ fontFamily: "lufgaMedium" }}
-                  onPress={isValid ? handleSubmit : inValidForm}
-                  isValid={isValid}
-                />
-
-                <View style={styles.dividerContainer}>
-                  <View style={styles.divider} />
-                  <View style={styles.or}>
-                    <Text style={styles.orText}>OR</Text>
-                  </View>
-                  <View style={styles.divider} />
-                </View>
-
-                <View style={styles.registration}>
-                  <Text style={styles.registrationText}>Try again?</Text>
-                  <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                    <Text style={styles.registrationText2}> Resend Code</Text>
-                  </TouchableOpacity>
-                </View>
+              <View style={styles.codeInputContainer}>
+                {[0, 1, 2, 3, 4].map((_, index) => (
+                  <TextInput
+                    key={index}
+                    ref={(el) => (inputs.current[index] = el)}
+                    keyboardType="numeric"
+                    maxLength={1}
+                    style={styles.codeInputBox}
+                    value={values.code[index] || ""}
+                    onChangeText={(text) => {
+                      if (/^[0-9]?$/.test(text)) {
+                        const chars = values.code.split("").slice(0, 5);
+                        while (chars.length < 5) chars.push("");
+                        chars[index] = text;
+                        setFieldValue("code", chars.join(""));
+                        focusNext(index, text);
+                      }
+                    }}
+                    onKeyPress={({ nativeEvent }) => {
+                      if (nativeEvent.key === "Backspace" && !values.code[index]) {
+                        focusPrev(index);
+                        const chars = values.code.split("").slice(0, 5);
+                        while (chars.length < 5) chars.push("");
+                        chars[index - 1] = "";
+                        setFieldValue("code", chars.join(""));
+                      }
+                    }}
+                    autoFocus={index === 0}
+                  />
+                ))}
               </View>
-            )}
-          </Formik>
-        </View>
+
+              <CustomButton
+                loader={loader}
+                title="Verify"
+                titleStyle={{ fontFamily: "lufgaMedium" }}
+                onPress={handleSubmit}
+                isValid={values.code.length === 5}
+              />
+
+              <View style={styles.dividerContainer}>
+                <View style={styles.divider} />
+                <Text style={styles.orText}>OR</Text>
+                <View style={styles.divider} />
+              </View>
+
+              <View style={styles.registration}>
+                <Text style={styles.registrationText}>Try again?</Text>
+                <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                  <Text style={styles.registrationText2}> Resend Code</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+        </Formik>
       </SafeAreaView>
     </ScrollView>
   );
@@ -131,44 +129,39 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: SIZES.xLarge,
   },
-  wrapper: {
-    marginBottom: 15,
-  },
-  inputWrapper: (borderColor) => ({
-    borderColor,
-    backgroundColor: COLORS.lightWhite,
-    borderWidth: 1,
-    height: 55,
-    borderRadius: 36,
-    flexDirection: "row",
-    paddingHorizontal: 15,
-    alignItems: "center",
-  }),
-  iconStyle: {
-    marginRight: 10,
-  },
   errorMessage: {
     color: COLORS.red,
-    fontFamily: "regular",
     fontSize: SIZES.xSmall,
-    marginLeft: 5,
-    marginTop: 5,
+    textAlign: "center",
+    marginVertical: 5,
+  },
+  codeInputContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 30,
+    paddingHorizontal: 20,
+  },
+  codeInputBox: {
+    width: 50,
+    height: 55,
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: COLORS.primary,
+    textAlign: "center",
+    fontSize: 20,
+    backgroundColor: COLORS.lightWhite,
   },
   dividerContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: -10,
-    gap: 10,
+    marginVertical: 10,
   },
   divider: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: COLORS.gray,
-    marginVertical: 10,
-    width: "40%",
-  },
-  or: {
-    alignItems: "center",
+    flex: 1,
+    height: 1,
+    backgroundColor: COLORS.gray,
+    marginHorizontal: 10,
   },
   orText: {
     fontFamily: "regular",
@@ -176,11 +169,9 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
   },
   registration: {
-    marginTop: 20,
-    marginBottom: 20,
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "center",
+    marginVertical: 20,
   },
   registrationText: {
     fontFamily: "regular",
