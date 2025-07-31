@@ -30,6 +30,7 @@ import ChatListScreen from "./ChatListScreen";
 import HelpListScreen from "./HelpListScreen";
 import HelpAgentChatScreen from "./HelpAgentChatScreen";
 import Onboarding from "./Onboarding";
+import VerificationCode from "./VerificationCode";
 
 // Export only user screens
 export {
@@ -64,4 +65,5 @@ export {
   HelpListScreen,
   HelpAgentChatScreen,
   Onboarding,
+  VerificationCode,
 };

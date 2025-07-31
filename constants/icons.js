@@ -113,6 +113,7 @@ import loadingcircle from "../assets/svg/loading-circle.svg";
 import google from "../assets/svg/google.svg";
 import apple from "../assets/svg/apple.svg";
 import facebook from "../assets/svg/facebook.svg";
+import pincode from "../assets/svg/pin-code.svg";
 
 const iconMap = {
   list: list,
@@ -226,6 +227,7 @@ const iconMap = {
   google: google,
   apple: apple,
   facebook: facebook,
+  pincode: pincode,
 };
 
 const Icon = ({ name, size = 24, ...props }) => {
