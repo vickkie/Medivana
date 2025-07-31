@@ -3,7 +3,7 @@ import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Welcome } from "../components/home";
-// import Carousel from "../components/home/Carousel";
+import Carousel from "../components/home/Carousel";
 import Headings from "../components/home/Headings";
 import ProductsRow from "../components/products/ProductsRow";
 import LatestProducts from "../components/products/LatestProducts";
@@ -96,44 +96,29 @@ const Home = () => {
       <View style={styles.topWelcomeWrapper}>
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
-            <TouchableOpacity style={styles.buttonWrap} onPress={openMenu}>
-              <Icon name="menu" size={24} />
-            </TouchableOpacity>
-
             <View style={{ flexDirection: "row" }}>
-              <View style={{ alignItems: "flex-end", marginRight: 5 }}>
-                <View style={styles.cartContainer}>
-                  <View style={styles.cartWrapper}>
-                    <Text style={styles.cartNumber}>
-                      {cart.length > 0 ? (
-                        <Text style={styles.number}>{cart.length}</Text>
-                      ) : (
-                        <Text style={styles.number}>0</Text>
-                      )}
-                    </Text>
-                  </View>
-
-                  <TouchableOpacity onPress={() => navigation.navigate("Onboarding")} style={styles.buttonWrap}>
-                    <Icon name="cart" size={24} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap}>
                 {renderProfilePicture()}
               </TouchableOpacity>
+              <View
+                style={{
+                  alignItems: "flex-start",
+                  marginLeft: 7,
+                  justifyContent: "center",
+                }}
+              >
+                <Text style={styles.welcomeText2}>Hello, {userData ? userData.username : "Alex Kimani"} !</Text>
+                <Text style={styles.welcomeText}>Welcome back</Text>
+              </View>
             </View>
-          </View>
-        </View>
 
-        <View style={styles.greeting}>
-          <Text style={styles.greetingMessage}>
-            <Text style={styles.hello}>Hello! </Text>
-            <Text style={styles.username}>{userData ? userData.username : "There"}</Text>
-          </Text>
-        </View>
-        <View style={styles.sloganWrapper}>
-          <Text style={styles.slogan}> {companyInfo?.smallName}, your one-stop shop</Text>
+            <TouchableOpacity style={styles.buttonWrap} onPress={openMenu}>
+              <Icon name="bellfilled" size={24} />
+            </TouchableOpacity>
+          </View>
+          <View style={{ padding: 7 }}>
+            <Welcome />
+          </View>
         </View>
       </View>
 
@@ -150,9 +135,8 @@ const Home = () => {
           }
         >
           <View style={styles.lowerWelcomeWrapper}>
-            <Welcome />
             <View style={styles.lowerWelcome}>
-              {/* <Carousel /> */}
+              <Carousel />
               <Headings heading={"Latest products"} />
               <ProductsRow refreshList={refreshList} setRefreshList={setRefreshList} />
               <Headings heading={"Featured Products"} />
@@ -181,7 +165,7 @@ const styles = StyleSheet.create({
   appBarWrapper: {
     // marginHorizontal: 4,
     // marginTop: SIZES.small - 2,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.themey,
     borderRadius: SIZES.medium,
     marginTop: 10,
   },
@@ -206,7 +190,7 @@ const styles = StyleSheet.create({
     fontFamily: "regular",
     fontWeight: "800",
     fontSize: 13,
-    color: COLORS.lightWhite,
+    color: COLORS.lightthemey,
     borderRadius: 700,
     backgroundColor: COLORS.themey,
   },
@@ -237,13 +221,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   topWelcomeWrapper: {
-    minHeight: 180,
-    backgroundColor: COLORS.themew,
-    marginHorizontal: 4,
-    borderRadius: SIZES.medium,
-    // ...SHADOWS.small,
-    // marginBottom: 2,
-    // shadowColor: COLORS.lightWhite,
+    minHeight: 130,
+    backgroundColor: COLORS.themey,
+    borderBottomLeftRadius: SIZES.medium,
+    borderBottomRightRadius: SIZES.medium,
   },
   greeting: {
     flex: 1,
@@ -257,7 +238,7 @@ const styles = StyleSheet.create({
   },
   hello: {
     fontFamily: "regular",
-    color: "#BABDB6",
+    color: COLORS.themew,
   },
   username: {
     fontFamily: "semibold",
@@ -271,7 +252,7 @@ const styles = StyleSheet.create({
   },
   slogan: {
     fontFamily: "regular",
-    color: "#BABDB6",
+    color: COLORS.themew,
     fontSize: SIZES.medium,
   },
   lowerWelcome: {
@@ -283,14 +264,14 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
   },
   lowerWelcomeWrapper: {
-    backgroundColor: COLORS.themeg,
+    backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
   },
   topSafeview: {
     flex: 1,
-    backgroundColor: COLORS.themeg,
+    backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
-    marginTop: SIZES.xxSmall,
+    // marginTop: SIZES.xxSmall,
   },
   profilePicture: {
     height: 52,
@@ -301,12 +282,22 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 40,
     right: 20,
-    backgroundColor: "white",
+    backgroundColor: "themey",
     padding: 10,
     borderRadius: 20,
   },
   closeButtonText: {
     fontSize: 16,
     color: "black",
+  },
+  welcomeText: {
+    fontFamily: "medium",
+    color: COLORS.themew,
+    fontSize: SIZES.medium,
+  },
+  welcomeText2: {
+    fontFamily: "semibold",
+    color: COLORS.themew,
+    fontSize: SIZES.large,
   },
 });

@@ -4,6 +4,7 @@ import styles from "./welcome.style";
 
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../../constants/icons";
+import { COLORS, SIZES } from "../../constants";
 
 const Welcome = () => {
   const navigation = useNavigation();
@@ -18,11 +19,11 @@ const Welcome = () => {
             value=""
             onPressIn={() => navigation.navigate("Search")}
             style={styles.searchInput}
-            placeholder="Search for cloths, watches, etc "
+            placeholder="Search doctor by name "
           ></TextInput>
         </View>
         <View style={styles.searchBtn}>
-          <TouchableOpacity>
+          <TouchableOpacity style={styles.tuning}>
             <Icon name="tuning" size={24} />
           </TouchableOpacity>
         </View>

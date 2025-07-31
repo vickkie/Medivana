@@ -1,6 +1,6 @@
 import "react-native-gesture-handler";
 import { enableScreens } from "react-native-screens";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React, { useEffect, useContext } from "react";
 import { useFonts } from "expo-font";
@@ -18,7 +18,13 @@ import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionCo
 import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
 
-// import { navigationRef } from "./Helpers/NavigationService";
+const MyTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "#fff",
+  },
+};
 
 // Screens from ./screens
 import {
@@ -66,7 +72,11 @@ const Stack = createNativeStackNavigator();
 const screens = [
   { name: "Onboarding", component: Onboarding, options: { headerShown: false } },
   { name: "Bottom Navigation", component: BottomTabNavigation, options: { headerShown: false } },
-  { name: "Home", component: Home, options: { headerShown: false } },
+  {
+    name: "Home",
+    component: Home,
+    options: { headerShown: false, contentStyle: { backgroundColor: "red" } },
+  },
   { name: "Login", component: LoginPage, options: { headerShown: false } },
   { name: "ProductDetails", component: ProductDetails, options: { headerShown: false } },
   { name: "ProductList", component: Products, options: { headerShown: false } },
@@ -137,7 +147,7 @@ export default function App() {
             <ProfileCompletionProvider>
               <CartProvider>
                 <WishProvider>
-                  <NavigationContainer>
+                  <NavigationContainer theme={MyTheme}>
                     <PushNotification />
                     <Stack.Navigator initialRouteName="Onboarding">
                       {screens.map((screen, index) => (

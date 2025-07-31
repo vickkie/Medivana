@@ -25,6 +25,7 @@ const COLORS = {
   themeg: "#F0F5F9",
   themeb: "#000",
   themew: "#fff",
+  themel: "#BABDB6",
   hyperlight: "#F0F5F9",
 };
 

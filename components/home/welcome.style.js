@@ -13,11 +13,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
   }),
   searchContainer: {
+    marginTop: 10,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: COLORS.themey,
-    borderRadius: SIZES.medium,
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.xxLarge,
     marginVertical: SIZES.small - 6,
     marginHorizontal: 4,
     height: 56,
@@ -28,7 +29,7 @@ const styles = StyleSheet.create({
   },
   searchWrapper: {
     flex: 1,
-    backgroundColor: COLORS.themey,
+    backgroundColor: COLORS.themeg,
     marginRight: 10,
     borderRadius: SIZES.medium,
   },
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // backgroundColor: COLORS.primary,
   },
+  tuning: { backgroundColor: COLORS.themew, padding: 7, borderRadius: SIZES.xxLarge },
 });
 
 export default styles;
