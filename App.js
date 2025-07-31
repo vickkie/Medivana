@@ -47,6 +47,7 @@ import {
   HelpAgentChatScreen,
   Onboarding,
   VerificationCode,
+  RequestCode,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -86,7 +87,7 @@ const screens = [
   { name: "ChatListScreen", component: ChatListScreen, options: { headerShown: false } },
   { name: "ChatScreen", component: ChatScreen, options: { headerShown: false } },
   { name: "VerificationCode", component: VerificationCode, options: { headerShown: false } },
-
+  { name: "RequestCode", component: RequestCode, options: { headerShown: false } },
   { name: "HelpListScreen", component: HelpListScreen, options: { headerShown: false } },
   { name: "HelpAgentChatScreen", component: HelpAgentChatScreen, options: { headerShown: false } },
 ];

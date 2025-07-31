@@ -263,10 +263,7 @@ const LoginPage = ({ navigation }) => {
 
                 <View style={styles.registration}>
                   <Text style={styles.registrationText}>Don't have an account?</Text>
-                  <TouchableOpacity
-                    style={styles.registrationText}
-                    onPress={() => navigation.navigate("VerificationCode")}
-                  >
+                  <TouchableOpacity style={styles.registrationText} onPress={() => navigation.navigate("RequestCode")}>
                     <Text style={styles.registrationText2}> Create an Account</Text>
                   </TouchableOpacity>
                 </View>
