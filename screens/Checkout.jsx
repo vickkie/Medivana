@@ -147,8 +147,7 @@ const Checkout = () => {
 
     handleNext(); // This moves to the next step in the UI
 
-    console.log(orderData);
-    // return;
+    //return
 
     try {
       setIsLoading(true);

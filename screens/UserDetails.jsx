@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: SIZES.xLarge + 3,
     textAlign: "left",
-    color: COLORS.themeb,
+    color: COLORS.themey,
     marginStart: 20,
   },
   topheading: {
@@ -664,7 +664,7 @@ const styles = StyleSheet.create({
     marginStart: SIZES.large,
   },
   loginBtn: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.themey,
     padding: 4,
     borderWidth: 0.4,
     borderColor: COLORS.primary,
@@ -693,7 +693,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.medium,
   },
   outWrap: {
-    backgroundColor: COLORS.secondary,
+    backgroundColor: COLORS.themey,
     padding: 15,
     borderRadius: 100,
     justifyContent: "center",

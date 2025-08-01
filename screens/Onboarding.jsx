@@ -122,7 +122,7 @@ const Onboarding = () => {
 
           {/* Continue Button */}
           <TouchableOpacity
-            onPress={() => navigation.replace("Home")}
+            onPress={() => navigation.replace("Bottom Navigation")}
             style={{
               backgroundColor: COLORS.themek,
               paddingVertical: 14,

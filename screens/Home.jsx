@@ -27,6 +27,12 @@ const Home = () => {
   const route = useRoute();
   // console.log("navige", route.key);
 
+  useEffect(() => {
+    if (route.name !== "Bottom Navigation") {
+      navigation.navigate("Bottom Navigation");
+    }
+  }, [route.name, navigation]);
+
   const renderProfilePicture = () => {
     if (!userLogin) {
       return <Icon name="user" size={24} color="#000" />;
