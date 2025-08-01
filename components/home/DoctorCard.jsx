@@ -3,8 +3,10 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../../constants";
 import { Ionicons } from "@expo/vector-icons";
 import styles from "./styles/doctorCard.js";
+import { useNavigation } from "@react-navigation/native";
 
 const DoctorCard = ({ doctor }) => {
+  const navigation = useNavigation();
   const name = doctor?.fullName || doctor?.email?.split("@")[0];
   const fee = doctor?.consultationFee;
 
@@ -40,6 +42,7 @@ const DoctorCard = ({ doctor }) => {
 
   return (
     <View style={styles.card}>
+      {/* <TouchableOpacity onPress={() => navigation.navigate("DoctorDetails", { doctor })}> */}
       <View style={styles.avatar}>
         <DoctorAvatar uri={doctor?.profilePicture} />
       </View>
@@ -54,10 +57,12 @@ const DoctorCard = ({ doctor }) => {
           <Text style={styles.ratingText}>{doctor?.ratings?.length ? rating : ""}</Text>
         </View>
 
-        <TouchableOpacity style={styles.bookButton}>
+        <TouchableOpacity style={styles.bookButton} onPress={() => navigation.navigate("DoctorDetails", { doctor })}>
+          {console.log("doctor", doctor)}
           <Text style={styles.bookButtonText}>Book</Text>
         </TouchableOpacity>
       </View>
+      {/* </TouchableOpacity> */}
     </View>
   );
 };

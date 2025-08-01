@@ -33,6 +33,7 @@ import Onboarding from "./Onboarding";
 import VerificationCode from "./VerificationCode";
 import RequestCode from "./RequestCode";
 import ResetPassword from "./ResetPassword";
+import DoctorDetails from "../components/DoctorDetails/DoctorDetails";
 
 // Export only user screens
 export {
@@ -70,4 +71,5 @@ export {
   VerificationCode,
   RequestCode,
   ResetPassword,
+  DoctorDetails,
 };

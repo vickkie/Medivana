@@ -1,0 +1,292 @@
+import { StyleSheet } from "react-native";
+
+import { COLORS, SIZES, FONTS } from "../../../constants";
+
+export default StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  errorText: {
+    color: COLORS.text,
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: COLORS.primary,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryText: {
+    color: COLORS.background,
+    fontWeight: "600",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  headerTitle: {
+    color: COLORS.text,
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  scrollContainer: {
+    marginTop: 85,
+    background: COLORS.red,
+    flex: 1,
+    paddingHorizontal: 10,
+  },
+  profileCard: {
+    backgroundColor: "#585B4A",
+    borderRadius: 16,
+    padding: 10,
+    overflow: "hidden",
+    height: 220,
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  doctorImage: {
+    ...StyleSheet.absoluteFill,
+    resizeMode: "contain",
+  },
+  doctorInfo: {
+    // alignItems: "center",
+    justifyContent: "flex-start",
+    marginBottom: 15,
+  },
+  doctorName: {
+    color: COLORS.themew,
+    fontSize: 20,
+    fontFamily: "bold",
+    marginBottom: 5,
+  },
+  doctorSpecialty: {
+    color: COLORS.themew,
+    fontSize: 14,
+    fontFamily: "lufgaBold",
+  },
+  wholeCardView: {
+    backgroundColor: COLORS.themeg,
+    padding: 5,
+    borderRadius: SIZES.medium,
+  },
+  actionButtons: {
+    position: "absolute",
+    bottom: 10,
+    left: 10,
+    right: 10,
+    borderRadius: SIZES.large,
+    overflow: "hidden",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: SIZES.width - 50,
+    padding: 5,
+    paddingHorizontal: SIZES.small,
+  },
+  flexEnd: {
+    flexDirection: "row",
+    gap: 10,
+    justifyContent: "flex-end",
+  },
+  actionButton: {
+    backgroundColor: COLORS.primary,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: COLORS.cardBackground,
+    borderRadius: 12,
+    marginBottom: 10,
+  },
+  statItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 7,
+  },
+  statNumber: {
+    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  statLabel: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+  },
+  availabilitySection: {
+    marginVertical: 20,
+  },
+  availabilityHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+  sectionTitle: {
+    color: COLORS.themey,
+    fontSize: SIZES.large,
+    fontWeight: "600",
+  },
+  monthSelector: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+  },
+  monthText: {
+    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  calendar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  calendarDay: {
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    minWidth: 40,
+  },
+  selectedDay: {
+    backgroundColor: COLORS.primary,
+  },
+  dayNumber: {
+    color: COLORS.text,
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+  },
+  dayName: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+  },
+  selectedDayText: {
+    color: COLORS.themew,
+  },
+  aboutSection: {
+    marginBottom: 100,
+    paddingHorizontal: 10,
+  },
+  aboutText: {
+    color: COLORS.textSecondary,
+    fontSize: SIZES.medium,
+    fontFamily: "medium",
+    lineHeight: 20,
+    marginTop: 10,
+  },
+  bookingContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.background,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingBottom: 30,
+  },
+  bookButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: SIZES.xxLarge,
+    paddingVertical: 16,
+    alignItems: "center",
+  },
+  bookButtonText: {
+    color: COLORS.themew,
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  blurView: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  upperRow: {
+    width: SIZES.width - 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    position: "absolute",
+    backgroundColor: COLORS.themew,
+    borderRadius: SIZES.large,
+    top: SIZES.small,
+    marginStart: 10,
+    minHeight: 70,
+    zIndex: 999,
+  },
+
+  heading: {
+    color: COLORS.themeb,
+    marginLeft: 5,
+    fontFamily: "italic",
+    fontSize: SIZES.large,
+  },
+  buttonWrap: {
+    backgroundColor: COLORS.themeg,
+    padding: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginEnd: 10,
+    marginStart: 10,
+  },
+  lovebuy: {
+    flexDirection: "row",
+  },
+  buttonWrap1: {
+    backgroundColor: COLORS.themeg,
+    padding: 15,
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 4,
+  },
+  wrapper: {
+    flex: 1,
+    backgroundColor: COLORS.themew,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  statsb: {
+    borderRadius: 100,
+    backgroundColor: COLORS.white,
+    padding: SIZES.small,
+  },
+  numberHolder: {
+    flexDirection: "column",
+    gap: 5,
+  },
+  timeslots: {
+    borderRadius: SIZES.large,
+    padding: 10,
+    backgroundColor: COLORS.themeg,
+  },
+  slotsHolder: {
+    marginVertical: 20,
+    display: "flex",
+    flexDirection: "row",
+    gap: 10,
+  },
+  timeslot: {
+    fontFamily: "lufgaSemiBold",
+  },
+});
