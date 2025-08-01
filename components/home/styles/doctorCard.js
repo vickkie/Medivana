@@ -87,4 +87,27 @@ export default StyleSheet.create({
     alignItems: "center",
     gap: SIZES.xSmall - 5,
   },
+  actionButtons: {
+    // backgroundColor: "red",
+    borderRadius: SIZES.large,
+    overflow: "hidden",
+    flexDirection: "row",
+    alignItems: "start",
+    width: "100%",
+    marginLeft: -10,
+    padding: 5,
+  },
+  flexEnd: {
+    flexDirection: "row",
+    gap: 10,
+    // justifyContent: "flex-end",
+  },
+  actionButton: {
+    backgroundColor: COLORS.primary,
+    width: 30,
+    height: 30,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });

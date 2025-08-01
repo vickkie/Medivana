@@ -51,7 +51,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     return map[short] || short;
   };
 
-  const [doctorData, setDoctorData] = useState(null);
+  const [doctorData, setDoctorData] = useState(doctor || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [calendarDays, setCalendarDays] = useState([]);
@@ -76,22 +76,32 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     updateAvailableHours(todayName);
   }, []);
 
+  const [isUpdating, setIsUpdating] = useState(false);
+
   const fetchDoctorDetails = async () => {
     try {
-      setLoading(true);
+      setIsUpdating(true);
       const response = await axios.get(`${BACKEND_PORT}/api/medic/${doctor?._id}`);
-      //   console.log("response", response.data);
-      setDoctorData(response.data);
+      const fetchedDoctor = response.data;
+
+      const isDifferent = JSON.stringify(fetchedDoctor) !== JSON.stringify(doctor);
+
+      if (isDifferent) {
+        setDoctorData(fetchedDoctor);
+      }
+
       setError(null);
     } catch (err) {
       setError("Failed to load doctor details");
     } finally {
-      setLoading(false);
+      setIsUpdating(false);
     }
   };
 
   useEffect(() => {
-    fetchDoctorDetails();
+    if (doctor?._id) {
+      fetchDoctorDetails();
+    }
   }, []);
 
   const updateMonthName = (days) => {
@@ -123,23 +133,19 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     updateAvailableHours(selectedDay);
   }, [doctorData, selectedDay]);
 
-  const handleBookAppointment = () => {};
-
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <StatusBar barStyle="light-content" backgroundColor={COLORS.themey} />
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={COLORS.primary} />
-        </View>
-      </SafeAreaView>
-    );
-  }
+  const handleBookAppointment = () => {
+    navigation.navigate("DoctorBook", {
+      doctor: doctorData,
+      selectedDate,
+      selectedDay,
+    });
+  };
 
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
           <TouchableOpacity onPress={fetchDoctorDetails} style={styles.retryButton}>
@@ -156,12 +162,17 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
 
       {/* Header */}
       <View style={styles.upperRow}>
+        {isUpdating && (
+          <View style={styles.backgroundLoader}>
+            <ActivityIndicator size="small" color={COLORS.primary} />
+          </View>
+        )}
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonWrap}>
           <Icon size={26} name="backbutton" />
         </TouchableOpacity>
         <Text style={styles.heading}>Doctor Details</Text>
         <View style={styles.lovebuy}>
-          <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.buttonWrap1}>
             <Icon size={26} name="bellfilled" />
           </TouchableOpacity>
         </View>

@@ -34,6 +34,7 @@ import VerificationCode from "./VerificationCode";
 import RequestCode from "./RequestCode";
 import ResetPassword from "./ResetPassword";
 import DoctorDetails from "../components/DoctorDetails/DoctorDetails";
+import DoctorBook from "../components/DoctorDetails/DoctorBook";
 
 // Export only user screens
 export {
@@ -72,4 +73,5 @@ export {
   RequestCode,
   ResetPassword,
   DoctorDetails,
+  DoctorBook,
 };

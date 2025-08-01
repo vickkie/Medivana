@@ -56,6 +56,7 @@ import {
   RequestCode,
   ResetPassword,
   DoctorDetails,
+  DoctorBook,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -104,6 +105,7 @@ const screens = [
   { name: "HelpAgentChatScreen", component: HelpAgentChatScreen, options: { headerShown: false } },
   { name: "ResetPassword", component: ResetPassword, options: { headerShown: false } },
   { name: "DoctorDetails", component: DoctorDetails, options: { headerShown: false } },
+  { name: "DoctorBook", component: DoctorBook, options: { headerShown: false } },
 ];
 
 export default function App() {

@@ -47,7 +47,7 @@ const DoctorsList = ({ refreshList, setRefreshList }) => {
     setRefreshing(false);
   }, [refetch]);
 
-  const renderItem = useCallback(({ item }) => <DoctorCard doctor={item} />, []);
+  const renderItem = useCallback(({ item }) => <DoctorCard doctor={item} showBook={true} />, []);
   const keyExtractor = useCallback((item) => item._id, []);
 
   return (
