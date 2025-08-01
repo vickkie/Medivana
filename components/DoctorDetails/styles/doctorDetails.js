@@ -106,10 +106,12 @@ export default StyleSheet.create({
     gap: 10,
     justifyContent: "flex-end",
   },
+
   actionButton: {
     backgroundColor: COLORS.primary,
     width: 40,
     height: 40,
+
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",

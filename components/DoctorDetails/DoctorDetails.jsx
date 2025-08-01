@@ -56,6 +56,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   const [error, setError] = useState(null);
   const [calendarDays, setCalendarDays] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateObj, setSelectedDateObj] = useState(null);
   const [selectedDay, setSelectedDay] = useState("");
   const [currentMonth, setCurrentMonth] = useState("");
   const [availableHours, setAvailableHours] = useState([]);
@@ -71,6 +72,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
 
     setSelectedDate(todayDay);
     setSelectedDay(todayName);
+    setSelectedDateObj(today);
     setCurrentMonth(today.toLocaleDateString("en-US", { month: "long" }));
 
     updateAvailableHours(todayName);
@@ -86,8 +88,10 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
 
       const isDifferent = JSON.stringify(fetchedDoctor) !== JSON.stringify(doctor);
 
-      if (isDifferent) {
+      if (isDifferent && response.status === 200) {
         setDoctorData(fetchedDoctor);
+      } else {
+        setError("Failed to load doctor details");
       }
 
       setError(null);
@@ -95,6 +99,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
       setError("Failed to load doctor details");
     } finally {
       setIsUpdating(false);
+      setError(null);
     }
   };
 
@@ -112,6 +117,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
 
   const handleDateSelect = (item) => {
     setSelectedDate(item.day);
+    setSelectedDateObj(item.dateObj);
     // console.log("g", item.dayShort);
     setSelectedDay(getFullDayName(item?.dayShort));
   };
@@ -138,6 +144,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
       doctor: doctorData,
       selectedDate,
       selectedDay,
+      selectedDateObj,
     });
   };
 
@@ -145,6 +152,22 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     return (
       <SafeAreaView style={styles.container}>
         <StatusBar barStyle="light-content" backgroundColor={COLORS.background} />
+        <View style={styles.upperRow}>
+          {isUpdating && (
+            <View style={styles.backgroundLoader}>
+              <ActivityIndicator size="small" color={COLORS.primary} />
+            </View>
+          )}
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonWrap}>
+            <Icon size={26} name="backbutton" />
+          </TouchableOpacity>
+          <Text style={styles.heading}>Doctor Details</Text>
+          <View style={styles.lovebuy}>
+            <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.buttonWrap1}>
+              <Icon size={26} name="bellfilled" />
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>

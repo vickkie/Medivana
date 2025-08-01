@@ -44,6 +44,7 @@ const BottomTabNavigation = () => {
           tabBarLabel: "Home",
         }}
       />
+
       <Tab.Screen
         name="Categories"
         component={Categories}
@@ -59,9 +60,9 @@ const BottomTabNavigation = () => {
         component={Products}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "shopfilled" : "shop"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon name={focused ? "calendar" : "calendar"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
           ),
-          tabBarLabel: "Products",
+          tabBarLabel: "Appointments",
         }}
       />
       <Tab.Screen
@@ -78,6 +79,7 @@ const BottomTabNavigation = () => {
           tabBarLabel: "Search",
         }}
       />
+
       <Tab.Screen
         name="Profile"
         component={Profile}
