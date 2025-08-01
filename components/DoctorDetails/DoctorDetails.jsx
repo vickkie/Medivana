@@ -80,7 +80,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     try {
       setLoading(true);
       const response = await axios.get(`${BACKEND_PORT}/api/medic/${doctor?._id}`);
-      console.log("response", response.data);
+      //   console.log("response", response.data);
       setDoctorData(response.data);
       setError(null);
     } catch (err) {
@@ -94,18 +94,24 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     fetchDoctorDetails();
   }, []);
 
+  const updateMonthName = (days) => {
+    const middleDay = days[3]?.dateObj || new Date();
+    const month = middleDay.toLocaleDateString("en-US", { month: "long" });
+    setCurrentMonth(month);
+  };
+
   const handleDateSelect = (item) => {
     setSelectedDate(item.day);
-    console.log("g", item.dayShort);
+    // console.log("g", item.dayShort);
     setSelectedDay(getFullDayName(item?.dayShort));
   };
 
   const updateAvailableHours = (dayName) => {
-    console.log("updated", dayName);
+    // console.log("updated", dayName);
     if (!dayName) return;
 
     const availableHours = doctorData?.availability;
-    console.log("Available hours object:", availableHours);
+    // console.log("Available hours object:", availableHours);
 
     const match = availableHours?.find((d) => d.day?.toLowerCase() === dayName.toLowerCase());
 
@@ -117,10 +123,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     updateAvailableHours(selectedDay);
   }, [doctorData, selectedDay]);
 
-  const handleBookAppointment = () => {
-    // Handle booking logic here
-    console.log("Booking appointment for", selectedDate, currentMonth);
-  };
+  const handleBookAppointment = () => {};
 
   if (loading) {
     return (
@@ -231,11 +234,28 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
             <Text style={styles.sectionTitle}>Availability</Text>
 
             <View style={styles.monthSelector}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  const newOffset = weekOffset - 1;
+                  setWeekOffset(newOffset);
+                  const updatedDays = getWeekDays(newOffset);
+                  setCalendarDays(updatedDays);
+                  updateMonthName(updatedDays);
+                }}
+              >
                 <Ionicons name="chevron-back" size={16} color={COLORS.themeb} />
               </TouchableOpacity>
+
               <Text style={styles.monthText}>{currentMonth}</Text>
-              <TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  const newOffset = weekOffset + 1;
+                  setWeekOffset(newOffset);
+                  const updatedDays = getWeekDays(newOffset);
+                  setCalendarDays(updatedDays);
+                }}
+              >
                 <Ionicons name="chevron-forward" size={16} color={COLORS.themeb} />
               </TouchableOpacity>
             </View>
