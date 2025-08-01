@@ -4,6 +4,7 @@ import { COLORS, SIZES } from "../../../constants";
 export default StyleSheet.create({
   container: {
     flex: 1,
+    marginBottom: SIZES.large,
     backgroundColor: COLORS.themew,
   },
   listContent: {

@@ -5,16 +5,18 @@ import { Ionicons } from "@expo/vector-icons";
 import styles from "./styles/doctorCard.js";
 
 const DoctorCard = ({ doctor }) => {
-  const name = doctor.fullName || doctor.email.split("@")[0];
-  const fee = doctor.consultationFee;
-  const rating = doctor.ratings.length
-    ? (doctor.ratings.reduce((a, b) => a + b, 0) / doctor.ratings.length).toFixed(1)
+  const name = doctor?.fullName || doctor?.email?.split("@")[0];
+  const fee = doctor?.consultationFee;
+
+  const rating = doctor?.ratings?.length
+    ? (doctor?.ratings?.reduce((a, b) => a + b, 0) / doctor?.ratings?.length).toFixed(1)
     : "—";
 
   const FALLBACK_AVATAR = require("../../assets/images/doctor1.png");
 
   const DoctorAvatar = ({ uri }) => {
     const [error, setError] = useState(false);
+    console.log("uri", uri);
 
     return (
       <Image
@@ -25,6 +27,17 @@ const DoctorCard = ({ doctor }) => {
     );
   };
 
+  const renderStars = (rating) => {
+    return Array.from({ length: 5 }, (_, index) => (
+      <Ionicons
+        key={index}
+        name={index < Math.floor(rating) ? "star" : "star-outline"}
+        size={14}
+        color={COLORS.themey}
+      />
+    ));
+  };
+
   return (
     <View style={styles.card}>
       <View style={styles.avatar}>
@@ -32,20 +45,19 @@ const DoctorCard = ({ doctor }) => {
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.name}>{name}</Text>
-        <Text style={styles.speciality}>{/* you could map specialization id to name here */}</Text>
-        <View style={styles.row}>
-          <Text style={styles.fee}>Ksh {fee}</Text>
-          <View style={styles.rating}>
-            <Ionicons name="star" size={14} color={COLORS.star} />
-            <Text style={styles.ratingText}>{rating}</Text>
-          </View>
-        </View>
-      </View>
+        <Text style={styles.name}>Dr. {name}</Text>
+        <Text style={styles.speciality}>{doctor?.specialization?.name || "doctor"}</Text>
 
-      <TouchableOpacity style={styles.bookButton}>
-        <Text style={styles.bookButtonText}>Book</Text>
-      </TouchableOpacity>
+        <Text style={styles.fee}>Ksh {fee}</Text>
+        <View style={styles.ratingContainer}>
+          {renderStars(doctor?.ratings?.length ? rating : 3)}
+          <Text style={styles.ratingText}>{doctor?.ratings?.length ? rating : ""}</Text>
+        </View>
+
+        <TouchableOpacity style={styles.bookButton}>
+          <Text style={styles.bookButtonText}>Book</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

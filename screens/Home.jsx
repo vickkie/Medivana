@@ -95,10 +95,9 @@ const Home = () => {
         >
           <View style={styles.lowerWelcomeWrapper}>
             <View style={styles.lowerWelcome}>
-              {/* <Carousel /> */}
               <Headings heading={"Doctors Categories"} />
               <DoctorsCategoriesRow refreshList={refreshList} setRefreshList={setRefreshList} />
-              <Headings heading={"Featured Doctors"} />
+              <Headings heading={"Popular Doctors"} />
               <DoctorsList refreshList={refreshList} setRefreshList={setRefreshList} />
             </View>
           </View>
