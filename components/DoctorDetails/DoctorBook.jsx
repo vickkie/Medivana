@@ -51,7 +51,6 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const [lastName, setLastName] = useState("");
   const [gender, setGender] = useState("");
   const [age, setAge] = useState(selectedDateObj || new Date());
-  const [moreDescription, setmoreDescription] = useState("");
 
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");
@@ -100,29 +99,33 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   };
 
   const handleContinueBook = () => {
-    if (!firstName || !lastName || !age || !gender) {
-      // alert("Please fill all the fields.");
-      Toast.show({
-        text1: "Please fill all the fields.",
-        type: "error",
-      });
-      return;
-    }
+    // if (!firstName || !lastName || !age || !gender) {
+    //   // alert("Please fill all the fields.");
+    //   Toast.show({
+    //     text1: "Please fill all the fields.",
+    //     type: "error",
+    //   });
+    //   return;
+    // }
+    const doctorData = doctor?._id;
 
-    let data = {
+    let bookingData = {
       firstName,
       lastName,
       age,
       gender,
-      moreDescription,
+
       selectedTime,
       selectedDate,
+      doctorData,
     };
 
-    // You can send data or navigate here
-    console.log("Booking data: ", { data });
+    const estimatedAmount = doctor?.consultationFee;
 
-    // navigation.navigate("Checkout", data);
+    // You can send data or navigate here
+    console.log("Booking data: ", { bookingData });
+
+    navigation.navigate("Checkout", { bookingData, estimatedAmount });
   };
 
   if (error) {
@@ -230,16 +233,6 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 ) : (
                   <Text style={styles.timeslotH}>No allocated hours</Text>
                 )}
-              </View>
-              <View style={styles.instructions}>
-                <Text style={styles.label}>Additional Instructions</Text>
-                <TextInput
-                  style={styles.descriptionInput}
-                  placeholder="Additional Instructions"
-                  value={moreDescription}
-                  onChangeText={(text) => setmoreDescription(text)}
-                  multiline
-                />
               </View>
             </View>
           </View>

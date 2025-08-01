@@ -122,6 +122,7 @@ import bones from "../assets/svg/health/bones.svg";
 import nurse from "../assets/svg/health/nurse.svg";
 import skin from "../assets/svg/health/skin.svg";
 import children from "../assets/svg/health/children.svg";
+import stethoscope from "../assets/svg/health/stethoscope.svg";
 // import kidney from "../assets/svg/health/kidney.svg";
 // import lungs from "../assets/svg/health/lungs.svg";
 // import stomach from "../assets/svg/health/stomach.svg";
@@ -129,6 +130,7 @@ import children from "../assets/svg/health/children.svg";
 // import pancreas from "../assets/svg/health/pancreas.svg";
 
 const iconMap = {
+  stethoscope: stethoscope,
   doctor: doctor,
   heart: heart,
   brain: brain,
