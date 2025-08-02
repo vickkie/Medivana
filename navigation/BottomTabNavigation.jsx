@@ -1,117 +1,114 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { View, StyleSheet } from "react-native";
-import { Home, Search, Profile, Categories, Products, Orders } from "../screens";
-import { COLORS } from "../constants/index";
-import Icon from "../constants/icons";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { BlurView } from "expo-blur";
+import Animated, { FadeIn, FadeOut, Layout } from "react-native-reanimated";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Home, Search, Profile, Categories, Products, Orders } from "../screens";
+import { COLORS } from "../constants";
+
 const Tab = createBottomTabNavigator();
+const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
-const screenOptions = {
-  tabBarShowLabel: true,
-  tabBarHideOnKeyboard: true,
-  headerShown: false,
-  tabBarStyle: {
-    position: "absolute",
-    bottom: 15,
-    right: 30,
-    left: 30,
-    elevation: 0,
-    backgroundColor: "transparent",
-    height: 50,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    borderWidth: 1,
-    borderColor: COLORS.themey,
-  },
-  tabBarLabelStyle: {
-    fontSize: 12,
-    // color: COLORS.themey,
-    fontWeight: "bold",
-    fontFamily: "medium",
-  },
-  tabBarActiveTintColor: COLORS.themeb,
-  tabBarInactiveTintColor: COLORS.themey,
-  tabBarBackground: () => <BlurView intensity={100} tint="light" style={styles.blurView} />,
+// Pre-define icon mapping to avoid inline logic
+const iconMap = {
+  Home: { filled: "home", outline: "home-outline" },
+  Categories: { filled: "list", outline: "list-outline" },
+  Orders: { filled: "calendar", outline: "calendar-outline" },
+  Profile: { filled: "person", outline: "person-outline" },
+  Default: { filled: "ellipse", outline: "ellipse" },
 };
 
-const BottomTabNavigation = () => {
+// Memoized Tab Item for performance
+const TabItem = React.memo(({ routeName, label, isFocused, onPress }) => {
+  const icons = iconMap[routeName] || iconMap.Default;
+  const iconName = isFocused ? icons.filled : icons.outline;
+
   return (
-    // <View>
-    <Tab.Navigator screenOptions={screenOptions}>
-      <Tab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.themeb : COLORS.themey} />
-          ),
-          tabBarLabel: "Home",
-        }}
-      />
-
-      <Tab.Screen
-        name="Categories"
-        component={Categories}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.themeb : COLORS.themey} />
-          ),
-          tabBarLabel: "Categories",
-        }}
-      />
-      <Tab.Screen
-        name="Orders"
-        component={Orders}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "calendar" : "calendar"} size={24} color={focused ? COLORS.themeb : COLORS.themey} />
-          ),
-          tabBarLabel: "Appointments",
-        }}
-      />
-      {/* <Tab.Screen
-        name="Search"
-        component={Search}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              name={focused ? "searchcirclefilled" : "searchcircle"}
-              size={24}
-              color={focused ? COLORS.themeb : COLORS.themey}
-            />
-          ),
-          tabBarLabel: "Search",
-        }}
-      /> */}
-
-      <Tab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({ focused }) => (
-            <Icon
-              name={focused ? "usercirclefilled" : "usercircle"}
-              size={24}
-              color={focused ? COLORS.themeb : COLORS.themey}
-            />
-          ),
-          tabBarLabel: "Profile",
-        }}
-      />
-    </Tab.Navigator>
-    // </View>
+    <AnimatedTouchable
+      onPress={onPress}
+      layout={Layout.springify().mass(0.5)}
+      style={[styles.tabItem, isFocused && styles.tabItemFocused]}
+    >
+      <Ionicons name={iconName} size={24} color={isFocused ? COLORS.themey : COLORS.themew} />
+      {isFocused && (
+        <Animated.Text entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)} style={styles.label}>
+          {label}
+        </Animated.Text>
+      )}
+    </AnimatedTouchable>
   );
-};
+});
+
+const BottomTabNavigation = () => (
+  <Tab.Navigator
+    screenOptions={{ headerShown: false }}
+    tabBar={({ state, descriptors, navigation }) => (
+      <BlurView intensity={100} tint="light" style={styles.blurContainer}>
+        <View style={styles.container}>
+          {state.routes.map((route, index) => {
+            const { options } = descriptors[route.key];
+            const label =
+              options.tabBarLabel != null ? options.tabBarLabel : options.title != null ? options.title : route.name;
+            const isFocused = state.index === index;
+
+            const onPress = () => {
+              const event = navigation.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
+              if (!isFocused && !event.defaultPrevented) {
+                navigation.navigate(route.name, route.params);
+              }
+            };
+
+            return (
+              <TabItem key={route.key} routeName={route.name} label={label} isFocused={isFocused} onPress={onPress} />
+            );
+          })}
+        </View>
+      </BlurView>
+    )}
+  >
+    <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: "Home" }} />
+    <Tab.Screen name="Categories" component={Categories} options={{ tabBarLabel: "Categories" }} />
+    <Tab.Screen name="Orders" component={Orders} options={{ tabBarLabel: "Appointments" }} />
+    <Tab.Screen name="Profile" component={Profile} options={{ tabBarLabel: "Profile" }} />
+  </Tab.Navigator>
+);
 
 export default BottomTabNavigation;
+
 const styles = StyleSheet.create({
-  blurView: {
-    backgroundColor: "rgba(11, 171, 125, 0.5)",
-    flex: 1,
+  blurContainer: {
+    position: "absolute",
+    bottom: 15,
+    left: 30,
+    right: 30,
     borderRadius: 30,
     overflow: "hidden",
+  },
+  container: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#0BAB7B",
+    paddingVertical: 10,
+  },
+  tabItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 30,
+  },
+  tabItemFocused: {
+    backgroundColor: COLORS.themew,
+  },
+  label: {
+    marginLeft: 8,
+    fontWeight: "500",
+    color: COLORS.themeb,
   },
 });
