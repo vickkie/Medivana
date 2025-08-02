@@ -3,9 +3,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./styles/doctorCategoriesRow.js";
-import { Ionicons } from "@expo/vector-icons";
+
 import useFetch from "../../hook/useFetch";
 import Icon from "../../constants/icons";
+import { RefreshCcw } from "lucide-react-native";
 
 const DoctorCategoryCard = ({ item }) => {
   const formatIconName = (str) => (str ? str.toLowerCase() : item?.bodypart);
@@ -85,7 +86,7 @@ const DoctorsCategoriesRow = ({ refreshList, setRefreshList }) => {
       ) : error && !categories.length ? (
         <View style={styles.errorContainer}>
           <TouchableOpacity onPress={refetch} style={styles.retryButton}>
-            <Ionicons size={24} name="reload-circle" color={COLORS.white} />
+            <RefreshCcw size={24} color={COLORS.white} />
           </TouchableOpacity>
         </View>
       ) : (

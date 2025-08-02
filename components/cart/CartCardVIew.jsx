@@ -6,8 +6,8 @@ import Icon from "../../constants/icons";
 import Toast from "react-native-toast-message";
 import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
-import { Ionicons, Fontisto } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
+import { Heart, HeartOff } from "lucide-react-native";
 
 const CartCardView = ({ item, handleRefresh }) => {
   // console.log(item);
@@ -171,9 +171,9 @@ const CartCardView = ({ item, handleRefresh }) => {
           <View style={styles.lovehate}>
             <TouchableOpacity style={styles.lovebuttons} onPress={toggleWishlist}>
               {isWished ? (
-                <Ionicons name="heart" size={20} color={COLORS.primary} />
+                <Heart fill={COLORS.primary} color={COLORS.primary} size={20} />
               ) : (
-                <Ionicons name="heart-outline" size={20} color={COLORS.primary} />
+                <Heart color={COLORS.primary} size={20} />
               )}
             </TouchableOpacity>
             <TouchableOpacity style={styles.lovebuttons} onPress={deleteItem}>

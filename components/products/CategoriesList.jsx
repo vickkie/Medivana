@@ -4,7 +4,9 @@ import { COLORS, SIZES } from "../../constants";
 import useFetch from "../../hook/useFetch";
 import styles from "./categorieslist.style";
 import CategoryCardView from "./CategoryCardView";
-import { Ionicons } from "@expo/vector-icons";
+
+import { RefreshCcw } from "lucide-react-native";
+
 import LottieView from "lottie-react-native";
 import NetInfo from "@react-native-community/netinfo";
 
@@ -58,7 +60,7 @@ const CategoriesList = () => {
       <View style={styles.errorContainer}>
         <Text style={styles.errorMessage}>Sorry, no categories found</Text>
         <TouchableOpacity onPress={refetch} style={styles.retryButton}>
-          <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
+          <RefreshCcw size={24} color={COLORS.white} />
           <Text style={styles.retryButtonText}>Retry Again</Text>
         </TouchableOpacity>
       </View>

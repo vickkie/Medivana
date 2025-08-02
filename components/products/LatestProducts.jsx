@@ -4,7 +4,8 @@ import { COLORS, SIZES } from "../../constants";
 import styles from "./productsRow.style";
 import ProductsCardView from "./ProductsCardView";
 import useFetch from "../../hook/useFetch";
-import { Ionicons } from "@expo/vector-icons";
+
+import { RefreshCcw } from "lucide-react-native";
 
 const LatestProducts = ({ refreshList, setRefreshList }) => {
   const { data, isLoading, error, refetch } = useFetch("products/featured");
@@ -33,7 +34,7 @@ const LatestProducts = ({ refreshList, setRefreshList }) => {
         <View style={styles.errorContainer}>
           <Text style={styles.errorMessage}>Looks like you're offline</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-            <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
+            <RefreshCcw size={24} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry Loading</Text>
           </TouchableOpacity>
         </View>
@@ -41,7 +42,7 @@ const LatestProducts = ({ refreshList, setRefreshList }) => {
         <View style={styles.errorContainer}>
           <Text style={styles.errorMessage}>No products at the moment</Text>
           <TouchableOpacity onPress={handleRefetch} style={styles.retryButton}>
-            <Ionicons size={24} name={"reload-circle"} color={COLORS.white} />
+            <RefreshCcw size={24} name={"reload-circle"} color={COLORS.white} />
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
         </View>

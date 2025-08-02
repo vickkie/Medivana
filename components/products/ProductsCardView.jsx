@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, View, Image } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { COLORS, SIZES } from "../../constants";
 import styles from "./productcardview.style";
-import { Ionicons } from "@expo/vector-icons";
+
 import { useNavigation } from "@react-navigation/native";
 import usePost from "../../hook/usePost";
 import { AuthContext } from "../auth/AuthContext";
@@ -121,14 +121,6 @@ const ProductsCardView = ({ item, refetch }) => {
             </Text>
             <Text style={styles.price}>Ksh {parseInt(item.price.replace("$", "")).toLocaleString()}</Text>
           </View>
-
-          <TouchableOpacity style={styles.addBtn} onPress={toggleWishlist}>
-            {isWished ? (
-              <Ionicons name="heart" size={26} color={COLORS.primary} />
-            ) : (
-              <Ionicons name="heart-outline" size={26} color={COLORS.primary} />
-            )}
-          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );

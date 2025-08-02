@@ -3,11 +3,11 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, Styl
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
+import { Eye, EyeOff } from "lucide-react-native";
 
 const resetSchema = Yup.object().shape({
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -57,7 +57,7 @@ const ResetPassword = ({ navigation }) => {
                   onBlur={handleBlur("password")}
                 />
                 <TouchableOpacity style={styles.eyeIcon} onPress={() => setSecure(!secure)}>
-                  <MaterialCommunityIcons size={18} name={secure ? "eye-outline" : "eye-off-outline"} />
+                  {!secure ? <Eye size={18} color={COLORS.themey} /> : <EyeOff size={18} color={COLORS.themey} />}
                 </TouchableOpacity>
               </View>
 
@@ -74,7 +74,7 @@ const ResetPassword = ({ navigation }) => {
                 />
                 <TouchableOpacity style={styles.eyeIcon} onPress={() => setSecure(!secure)}>
                   {/* <Text>{secure ? "Show" : "Hide"}</Text> */}
-                  <MaterialCommunityIcons size={18} name={secure ? "eye-outline" : "eye-off-outline"} />
+                  {!secure ? <Eye size={18} color={COLORS.themey} /> : <EyeOff size={18} color={COLORS.themey} />}
                 </TouchableOpacity>
               </View>
 

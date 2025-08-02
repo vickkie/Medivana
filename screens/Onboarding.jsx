@@ -3,8 +3,9 @@ import React from "react";
 import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
 import AppIntroSlider from "react-native-app-intro-slider";
 import { COLORS, SIZES } from "../constants/theme";
-import { Ionicons } from "@expo/vector-icons";
+
 import { useNavigation } from "@react-navigation/native";
+import { ChevronRight, ChevronsRight } from "lucide-react-native";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SCREEN_WIDTH = SIZES.width;
@@ -193,7 +194,7 @@ const Onboarding = () => {
             marginRight: 16,
           }}
         >
-          <Ionicons name="arrow-forward" size={24} color="#000" />
+          <ChevronsRight name="arrow-forward" size={24} color="#000" />
         </View>
       )}
       dotStyle={{

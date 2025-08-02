@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Image, StatusBar, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+
 import { useRoute, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
@@ -9,6 +9,17 @@ import styles from "./styles/doctorDetails";
 import Icon from "../../constants/icons";
 import { BlurView } from "expo-blur";
 import { COLORS } from "../../constants";
+import {
+  ChevronLeft,
+  ChevronRightIcon,
+  Clock10Icon,
+  MessageCircle,
+  MessageCircleMore,
+  Star,
+  Timer,
+  UsersIcon,
+} from "lucide-react-native";
+import { Time } from "react-native-gifted-chat";
 
 const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   const route = useRoute();
@@ -221,7 +232,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
               </View>
               <View style={styles.flexEnd}>
                 <TouchableOpacity style={styles.actionButton}>
-                  <Ionicons name="chatbox" size={20} color={COLORS.white} />
+                  <MessageCircleMore name="chatbox" size={20} color={COLORS.white} />
                 </TouchableOpacity>
               </View>
 
@@ -233,7 +244,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
           <View style={styles.statsContainer}>
             <View style={styles.statItem}>
               <TouchableOpacity style={styles.statsb}>
-                <Ionicons name="people-outline" size={20} color={COLORS.themeb} />
+                <UsersIcon name="people-outline" size={20} color={COLORS.themeb} />
               </TouchableOpacity>
 
               <View style={styles.numberHolder}>
@@ -243,7 +254,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
             </View>
             <View style={styles.statItem}>
               <TouchableOpacity style={styles.statsb}>
-                <Ionicons name="star-outline" size={20} color={COLORS.themeb} />
+                <Star name="star-outline" size={20} color={COLORS.themeb} />
               </TouchableOpacity>
               <View style={styles.numberHolder}>
                 <Text style={styles.statNumber}>{doctorData?.rating || "5.0"}</Text>
@@ -252,7 +263,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
             </View>
             <View style={styles.statItem}>
               <TouchableOpacity style={styles.statsb}>
-                <Ionicons name="time-outline" size={20} color={COLORS.themeb} />
+                <Clock10Icon name="time-outline" size={20} color={COLORS.themeb} />
               </TouchableOpacity>
               <View style={styles.numberHolder}>
                 <Text style={styles.statNumber}>{doctorData?.experience || "6 Yr+"}</Text>
@@ -277,7 +288,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                   updateMonthName(updatedDays);
                 }}
               >
-                <Ionicons name="chevron-back" size={16} color={COLORS.themeb} />
+                <ChevronLeft name="chevron-back" size={16} color={COLORS.themeb} />
               </TouchableOpacity>
 
               <Text style={styles.monthText}>{currentMonth}</Text>
@@ -290,7 +301,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                   setCalendarDays(updatedDays);
                 }}
               >
-                <Ionicons name="chevron-forward" size={16} color={COLORS.themeb} />
+                <ChevronRightIcon name="chevron-forward" size={16} color={COLORS.themeb} />
               </TouchableOpacity>
             </View>
           </View>

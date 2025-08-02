@@ -3,34 +3,37 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { BlurView } from "expo-blur";
 import Animated, { FadeIn, FadeOut, Layout } from "react-native-reanimated";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Home, Search, Profile, Categories, Products, Orders } from "../screens";
 import { COLORS } from "../constants";
+import { LucideHome as HomeIcon, List, Calendar, User, Circle } from "lucide-react-native";
 
 const Tab = createBottomTabNavigator();
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 
-// Pre-define icon mapping to avoid inline logic
+// Map route names to Lucide icon components
 const iconMap = {
-  Home: { filled: "home", outline: "home-outline" },
-  Categories: { filled: "list", outline: "list-outline" },
-  Orders: { filled: "calendar", outline: "calendar-outline" },
-  Profile: { filled: "person", outline: "person-outline" },
-  Default: { filled: "ellipse", outline: "ellipse" },
+  Home: HomeIcon,
+  Categories: List,
+  Orders: Calendar,
+  Profile: User,
+  Default: Circle,
 };
 
-// Memoized Tab Item for performance
+// Memoized tab item with animated icon and label
 const TabItem = React.memo(({ routeName, label, isFocused, onPress }) => {
-  const icons = iconMap[routeName] || iconMap.Default;
-  const iconName = isFocused ? icons.filled : icons.outline;
+  const Icon = iconMap[routeName] || iconMap.Default;
 
   return (
     <AnimatedTouchable
       onPress={onPress}
-      layout={Layout.springify().mass(0.5)}
+      layout={Layout.springify().mass(0.8)}
       style={[styles.tabItem, isFocused && styles.tabItemFocused]}
     >
-      <Ionicons name={iconName} size={24} color={isFocused ? COLORS.themey : COLORS.themew} />
+      <Icon
+        size={24}
+        color={isFocused ? COLORS.themey : COLORS.themew}
+        fill={isFocused ? COLORS.themey : "transparent"}
+      />
       {isFocused && (
         <Animated.Text entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)} style={styles.label}>
           {label}
@@ -40,6 +43,7 @@ const TabItem = React.memo(({ routeName, label, isFocused, onPress }) => {
   );
 });
 
+// Custom tab bar navigation
 const BottomTabNavigation = () => (
   <Tab.Navigator
     screenOptions={{ headerShown: false }}
@@ -48,8 +52,7 @@ const BottomTabNavigation = () => (
         <View style={styles.container}>
           {state.routes.map((route, index) => {
             const { options } = descriptors[route.key];
-            const label =
-              options.tabBarLabel != null ? options.tabBarLabel : options.title != null ? options.title : route.name;
+            const label = options.tabBarLabel ?? options.title ?? route.name;
             const isFocused = state.index === index;
 
             const onPress = () => {

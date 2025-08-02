@@ -9,7 +9,7 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, Styl
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import axios from "axios";
 import { AuthContext } from "../components/auth/AuthContext";
 import BackBtn from "../components/BackBtn";
@@ -20,6 +20,7 @@ import { BACKEND_PORT } from "@env";
 import Icon from "../constants/icons";
 import { StatusBar } from "react-native";
 import { APP_NAME } from "@env";
+import { Eye, EyeOff, Lock, LockKeyholeIcon, MailIcon } from "lucide-react-native";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
@@ -135,12 +136,7 @@ const LoginPage = ({ navigation }) => {
                 {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                 <View style={styles.wrapper}>
                   <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
-                    <MaterialCommunityIcons
-                      name="email-outline"
-                      size={20}
-                      style={styles.iconStyle}
-                      color={COLORS.gray}
-                    />
+                    <MailIcon name="email-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
 
                     <TextInput
                       placeholder="Enter your email"
@@ -159,12 +155,7 @@ const LoginPage = ({ navigation }) => {
 
                 <View style={styles.wrapper}>
                   <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
-                    <MaterialCommunityIcons
-                      name="lock-outline"
-                      size={20}
-                      style={styles.iconStyle}
-                      color={COLORS.gray}
-                    />
+                    <LockKeyholeIcon name="lock-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
 
                     <TextInput
                       secureTextEntry={obsecureText}
@@ -183,7 +174,11 @@ const LoginPage = ({ navigation }) => {
                         setObsecureText(!obsecureText);
                       }}
                     >
-                      <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
+                      {obsecureText ? (
+                        <Eye size={18} color={COLORS.themey} />
+                      ) : (
+                        <EyeOff size={18} color={COLORS.themey} />
+                      )}
                     </TouchableOpacity>
                   </View>
                 </View>

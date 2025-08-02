@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { COLORS, SIZES, FONTS } from "../../constants";
-import { Ionicons } from "@expo/vector-icons";
+import { MessageCircle, Phone, Star } from "lucide-react-native";
 import styles from "./styles/doctorCard.js";
 import { useNavigation } from "@react-navigation/native";
 
@@ -31,11 +31,11 @@ const DoctorCard = ({ doctor, showBook }) => {
 
   const renderStars = (rating) => {
     return Array.from({ length: 5 }, (_, index) => (
-      <Ionicons
+      <Star
         key={index}
-        name={index < Math.floor(rating) ? "star" : "star-outline"}
         size={14}
         color={COLORS.themey}
+        fill={index < Math.floor(rating) ? COLORS.themey : "transparent"}
       />
     ));
   };
@@ -66,10 +66,10 @@ const DoctorCard = ({ doctor, showBook }) => {
           <View style={styles.actionButtons}>
             <View style={styles.flexEnd}>
               <TouchableOpacity style={styles.actionButton}>
-                <Ionicons name="chatbox" size={16} color={COLORS.white} />
+                <MessageCircle size={16} color={COLORS.white} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionButton}>
-                <Ionicons name="call-outline" size={16} color={COLORS.white} />
+                <Phone size={16} color={COLORS.white} />
               </TouchableOpacity>
             </View>
           </View>

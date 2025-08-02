@@ -3,7 +3,8 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import styles from "./categorycardview.style";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { Star } from "lucide-react-native";
 
 // Function to generate a unique file name based on the image URL
 const generateFileName = (uri) => {
@@ -68,7 +69,7 @@ const CategoryCardView = ({ item }) => {
         </View>
 
         <TouchableOpacity style={styles.addBtn} onPress={() => {}}>
-          <MaterialCommunityIcons name="asterisk" size={24} />
+          <Star name="asterisk" size={24} />
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

@@ -6,7 +6,7 @@ import { Image } from "react-native";
 import Button from "../components/Button";
 import { Formik, useFormik, validateYupSchema } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
@@ -21,6 +21,7 @@ import LottieView from "lottie-react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { BackHandler } from "react-native";
 import { useCallback } from "react";
+import { Eye, EyeOff, LockKeyhole, MailOpen, ScanFaceIcon, TowerControl } from "lucide-react-native";
 
 const SupplierRegister = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
@@ -406,12 +407,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>UserName</Text>
                     <View style={styles.inputWrapper(touched.username ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="face-man-profile"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
+                      <ScanFaceIcon name="face-man-profile" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         placeholder="Account username"
                         onFocus={() => setFieldTouched("username")}
@@ -430,12 +426,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Email</Text>
                     <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="email-outline"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
+                      <MailOpen name="email-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         placeholder="Account email"
                         onFocus={() => setFieldTouched("email")}
@@ -471,12 +462,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Password</Text>
                     <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="lock-outline"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
+                      <LockKeyhole name="lock-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         secureTextEntry={obsecureText}
                         placeholder="Password"
@@ -489,7 +475,11 @@ const SupplierRegister = ({ navigation }) => {
                         onChangeText={handleChange("password")}
                       />
                       <TouchableOpacity onPress={() => setObsecureText(!obsecureText)}>
-                        <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
+                        {obsecureText ? (
+                          <Eye size={18} color={COLORS.themey} />
+                        ) : (
+                          <EyeOff size={18} color={COLORS.themey} />
+                        )}
                       </TouchableOpacity>
                     </View>
                     {touched.password && errors.password && <Text style={styles.errorMessage}>{errors.password}</Text>}
@@ -499,12 +489,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Confirm Password</Text>
                     <View style={styles.inputWrapper(touched.confirmPassword ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="lock-outline"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
+                      <LockKeyhole name="lock-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         secureTextEntry={obsecureText}
                         placeholder="Confirm Password"
@@ -517,7 +502,11 @@ const SupplierRegister = ({ navigation }) => {
                         onChangeText={handleChange("confirmPassword")}
                       />
                       <TouchableOpacity onPress={() => setObsecureText(!obsecureText)}>
-                        <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
+                        {obsecureText ? (
+                          <Eye size={18} color={COLORS.themey} />
+                        ) : (
+                          <EyeOff size={18} color={COLORS.themey} />
+                        )}
                       </TouchableOpacity>
                     </View>
                     {touched.confirmPassword && errors.confirmPassword && (
@@ -542,12 +531,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Company Name</Text>
                     <View style={styles.inputWrapper(touched.username ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="face-man-profile"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
+                      <ScanFaceIcon name="face-man-profile" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         placeholder="Name"
                         onFocus={() => setFieldTouched("companyName")}
@@ -567,12 +551,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Company Email</Text>
                     <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons
-                        name="email-outline"
-                        size={20}
-                        style={styles.iconStyle}
-                        color={COLORS.gray}
-                      />
+                      <MailOpen name="email-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         placeholder=" Email"
                         onFocus={() => setFieldTouched("companyEmail")}
@@ -593,7 +572,7 @@ const SupplierRegister = ({ navigation }) => {
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Company Address</Text>
                     <View style={styles.inputWrapper(touched.username ? COLORS.secondary : COLORS.offwhite)}>
-                      <MaterialCommunityIcons name="city" size={20} style={styles.iconStyle} color={COLORS.gray} />
+                      <TowerControl name="city" size={20} style={styles.iconStyle} color={COLORS.gray} />
                       <TextInput
                         placeholder=" Address"
                         onFocus={() => setFieldTouched("address")}
@@ -609,12 +588,7 @@ const SupplierRegister = ({ navigation }) => {
                   </View>
                   <Text style={styles.label}>Business Permit No </Text>
                   <View style={styles.inputWrapper(touched.businessId ? COLORS.secondary : COLORS.offwhite)}>
-                    <MaterialCommunityIcons
-                      name="file-document-outline"
-                      size={20}
-                      style={styles.iconStyle}
-                      color={COLORS.gray}
-                    />
+                    <FileList name="file-document-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                     <TextInput
                       placeholder="Enter your Tax ID"
                       onFocus={() => setFieldTouched("businessId")}

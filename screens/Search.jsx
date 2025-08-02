@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { View, FlatList, Text, TouchableOpacity, TextInput, Image, StyleSheet } from "react-native";
-import { Feather, Ionicons } from "@expo/vector-icons";
+
 import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, SIZES } from "../constants";
@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import SearchTile from "../components/products/SearchTile";
 
 import { BACKEND_PORT } from "@env";
+import { SearchIcon } from "lucide-react-native";
 
 const Search = () => {
   const inputRef = useRef(null); // Create a ref for the TextInput
@@ -46,7 +47,7 @@ const Search = () => {
       <SafeAreaView>
         <View name="" style={styles.searchContainer}>
           <TouchableOpacity>
-            <Feather name="search" style={styles.searchIcon}></Feather>
+            <SearchIcon name="search" style={styles.searchIcon} />
           </TouchableOpacity>
           <View style={styles.searchWrapper}>
             <TextInput
@@ -69,7 +70,7 @@ const Search = () => {
                 handleSearch();
               }}
             >
-              <Ionicons name="search-circle-outline" size={SIZES.xxLarge - 6} color={COLORS.white}></Ionicons>
+              <SearchIcon name="search-circle-outline" size={SIZES.xxLarge - 6} color={COLORS.white} />
             </TouchableOpacity>
           </View>
         </View>

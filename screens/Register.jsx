@@ -6,7 +6,7 @@ import { Image } from "react-native";
 import Button from "../components/Button";
 import { Formik, validateYupSchema } from "formik";
 import * as Yup from "yup";
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+
 import { COLORS, SIZES } from "../constants";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
@@ -16,6 +16,7 @@ import IntlPhoneInput from "react-native-intl-phone-input";
 import { Modal } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import CustomButton from "../components/Button";
+import { Eye, EyeOff, LockKeyhole, MailOpen, ScanFace } from "lucide-react-native";
 
 const validationSchema = Yup.object().shape({
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -232,12 +233,7 @@ const Register = ({ navigation }) => {
               <View>
                 <View style={styles.wrapper}>
                   <View style={styles.inputWrapper(touched.username ? COLORS.secondary : COLORS.offwhite)}>
-                    <MaterialCommunityIcons
-                      name="face-man-profile"
-                      size={20}
-                      style={styles.iconStyle}
-                      color={COLORS.gray}
-                    />
+                    <ScanFace name="face-man-profile" size={20} style={styles.iconStyle} color={COLORS.gray} />
                     <TextInput
                       placeholder="Enter your username"
                       onFocus={() => setFieldTouched("username")}
@@ -255,12 +251,7 @@ const Register = ({ navigation }) => {
 
                 <View style={styles.wrapper}>
                   <View style={styles.inputWrapper(touched.email ? COLORS.secondary : COLORS.offwhite)}>
-                    <MaterialCommunityIcons
-                      name="email-outline"
-                      size={20}
-                      style={styles.iconStyle}
-                      color={COLORS.gray}
-                    />
+                    <MailOpen name="email-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                     <TextInput
                       placeholder="Enter your email"
                       onFocus={() => setFieldTouched("email")}
@@ -295,12 +286,7 @@ const Register = ({ navigation }) => {
 
                 <View style={styles.wrapper}>
                   <View style={styles.inputWrapper(touched.password ? COLORS.secondary : COLORS.offwhite)}>
-                    <MaterialCommunityIcons
-                      name="lock-outline"
-                      size={20}
-                      style={styles.iconStyle}
-                      color={COLORS.gray}
-                    />
+                    <LockKeyhole name="lock-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                     <TextInput
                       secureTextEntry={obsecureText}
                       placeholder="Enter your password"
@@ -318,7 +304,11 @@ const Register = ({ navigation }) => {
                         setObsecureText(!obsecureText);
                       }}
                     >
-                      <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
+                      {obsecureText ? (
+                        <Eye size={18} color={COLORS.themey} />
+                      ) : (
+                        <EyeOff size={18} color={COLORS.themey} />
+                      )}
                     </TouchableOpacity>
                   </View>
 
@@ -327,12 +317,7 @@ const Register = ({ navigation }) => {
 
                 <View style={styles.wrapper}>
                   <View style={styles.inputWrapper(touched.confirmPassword ? COLORS.secondary : COLORS.offwhite)}>
-                    <MaterialCommunityIcons
-                      name="lock-outline"
-                      size={20}
-                      style={styles.iconStyle}
-                      color={COLORS.gray}
-                    />
+                    <LockKeyhole name="lock-outline" size={20} style={styles.iconStyle} color={COLORS.gray} />
                     <TextInput
                       secureTextEntry={obsecureText}
                       placeholder="Confirm your password"
@@ -350,7 +335,11 @@ const Register = ({ navigation }) => {
                         setObsecureText(!obsecureText);
                       }}
                     >
-                      <MaterialCommunityIcons size={18} name={obsecureText ? "eye-outline" : "eye-off-outline"} />
+                      {obsecureText ? (
+                        <Eye size={18} color={COLORS.themey} />
+                      ) : (
+                        <EyeOff size={18} color={COLORS.themey} />
+                      )}
                     </TouchableOpacity>
                   </View>
 

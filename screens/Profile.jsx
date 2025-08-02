@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, View, Text, Image, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+
 import { COLORS, SIZES } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -18,6 +18,19 @@ import WebView from "react-native-webview";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
 import LottieView from "lottie-react-native";
+import {
+  CalendarDays,
+  Heart,
+  UserRound,
+  InfoIcon,
+  RefreshCwOff,
+  LogOutIcon,
+  UserMinus,
+  LogInIcon,
+  MessageCircleMoreIcon,
+  HeartPulseIcon,
+  ChevronsRight,
+} from "lucide-react-native";
 
 const Profile = () => {
   const navigation = useNavigation();
@@ -286,12 +299,12 @@ const Profile = () => {
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.menuItemInner}>
                     <TouchableOpacity style={styles.menuItemIcon}>
-                      <Ionicons name="person-circle-outline" size={24} color={COLORS.primary} />
+                      <UserRound name="person-circle-outline" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
                     <Text style={styles.menuText}>Account Settings</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
-                    <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
@@ -299,12 +312,12 @@ const Profile = () => {
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.menuItemInner}>
                     <TouchableOpacity style={styles.menuItemIcon}>
-                      <MaterialCommunityIcons name="heart-circle" size={24} color={COLORS.primary} />
+                      <HeartPulseIcon name="heart-circle" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
                     <Text style={styles.menuText}>Favourites</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
-                    <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
@@ -313,12 +326,12 @@ const Profile = () => {
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.menuItemInner}>
                     <TouchableOpacity style={styles.menuItemIcon}>
-                      <Ionicons name="calendar-number" size={26} color={COLORS.primary} />
+                      <CalendarDays name="calendar-number" size={26} color={COLORS.primary} />
                     </TouchableOpacity>
                     <Text style={styles.menuText}>Appointments</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
-                    <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
@@ -327,12 +340,12 @@ const Profile = () => {
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.menuItemInner}>
                     <TouchableOpacity style={styles.menuItemIcon}>
-                      <Ionicons name="chatbubble-ellipses" size={26} color={COLORS.primary} />
+                      <MessageCircleMoreIcon name="chatbubble-ellipses" size={26} color={COLORS.primary} />
                     </TouchableOpacity>
                     <Text style={styles.menuText}>Message Center</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
-                    <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
@@ -342,12 +355,12 @@ const Profile = () => {
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.menuItemInner}>
                     <TouchableOpacity style={styles.menuItemIcon}>
-                      <Ionicons name="information-circle" size={24} color={COLORS.primary} />
+                      <InfoIcon name="information-circle" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
                     <Text style={styles.menuText}>Information Center</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
-                    <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
@@ -355,12 +368,12 @@ const Profile = () => {
                 <View style={styles.menuItem(0.5)}>
                   <View style={styles.menuItemInner}>
                     <TouchableOpacity style={styles.menuItemIcon}>
-                      <MaterialCommunityIcons name="reload" size={24} color={COLORS.primary} />
+                      <RefreshCwOff name="reload" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
                     <Text style={styles.menuText}>Clear Cache</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
-                    <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
@@ -375,12 +388,12 @@ const Profile = () => {
                     <View style={styles.menuItem(0.5)}>
                       <View style={styles.menuItemInner}>
                         <TouchableOpacity style={styles.menuItemIcon}>
-                          <Ionicons name="person-remove" size={24} color={COLORS.primary} />
+                          <UserMinus name="person-remove" size={24} color={COLORS.primary} />
                         </TouchableOpacity>
                         <Text style={styles.menuText}>Delete Account</Text>
                       </View>
                       <TouchableOpacity style={styles.flexCenter}>
-                        <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                        <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                       </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
@@ -388,12 +401,12 @@ const Profile = () => {
                     <View style={styles.menuItem(0.5)}>
                       <View style={styles.menuItemInner}>
                         <TouchableOpacity style={styles.menuItemIcon}>
-                          <Ionicons name="log-out" size={24} color={COLORS.primary} />
+                          <LogOutIcon name="log-out" size={24} color={COLORS.primary} />
                         </TouchableOpacity>
                         <Text style={styles.menuText}>Logout</Text>
                       </View>
                       <TouchableOpacity style={styles.flexCenter}>
-                        <Icon name="doubleforward" size={26} color={COLORS.primary} />
+                        <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                       </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
@@ -401,7 +414,7 @@ const Profile = () => {
               ) : (
                 <TouchableOpacity onPress={login}>
                   <View style={styles.menuItem(0.5)}>
-                    <MaterialCommunityIcons name="login" size={24} color={COLORS.primary} />
+                    <LogInIcon name="login" size={24} color={COLORS.primary} />
                     <Text style={styles.menuText}>Login</Text>
                   </View>
                 </TouchableOpacity>
