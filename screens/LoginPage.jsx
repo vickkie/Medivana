@@ -27,11 +27,6 @@ const validationSchema = Yup.object().shape({
     .transform((value) => (value ? value.trim() : value))
     .required("Required"),
   email: Yup.string().email("Provide a valid email address").required("Required"),
-  staffId: Yup.string().when("userType", {
-    is: "staff",
-    then: (schema) => schema.required("Staff ID is required"),
-    otherwise: (schema) => schema.notRequired(),
-  }),
 });
 
 const LoginPage = ({ navigation }) => {
@@ -80,33 +75,11 @@ const LoginPage = ({ navigation }) => {
       await login(response.data);
       console.log(response.data);
 
-      // Get role from AuthContext
-      const role = getRole(response.data);
-
-      // Role-based navigation
-      const roleRoutes = {
-        admin: "Admin Navigation",
-        inventory: "Inventory Navigation",
-        sales: "Sales Navigation",
-        finance: "Finance Navigation",
-        customer: "Bottom Navigation",
-        driver: "Driver Navigation",
-        dispatcher: "Dispatch Navigation",
-        supplier: "Supplier Navigation",
-      };
-
       //!TEMPORARY FIX
       navigation.reset({
         index: 0,
         routes: [{ name: "Bottom Navigation", params: { screen: "Home" } }],
       });
-
-      // if (role in roleRoutes) {
-      //   // console.log("Navigating to:", roleRoutes[role]);
-      //   navigation.replace(roleRoutes[role]);
-      // } else {
-      //   navigation.replace("Bottom Navigation");
-      // }
     } catch (error) {
       // Pull the error message from the response
       const errorMsg = error.response?.data?.message || "Oops! Error logging in. Please try again.";
@@ -142,7 +115,7 @@ const LoginPage = ({ navigation }) => {
           <Text style={styles.subtitle}>Welcome Back</Text>
 
           <Formik
-            initialValues={{ email: "", password: "", staffId: "" }}
+            initialValues={{ email: "", password: "" }}
             validationSchema={validationSchema}
             onSubmit={handleLogin}
           >

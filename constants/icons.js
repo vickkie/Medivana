@@ -123,13 +123,10 @@ import nurse from "../assets/svg/health/nurse.svg";
 import skin from "../assets/svg/health/skin.svg";
 import children from "../assets/svg/health/children.svg";
 import stethoscope from "../assets/svg/health/stethoscope.svg";
-// import kidney from "../assets/svg/health/kidney.svg";
-// import lungs from "../assets/svg/health/lungs.svg";
-// import stomach from "../assets/svg/health/stomach.svg";
-// import liver from "../assets/svg/health/liver.svg";
-// import pancreas from "../assets/svg/health/pancreas.svg";
+import doubleforward from "../assets/svg/double-arrow.svg";
 
 const iconMap = {
+  doubleforward: doubleforward,
   stethoscope: stethoscope,
   doctor: doctor,
   heart: heart,
@@ -139,11 +136,6 @@ const iconMap = {
   nurse: nurse,
   skin: skin,
   children: children,
-  // kidney: kidney,
-  // lungs: lungs,
-  // stomach: stomach,
-  // liver: liver,
-  // pancreas: pancreas,
   list: list,
   loadingcircle: loadingcircle,
   clipboardcheck: clipboardcheck,

@@ -62,7 +62,7 @@ const Home = () => {
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap}>
+              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
               <View
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   },
   buttonWrap: {
     backgroundColor: COLORS.hyperlight,
-    padding: 15,
+    padding: 13,
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.hyperlight,
     borderRadius: 100,
     width: 50,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -238,8 +239,8 @@ const styles = StyleSheet.create({
     // marginTop: SIZES.xxSmall,
   },
   profilePicture: {
-    height: 52,
-    width: 52,
+    height: 35,
+    width: 35,
     borderRadius: 100,
   },
   closeButton: {
