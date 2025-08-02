@@ -1,7 +1,7 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View, StyleSheet } from "react-native";
-import { Home, Search, Profile, Categories, Products } from "../screens";
+import { Home, Search, Profile, Categories, Products, Orders } from "../screens";
 import { COLORS } from "../constants/index";
 import Icon from "../constants/icons";
 import { BlurView } from "expo-blur";
@@ -28,11 +28,12 @@ const screenOptions = {
   },
   tabBarLabelStyle: {
     fontSize: 12,
+    // color: COLORS.themey,
     fontWeight: "bold",
     fontFamily: "medium",
   },
   tabBarActiveTintColor: COLORS.themeb,
-  tabBarInactiveTintColor: COLORS.gray2,
+  tabBarInactiveTintColor: COLORS.themey,
   tabBarBackground: () => <BlurView intensity={100} tint="light" style={styles.blurView} />,
 };
 
@@ -45,7 +46,7 @@ const BottomTabNavigation = () => {
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon name={focused ? "homefilled" : "home"} size={24} color={focused ? COLORS.themeb : COLORS.themey} />
           ),
           tabBarLabel: "Home",
         }}
@@ -56,17 +57,17 @@ const BottomTabNavigation = () => {
         component={Categories}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon name={focused ? "menu2filled" : "menu2"} size={24} color={focused ? COLORS.themeb : COLORS.themey} />
           ),
           tabBarLabel: "Categories",
         }}
       />
       <Tab.Screen
-        name="Products"
-        component={Products}
+        name="Orders"
+        component={Orders}
         options={{
           tabBarIcon: ({ focused }) => (
-            <Icon name={focused ? "calendar" : "calendar"} size={24} color={focused ? COLORS.primary : COLORS.gray2} />
+            <Icon name={focused ? "calendar" : "calendar"} size={24} color={focused ? COLORS.themeb : COLORS.themey} />
           ),
           tabBarLabel: "Appointments",
         }}
@@ -79,7 +80,7 @@ const BottomTabNavigation = () => {
             <Icon
               name={focused ? "searchcirclefilled" : "searchcircle"}
               size={24}
-              color={focused ? COLORS.primary : COLORS.gray2}
+              color={focused ? COLORS.themeb : COLORS.themey}
             />
           ),
           tabBarLabel: "Search",
@@ -94,7 +95,7 @@ const BottomTabNavigation = () => {
             <Icon
               name={focused ? "usercirclefilled" : "usercircle"}
               size={24}
-              color={focused ? COLORS.primary : COLORS.gray2}
+              color={focused ? COLORS.themeb : COLORS.themey}
             />
           ),
           tabBarLabel: "Profile",
@@ -108,7 +109,7 @@ const BottomTabNavigation = () => {
 export default BottomTabNavigation;
 const styles = StyleSheet.create({
   blurView: {
-    backgroundColor: "rgba(11, 171, 125, 0.1)",
+    backgroundColor: "rgba(11, 171, 125, 0.5)",
     flex: 1,
     borderRadius: 30,
     overflow: "hidden",

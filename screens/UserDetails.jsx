@@ -275,7 +275,7 @@ const UserDetails = () => {
                 >
                   <Text
                     style={{
-                      color: "#26A532",
+                      color: COLORS.themeb,
                     }}
                   >
                     Profile completed
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 2,
-    minHeight: 140,
+    minHeight: 90,
   },
   upperButtons: {
     width: SIZES.width - 20,

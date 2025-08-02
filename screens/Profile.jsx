@@ -244,7 +244,7 @@ const Profile = () => {
             </TouchableOpacity> */}
             <Text style={styles.heading}>Profile</Text>
             <View style={styles.lovebuy}>
-              <TouchableOpacity onPress={() => navigation.navigate("Favourites")} style={styles.buttonWrap1}>
+              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap1}>
                 <Icon size={26} name="pencil" />
               </TouchableOpacity>
 
@@ -446,7 +446,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     minHeight: SIZES.height / 1.5 + 20,
     backgroundColor: COLORS.white,
-    marginTop: 20,
+    marginTop: 0,
+    elevation: 1,
   },
   profile: {
     height: 100,
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
   nameBtn: {
     backgroundColor: COLORS.themew,
     padding: 2,
-    borderWidth: 0.4,
+    borderWidth: 4,
     borderColor: COLORS.primary,
     borderRadius: SIZES.xxLarge,
   },
@@ -572,6 +573,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minHeight: SIZES.height / 4,
     elevation: 7,
+    zIndex: 4,
     // overflow: "hidden",
   },
   email: {
