@@ -56,39 +56,35 @@ const About = () => {
             <Text style={styles.devHeader}>About</Text>
 
             <View style={styles.profileContainer}>
-              <TouchableOpacity style={styles.buttonWrap2} onPress={() => handlePress("https://promokings.co.ke")}>
-                <Image source={require("../assets/promoking-logo.png")} style={styles.profile} />
+              <TouchableOpacity style={styles.buttonWrap2} onPress={() => handlePress(companyInfo?.website)}>
+                <Image source={require("../assets/icons/medivana-adaptive.png")} style={styles.profile} />
               </TouchableOpacity>
 
               <View>
                 <Text style={{ fontFamily: "regular", fontSize: SIZES.medium + 2, textAlign: "center", marginTop: 4 }}>
                   {companyInfo?.name}
                 </Text>
-                {/* <Text>Company</Text> */}
               </View>
             </View>
           </View>
           <View style={[styles.devBox, { marginTop: -5 }]}>
             <Text style={styles.devHeader}>Socials</Text>
             <View style={styles.socialWrapper}>
-              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress("https://promokings.co.ke")}>
+              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress(companyInfo?.website)}>
                 <Icon name="web" size={24} />
                 <View>
                   <Text style={styles.socialheader}>Website</Text>
                   <Text>Check out our website</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress("https://instagram.com/u.z.i.__")}>
+              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress(companyInfo?.instagram)}>
                 <Icon name="instagram" size={27} />
                 <View>
                   <Text style={styles.socialheader}>Instagram</Text>
                   <Text>See our latest snaps</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.socialBox}
-                onPress={() => handlePress("https://twitter.com/Hyperstudioke")}
-              >
+              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress(companyInfo?.twitter)}>
                 <Icon name="twitter" size={23} />
                 <View>
                   <Text style={styles.socialheader}>Twitter</Text>

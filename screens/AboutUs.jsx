@@ -36,7 +36,7 @@ const AboutUs = () => {
           </TouchableOpacity>
           <View style={styles.upperRow}>
             <View style={styles.upperButtons}>
-              <Text style={styles.heading}>About Us</Text>
+              <Text style={styles.heading}>About</Text>
             </View>
             <TouchableOpacity style={styles.outWrap}>
               <Icon name="question" size={26} />
@@ -51,12 +51,12 @@ const AboutUs = () => {
 
             <View style={styles.profileContainer}>
               <TouchableOpacity style={styles.buttonWrap2} onPress={() => handlePress("https://promokings.co.ke")}>
-                <Image source={require("../assets/promoking-logo.png")} style={styles.profile} />
+                <Image source={require("../assets/icons/medivana-adaptive.png")} style={styles.profile} />
               </TouchableOpacity>
 
               <View>
                 <Text style={{ fontFamily: "regular", fontSize: SIZES.medium + 2, textAlign: "center", marginTop: 4 }}>
-                  {companyInfo.name}
+                  {companyInfo?.name}
                 </Text>
                 {/* <Text>Company</Text> */}
               </View>
@@ -65,35 +65,18 @@ const AboutUs = () => {
           <View style={[styles.devBox, { marginTop: -5 }]}>
             <Text style={styles.devHeader}>Company Details</Text>
             <View style={styles.socialWrapper}>
-              <View style={styles.contain1}>
-                <Text style={styles.socialheader}>Name</Text>
-                <Text>{companyInfo.name}</Text>
-              </View>
-
-              <TouchableOpacity style={styles.contain2} onPress={() => handlePress(`mailto:${companyInfo.email}`)}>
+              <TouchableOpacity style={styles.contain2}>
+                <Text style={styles.socialheader}>Developer</Text>
+                <Text>{companyInfo?.developer}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.contain2} onPress={() => handlePress(`mailto:${companyInfo?.email}`)}>
                 <Text style={styles.socialheader}>Email</Text>
-                <Text>{companyInfo.email}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contain1} onPress={() => handlePress(`tel:${companyInfo.phone}`)}>
-                <Text style={styles.socialheader}>Phone</Text>
-                <Text>{companyInfo.phone}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contain2}>
-                <Text style={styles.socialheader}>Street</Text>
-                <Text>{companyInfo?.street}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contain1}>
-                <Text style={styles.socialheader}>Zip</Text>
-                <Text>{companyInfo?.zip}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contain2}>
-                <Text style={styles.socialheader}>Country</Text>
-                <Text>{companyInfo?.country}</Text>
+                <Text>{companyInfo?.email}</Text>
               </TouchableOpacity>
             </View>
           </View>
 
-          <View style={[styles.devBox, { marginTop: -5 }]}>
+          {/* <View style={[styles.devBox, { marginTop: -5 }]}>
             <Text style={styles.devHeader}>Company Description</Text>
 
             <View style={styles.socialWrapper}>
@@ -101,32 +84,29 @@ const AboutUs = () => {
                 <Text>{companyInfo?.description}</Text>
               </TouchableOpacity>
             </View>
-          </View>
+          </View> */}
           <View style={[styles.devBox, { marginTop: -5 }]}>
             <Text style={styles.devHeader}>Socials</Text>
             <View style={styles.socialWrapper}>
-              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress("https://promokings.co.ke")}>
+              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress(companyInfo?.website)}>
                 <Icon name="web" size={24} />
                 <View>
                   <Text style={styles.socialheader}>Website</Text>
                   <Text>Check out our website</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress("https://instagram.com/u.z.i.__")}>
+              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress(companyInfo?.instagram)}>
                 <Icon name="instagram" size={27} />
                 <View>
                   <Text style={styles.socialheader}>Instagram</Text>
                   <Text>See our latest snaps</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.socialBox}
-                onPress={() => handlePress("https://twitter.com/Hyperstudioke")}
-              >
+              <TouchableOpacity style={styles.socialBox} onPress={() => handlePress(companyInfo?.twitter)}>
                 <Icon name="twitter" size={23} />
                 <View>
                   <Text style={styles.socialheader}>Twitter</Text>
-                  <Text>Share your thoughts using on our app</Text>
+                  <Text>Share your thoughts on using our app</Text>
                 </View>
               </TouchableOpacity>
             </View>
@@ -269,12 +249,12 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: SIZES.medium,
     borderWidth: 1,
-    borderBlockColor: COLORS.gray2,
+    borderColor: COLORS.themey,
     margin: 10,
     minHeight: 180,
   },
   devHeader: {
-    fontFamily: "GtAlpine",
+    fontFamily: "italic",
     fontSize: SIZES.medium + 3,
     color: COLORS.gray,
     marginLeft: 0,
@@ -283,7 +263,7 @@ const styles = StyleSheet.create({
   profile: {
     height: 85,
     width: 85,
-    borderRadius: 1000,
+    borderRadius: 100,
     borderWidth: 1,
     borderColor: COLORS.gray,
     resizeMode: "cover",
@@ -325,7 +305,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themeg,
     paddingHorizontal: 4,
     paddingVertical: 10,
-    borderBottomColor: COLORS.themeb,
+    // borderBottomColor: COLORS.themeb,
   },
   contain2: {
     display: "flex",

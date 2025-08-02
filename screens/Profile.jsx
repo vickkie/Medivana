@@ -288,7 +288,7 @@ const Profile = () => {
                     <TouchableOpacity style={styles.menuItemIcon}>
                       <Ionicons name="person-circle-outline" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={styles.menuText}>My profile</Text>
+                    <Text style={styles.menuText}>Account Settings</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
                     <Icon name="doubleforward" size={26} color={COLORS.primary} />
@@ -344,7 +344,7 @@ const Profile = () => {
                     <TouchableOpacity style={styles.menuItemIcon}>
                       <Ionicons name="information-circle" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={styles.menuText}>About Us</Text>
+                    <Text style={styles.menuText}>Information Center</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
                     <Icon name="doubleforward" size={26} color={COLORS.primary} />
@@ -357,7 +357,7 @@ const Profile = () => {
                     <TouchableOpacity style={styles.menuItemIcon}>
                       <MaterialCommunityIcons name="reload" size={24} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={styles.menuText}>Clear cache</Text>
+                    <Text style={styles.menuText}>Clear Cache</Text>
                   </View>
                   <TouchableOpacity style={styles.flexCenter}>
                     <Icon name="doubleforward" size={26} color={COLORS.primary} />
