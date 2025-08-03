@@ -329,26 +329,26 @@ const Orders = () => {
           </TouchableOpacity>
           <View style={styles.upperRow}>
             <View style={styles.upperButtons}>
-              <Text style={styles.heading}>My orders</Text>
+              <Text style={styles.heading}>My Appointments</Text>
             </View>
             <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
               <Icon name="bellfilled" size={26} />
             </TouchableOpacity>
             <View style={styles.lowerheader}>
-              <Text style={styles.statement}>Thankyou for shopping with us</Text>
+              <Text style={styles.statement}>Track your checkups</Text>
             </View>
           </View>
         </View>
 
         <ScrollView>
           <View style={{ marginTop: 130 }}>
-            <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
+            {/* <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
               <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
-                Latest orders
+                Latest Appointments
               </Text>
-            </View>
+            </View> */}
 
-            <View style={styles.carouselContainer}>
+            {/* <View style={styles.carouselContainer}>
               <FlatList
                 data={primaryData}
                 renderItem={renderCards}
@@ -362,7 +362,7 @@ const Orders = () => {
             <View style={styles.searchBarContainer}>
               <TextInput
                 style={styles.searchInput}
-                placeholder="Search orders"
+                placeholder="Search Appointments"
                 value={searchQuery}
                 onChangeText={setSearchQuery}
               />
@@ -431,7 +431,7 @@ const Orders = () => {
                   </View>
                 </View>
               )}
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </View>

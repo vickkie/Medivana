@@ -281,75 +281,85 @@ const Profile = () => {
                     <Text style={styles.menuText}>LOGIN</Text>
                   </View>
                 </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                  <Text style={styles.regText}>Don't have an account? Register</Text>
-                </TouchableOpacity>
               </View>
             )}
           </View>
         </View>
 
         <View style={styles.profileContainer}>
-          <Text style={styles.names}>{userData ? userData.name : "Please login to account"}</Text>
-
           <View style={styles.menuWrapper}>
-            <View style={styles.menuboxwrapin}>
-              <TouchableOpacity onPress={() => controlledNavigation("UserDetails")}>
-                <View style={styles.menuItem(0.5)}>
-                  <View style={styles.menuItemInner}>
-                    <TouchableOpacity style={styles.menuItemIcon}>
-                      <UserRound name="person-circle-outline" size={24} color={COLORS.primary} />
+            {!userData ? (
+              <>
+                <View style={styles.menuboxwrapin}>
+                  <View style={{ paddingVertical: 20, justifyContent: "center", alignItems: "center", gap: 10 }}>
+                    <Text style={styles.names}>{userData ? userData?.name : "Please login to account"}</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                      <Text style={styles.regText}>
+                        Don't have an account? <Text style={{ color: COLORS.themey }}>Register</Text>
+                      </Text>
                     </TouchableOpacity>
-                    <Text style={styles.menuText}>Account Settings</Text>
                   </View>
-                  <TouchableOpacity style={styles.flexCenter}>
-                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
-                  </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => controlledNavigation("Favourites")}>
-                <View style={styles.menuItem(0.5)}>
-                  <View style={styles.menuItemInner}>
-                    <TouchableOpacity style={styles.menuItemIcon}>
-                      <HeartPulseIcon name="heart-circle" size={24} color={COLORS.primary} />
+              </>
+            ) : (
+              <View style={styles.menuboxwrapin}>
+                <TouchableOpacity onPress={() => controlledNavigation("UserDetails")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.menuItemInner}>
+                      <TouchableOpacity style={styles.menuItemIcon}>
+                        <UserRound name="person-circle-outline" size={24} color={COLORS.primary} />
+                      </TouchableOpacity>
+                      <Text style={styles.menuText}>Account Settings</Text>
+                    </View>
+                    <TouchableOpacity style={styles.flexCenter}>
+                      <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={styles.menuText}>Favourites</Text>
                   </View>
-                  <TouchableOpacity style={styles.flexCenter}>
-                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => controlledNavigation("Favourites")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.menuItemInner}>
+                      <TouchableOpacity style={styles.menuItemIcon}>
+                        <HeartPulseIcon name="heart-circle" size={24} color={COLORS.primary} />
+                      </TouchableOpacity>
+                      <Text style={styles.menuText}>Favourites</Text>
+                    </View>
+                    <TouchableOpacity style={styles.flexCenter}>
+                      <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => controlledNavigation("Orders")}>
-                <View style={styles.menuItem(0.5)}>
-                  <View style={styles.menuItemInner}>
-                    <TouchableOpacity style={styles.menuItemIcon}>
-                      <CalendarDays name="calendar-number" size={26} color={COLORS.primary} />
+                <TouchableOpacity onPress={() => controlledNavigation("Orders")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.menuItemInner}>
+                      <TouchableOpacity style={styles.menuItemIcon}>
+                        <CalendarDays name="calendar-number" size={26} color={COLORS.primary} />
+                      </TouchableOpacity>
+                      <Text style={styles.menuText}>Appointments</Text>
+                    </View>
+                    <TouchableOpacity style={styles.flexCenter}>
+                      <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={styles.menuText}>Appointments</Text>
                   </View>
-                  <TouchableOpacity style={styles.flexCenter}>
-                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
+                </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => () => controlledNavigation("Message")}>
-                <View style={styles.menuItem(0.5)}>
-                  <View style={styles.menuItemInner}>
-                    <TouchableOpacity style={styles.menuItemIcon}>
-                      <MessageCircleMoreIcon name="chatbubble-ellipses" size={26} color={COLORS.primary} />
+                <TouchableOpacity onPress={() => () => controlledNavigation("Message")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.menuItemInner}>
+                      <TouchableOpacity style={styles.menuItemIcon}>
+                        <MessageCircleMoreIcon name="chatbubble-ellipses" size={26} color={COLORS.primary} />
+                      </TouchableOpacity>
+                      <Text style={styles.menuText}>Message Center</Text>
+                    </View>
+                    <TouchableOpacity style={styles.flexCenter}>
+                      <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
                     </TouchableOpacity>
-                    <Text style={styles.menuText}>Message Center</Text>
                   </View>
-                  <TouchableOpacity style={styles.flexCenter}>
-                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
-            </View>
+                </TouchableOpacity>
+              </View>
+            )}
+
             <View style={styles.menuboxwrapin}>
               <TouchableOpacity onPress={() => navigation.navigate("AboutUs")}>
                 <View style={styles.menuItem(0.5)}>
@@ -414,8 +424,15 @@ const Profile = () => {
               ) : (
                 <TouchableOpacity onPress={login}>
                   <View style={styles.menuItem(0.5)}>
-                    <LogInIcon name="login" size={24} color={COLORS.primary} />
-                    <Text style={styles.menuText}>Login</Text>
+                    <View style={styles.menuItemInner}>
+                      <TouchableOpacity style={styles.menuItemIcon}>
+                        <LogInIcon name="log-out" size={24} color={COLORS.primary} />
+                      </TouchableOpacity>
+                      <Text style={styles.menuText}>Login</Text>
+                    </View>
+                    <TouchableOpacity style={styles.flexCenter}>
+                      <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
+                    </TouchableOpacity>
                   </View>
                 </TouchableOpacity>
               )}
