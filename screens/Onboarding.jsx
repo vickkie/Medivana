@@ -1,11 +1,11 @@
 // screens/Onboarding.js
 import React from "react";
-import { View, Text, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, Image, Dimensions, TouchableOpacity, StatusBar } from "react-native";
 import AppIntroSlider from "react-native-app-intro-slider";
 import { COLORS, SIZES } from "../constants/theme";
 
 import { useNavigation } from "@react-navigation/native";
-import { ChevronRight, ChevronsRight } from "lucide-react-native";
+import { ChevronRight, ChevronsRight, ChevronsRightIcon } from "lucide-react-native";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SCREEN_WIDTH = SIZES.width;
@@ -47,7 +47,7 @@ const Onboarding = () => {
         <View
           style={{
             flex: 1,
-            backgroundColor: "#000",
+            backgroundColor: COLORS.themeb,
             alignItems: "center",
             paddingHorizontal: 30,
             paddingTop: 60,
@@ -59,7 +59,9 @@ const Onboarding = () => {
         >
           {/* Header Text */}
           <View style={{ alignItems: "center" }}>
-            <Text style={{ fontSize: 24, fontWeight: "600", color: "#fff", textAlign: "center" }}>{item.titleTop}</Text>
+            <Text style={{ fontSize: 24, fontWeight: "600", color: COLORS.themew, textAlign: "center" }}>
+              {item.titleTop}
+            </Text>
             <Text
               style={{ fontSize: 24, fontWeight: "600", color: COLORS.themek, textAlign: "center", marginBottom: 30 }}
             >
@@ -101,7 +103,7 @@ const Onboarding = () => {
                 alignItems: "center",
                 marginHorizontal: 20,
                 elevation: 6,
-                shadowColor: "#000",
+                shadowColor: COLORS.themeb,
                 shadowOpacity: 0.3,
                 shadowOffset: { width: 2, height: 2 },
                 shadowRadius: 6,
@@ -134,8 +136,10 @@ const Onboarding = () => {
               alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 16, color: "#FFF", fontWeight: "600", marginRight: 8 }}>Continue</Text>
-            <Text style={{ fontSize: 18, color: "#FFF", fontWeight: "600" }}>»</Text>
+            <Text style={{ fontSize: 16, color: COLORS.themew, fontWeight: "600", marginRight: 8 }}>Start today</Text>
+            <Text style={{ fontSize: 18, fontWeight: "600" }}>
+              <ChevronsRightIcon color={COLORS.themew} />
+            </Text>
           </TouchableOpacity>
         </View>
       );
@@ -143,7 +147,7 @@ const Onboarding = () => {
 
     // Default layout for slides 1 & 2
     return (
-      <View style={{ flex: 1, backgroundColor: "#000" }}>
+      <View style={{ flex: 1, backgroundColor: COLORS.themeb }}>
         <View
           style={{
             height: SCREEN_HEIGHT * 0.55,
@@ -165,7 +169,9 @@ const Onboarding = () => {
             paddingHorizontal: 30,
           }}
         >
-          <Text style={{ fontSize: 24, fontWeight: "600", color: "#fff", textAlign: "center" }}>{item.titleTop}</Text>
+          <Text style={{ fontSize: 24, fontWeight: "600", color: COLORS.themew, textAlign: "center" }}>
+            {item.titleTop}
+          </Text>
           <Text
             style={{ fontSize: 24, fontWeight: "600", color: COLORS.themek, textAlign: "center", marginBottom: 20 }}
           >
@@ -177,41 +183,44 @@ const Onboarding = () => {
   };
 
   return (
-    <AppIntroSlider
-      data={slides}
-      renderItem={renderItem}
-      showNextButton={true}
-      showDoneButton={false}
-      renderNextButton={() => (
-        <View
-          style={{
-            width: 48,
-            height: 48,
-            backgroundColor: COLORS.themek,
-            borderRadius: 24,
-            justifyContent: "center",
-            alignItems: "center",
-            marginRight: 16,
-          }}
-        >
-          <ChevronsRight name="arrow-forward" size={24} color="#000" />
-        </View>
-      )}
-      dotStyle={{
-        backgroundColor: "rgba(255,255,255,0.3)",
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        marginHorizontal: 6,
-      }}
-      activeDotStyle={{
-        backgroundColor: COLORS.themek,
-        width: 24,
-        height: 11,
-        borderRadius: 5,
-        marginHorizontal: 6,
-      }}
-    />
+    <>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.themey} />
+      <AppIntroSlider
+        data={slides}
+        renderItem={renderItem}
+        showNextButton={true}
+        showDoneButton={false}
+        renderNextButton={() => (
+          <View
+            style={{
+              width: 48,
+              height: 48,
+              backgroundColor: COLORS.themek,
+              borderRadius: 24,
+              justifyContent: "center",
+              alignItems: "center",
+              marginRight: 16,
+            }}
+          >
+            <ChevronsRight name="arrow-forward" size={24} color={COLORS.themew} />
+          </View>
+        )}
+        dotStyle={{
+          backgroundColor: "rgba(255,255,255,0.3)",
+          width: 10,
+          height: 10,
+          borderRadius: 5,
+          marginHorizontal: 6,
+        }}
+        activeDotStyle={{
+          backgroundColor: COLORS.themek,
+          width: 24,
+          height: 11,
+          borderRadius: 5,
+          marginHorizontal: 6,
+        }}
+      />
+    </>
   );
 };
 

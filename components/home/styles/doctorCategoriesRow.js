@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     height: SIZES.height,
   },
   iconContainer: {
-    backgroundColor: COLORS.themeg,
+    // backgroundColor: COLORS.themeg,
     padding: 10,
     borderRadius: 100,
     width: 70,
@@ -54,6 +54,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "light",
     fontWeight: "600",
+    textAlign: "center",
+  },
+  allCatFilter: {
+    padding: 10,
+    // marginLeft: -10,
+    borderRadius: 100,
+    width: 30,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

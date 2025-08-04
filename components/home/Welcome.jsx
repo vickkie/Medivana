@@ -6,21 +6,23 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "../../constants/icons";
 import { COLORS, SIZES } from "../../constants";
 
-const Welcome = () => {
+const Welcome = ({ setSearchQuery, searchQuery }) => {
   const navigation = useNavigation();
+
   return (
     <View>
-      <View name="" style={styles.searchContainer}>
+      <View style={styles.searchContainer}>
         <TouchableOpacity>
           <Icon name="search" size={24} style={styles.searchIcon} />
         </TouchableOpacity>
         <View style={styles.searchWrapper}>
           <TextInput
-            value=""
+            value={searchQuery}
+            onChangeText={(text) => setSearchQuery(text)}
             onPressIn={() => navigation.navigate("Search")}
             style={styles.searchInput}
-            placeholder="Search doctor by name "
-          ></TextInput>
+            placeholder="Search doctor by name"
+          />
         </View>
         <View style={styles.searchBtn}>
           <TouchableOpacity style={styles.tuning}>

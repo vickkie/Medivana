@@ -6,32 +6,59 @@ import styles from "./styles/doctorCategoriesRow.js";
 
 import useFetch from "../../hook/useFetch";
 import Icon from "../../constants/icons";
-import { RefreshCcw } from "lucide-react-native";
+import { ListFilter, RefreshCcw } from "lucide-react-native";
 
-const DoctorCategoryCard = ({ item }) => {
+const DoctorCategoryCard = ({ item, backColor, setSelectedCat, setisselected, isselected }) => {
+  const isActive = isselected === item?._id;
   const formatIconName = (str) => (str ? str.toLowerCase() : item?.bodypart);
+
   return (
-    <TouchableOpacity style={styles.card}>
-      <View style={styles.card}>
-        <View style={styles.iconContainer}>
-          <Icon name={formatIconName(item?.bodypart)} size={24} color={COLORS.white} />
-          <Image source={{ uri: item?.icon }} style={styles.icon} />
+    <TouchableOpacity
+      style={[styles.card]}
+      onPress={() => {
+        setSelectedCat(item?.name === "all" ? null : item?.name);
+        setisselected(item?._id);
+      }}
+    >
+      {item?._id === "all" ? (
+        <View
+          style={[
+            styles.allCatFilter,
+            { backgroundColor: backColor },
+            isActive && { borderWidth: 1, borderColor: COLORS.themey },
+          ]}
+        >
+          <ListFilter size={26} color={COLORS.themey} />
         </View>
-        <Text style={styles.title}>
-          {item?.bodypart.charAt(0).toUpperCase() + item?.bodypart.slice(1).toLowerCase()}
-        </Text>
-      </View>
+      ) : (
+        <>
+          <View
+            style={[
+              styles.iconContainer,
+              { backgroundColor: backColor },
+              isActive && { borderWidth: 1, borderColor: COLORS.themey },
+            ]}
+          >
+            <Icon name={formatIconName(item?.bodypart)} size={24} color={COLORS.white} />
+            <Image source={{ uri: item?.icon }} style={styles.icon} />
+          </View>
+          <Text style={[styles.title, isActive && { color: COLORS.themey }]}>
+            {item?.bodypart.charAt(0).toUpperCase() + item?.bodypart.slice(1).toLowerCase()}
+          </Text>
+        </>
+      )}
     </TouchableOpacity>
   );
 };
 
-const CACHE_KEY = "cached_specializations";
+const CACHE_KEY = "cached_specializationss";
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-const DoctorsCategoriesRow = ({ refreshList, setRefreshList }) => {
+const DoctorsCategoriesRow = ({ refreshList, setRefreshList, backColor = "#F0F5F9", setSelectedCat }) => {
   const { data, isLoading, error, refetch } = useFetch("specialization");
   const [categories, setCategories] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [isselected, setisselected] = useState();
 
   // Load cache on mount
   useEffect(() => {
@@ -54,9 +81,20 @@ const DoctorsCategoriesRow = ({ refreshList, setRefreshList }) => {
   useEffect(() => {
     if (Array.isArray(data) && data.length) {
       const sorted = [...data].sort((a, b) => a.bodypart?.localeCompare(b.bodypart));
-      setCategories(sorted);
 
-      AsyncStorage.setItem(CACHE_KEY, JSON.stringify({ data: sorted, timestamp: Date.now() })).catch((e) =>
+      const withAll = [
+        {
+          _id: "all",
+          name: "all",
+          bodypart: "All",
+          icon: "https://cdn-icons-png.flaticon.com/512/992/992651.png", // optional custom icon
+        },
+        ...sorted,
+      ];
+
+      setCategories(withAll);
+
+      AsyncStorage.setItem(CACHE_KEY, JSON.stringify({ data: withAll, timestamp: Date.now() })).catch((e) =>
         console.warn("Failed to cache specialization data", e)
       );
     }
@@ -77,7 +115,18 @@ const DoctorsCategoriesRow = ({ refreshList, setRefreshList }) => {
   }, []);
 
   const keyExtractor = useCallback((item) => item._id, []);
-  const renderItem = useCallback(({ item }) => <DoctorCategoryCard item={item} />, []);
+  const renderItem = useCallback(
+    ({ item }) => (
+      <DoctorCategoryCard
+        item={item}
+        backColor={backColor}
+        setSelectedCat={setSelectedCat}
+        setisselected={setisselected}
+        isselected={isselected}
+      />
+    ),
+    [backColor, isselected, setisselected, setSelectedCat]
+  );
 
   return (
     <View style={[styles.container, { marginBottom: 20 }]}>

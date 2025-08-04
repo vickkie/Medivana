@@ -27,11 +27,13 @@ import CheckoutStep3 from "./Payments";
 import LottieView from "lottie-react-native";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
+import Toast from "react-native-toast-message";
+import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 const Checkout = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { estimatedAmount = 200, bookingData, totals, additionalFees } = route.params;
+  const { estimatedAmount = 0, bookingData, additionalFees } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
   const { clearCart } = useCart();
 
@@ -40,20 +42,20 @@ const Checkout = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [success, setSuccess] = useState(null);
   const [bookingId, setBookingId] = useState(null);
-  const [stockData, setStockData] = useState({});
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  //user loggin chexks
-  // useEffect(() => {
-  //   if (!userLogin) {
-  //     setUserId(1);
-  //     navigation.navigate("Login");
-  //     return;
-  //   } else if (userData && userData?._id) {
-  //     setUserId(userData?._id);
-  //   }
-  // }, [userLogin, userData]);
+  // user loggin chexks
+  useEffect(() => {
+    if (!userLogin || !userData) {
+      setUserId(1);
+      navigation.navigate("Login");
+      return;
+    } else if (userData && userData?._id) {
+      setUserId(userData?._id);
+    }
+  }, [userLogin, userData]);
 
   const [step, setStep] = useState(1);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -61,17 +63,28 @@ const Checkout = () => {
   const [email, setEmail] = useState(userData ? userData?.email : "");
   const [allcountries, setallCountries] = useState([]);
   const [filteredCountries, setFilteredCountries] = useState(allcountries);
-
   const [moreDescription, setmoreDescription] = useState("");
-
   const [userId, setUserId] = useState(null);
-  const [phoneError, setPhoneError] = useState("");
+  const [phoneError, setPhoneError] = useState(true);
+
+  const showToast = (type, text1, text2 = "") => {
+    Toast.show({
+      type,
+      text1,
+      text2,
+      position: "top",
+      visibilityTime: 3000,
+      autoHide: true,
+      topOffset: 50,
+    });
+  };
 
   //phone number check on checkout
 
   const checkoutSchema = Yup.object().shape({
     phoneNumber: Yup.string()
       .required("Phone number is required")
+      .min(8, "Phone number must be more than 9 digits")
       .matches(/^[0-9]+$/, "Phone number must contain only digits"),
   });
 
@@ -79,15 +92,26 @@ const Checkout = () => {
     if (phoneNumber) {
       checkoutSchema
         .validate({ phoneNumber })
-        .then(() => setPhoneError(""))
+        .then(() => setPhoneError(true))
         .catch((err) => setPhoneError("Please fill phone Number field"));
     }
   }, [phoneNumber]);
 
   //fetch stock availability
 
+  console.log(step);
+
   const handleNext = () => {
+    console.log(phoneError, finalPhoneNumber);
     switch (step) {
+      case 1:
+        // Example usage in handleNext
+        if (phoneError) {
+          showToast("error", "Please fill phone number", "Please try again later");
+          return;
+        }
+
+        break;
       case 3:
         setStep(step);
         break;
@@ -153,7 +177,7 @@ const Checkout = () => {
       setIsLoading(true);
       setErrorState(false);
 
-      const response = await axios.post(`${BACKEND_PORT}/api/bookings`, orderData);
+      const response = await axios.post(`${BACKEND_PORT}/api/appointment`, orderData);
 
       setBookingId(response.data.booking.bookingId);
       setSuccess(true);
@@ -186,7 +210,13 @@ const Checkout = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("searching");
+    handleSearch("");
+  }, []);
+
   const handleSearch = (query) => {
+    const test = "";
     const filtered = allcountries.filter((country) => {
       return country?.en?.toLowerCase().includes(query?.toLowerCase());
     });
@@ -196,8 +226,9 @@ const Checkout = () => {
 
   const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
     setPhoneNumber(unmaskedPhoneNumber);
+    console.log("changing", unmaskedPhoneNumber.length, isVerified);
 
-    if (unmaskedPhoneNumber.length < 6) {
+    if (unmaskedPhoneNumber.length > 8) {
       setPhoneError(true);
     } else {
       setPhoneError(false);
@@ -211,6 +242,8 @@ const Checkout = () => {
     countries.forEach((countr) => {
       // console.log(countr.code);
     });
+
+    // handleSearch("");
     return (
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
@@ -228,6 +261,7 @@ const Checkout = () => {
                 <TouchableOpacity
                   onPress={() => {
                     onCountryChange(item.code);
+
                     // console.log(item.code);
                   }}
                 >
@@ -286,6 +320,21 @@ const Checkout = () => {
                     <View style={styles.shippingContainer}>
                       <Text style={styles.label}>Phone Number</Text>
                       <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
+                        <TouchableWithoutFeedback
+                          style={{
+                            backgroundColor: "red",
+                            position: "absolute",
+                            left: 30,
+                            width: 50,
+                            top: 0,
+                            bottom: 0,
+                            zIndex: 7,
+                          }}
+                          onPress={() => {
+                            console.log("touch");
+                            handleSearch("");
+                          }}
+                        ></TouchableWithoutFeedback>
                         <IntlPhoneInput
                           placeholder={getPhoneMeta(finalPhoneNumber)?.nationalNumber || ""}
                           ref={(ref) => (phoneInput = ref)}
@@ -317,7 +366,7 @@ const Checkout = () => {
 
                         <View>
                           <Text style={styles.amount}>
-                            Consultation Amount: Ksh {Number(estimatedAmount).toLocaleString()}
+                            Payment Amount: Ksh {Number(estimatedAmount).toLocaleString()}
                           </Text>
                         </View>
                       </View>

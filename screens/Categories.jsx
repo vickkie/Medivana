@@ -8,33 +8,62 @@ import CategoriesList from "../components/products/CategoriesList";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
 import { useCart } from "../contexts/CartContext";
+import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
+import { HeartHandshake } from "lucide-react-native";
+import Headings from "../components/home/Headings";
+import DoctorsList from "../components/home/DoctorsList";
 
 const Categories = () => {
   const navigation = useNavigation();
-  const { cartCount } = useCart();
+  const [doctorCount, setDoctorCount] = useState(3);
+  const [refreshList, setRefreshList] = useState(false);
+  const [selectedCat, setSelectedCat] = useState("");
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.upperRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-            <Icon name="backbutton" size={26} />
+            <Icon name="backbutton" size={23} />
           </TouchableOpacity>
-          <Text style={styles.heading}>All categories</Text>
+          <Text style={styles.heading}>Doctor categories</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
-            onPress={() => {
-              navigation.navigate("Cart");
-            }}
+            // onPress={() => {
+            //   navigation.navigate("Cart");
+            // }}
           >
             <View style={styles.numbers}>
-              {cartCount !== 0 ? <Text style={styles.number}>{cartCount}</Text> : <Text style={styles.number}>0</Text>}
+              {doctorCount !== 0 ? (
+                <Text style={styles.number}>{doctorCount}</Text>
+              ) : (
+                <Text style={styles.number}>0</Text>
+              )}
             </View>
-            <Icon name="cart" size={26} />
+            <HeartHandshake color={COLORS.themeb} size={23} />
           </TouchableOpacity>
         </View>
+        <View style={styles.docRow}>
+          <DoctorsCategoriesRow
+            refreshList={refreshList}
+            setRefreshList={setRefreshList}
+            backColor={COLORS.themeg}
+            setSelectedCat={setSelectedCat}
+          />
+        </View>
 
-        <CategoriesList />
+        <Text style={styles.listHeader}>{selectedCat || "Category Doctor"}</Text>
+
+        <DoctorsList
+          refreshList={refreshList}
+          setRefreshList={setRefreshList}
+          field="medic"
+          limit={100}
+          speciality={selectedCat}
+          setDoctorCount={setDoctorCount}
+        />
+
+        {/* <CategoriesList /> */}
       </View>
     </SafeAreaView>
   );
@@ -53,6 +82,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.large,
     textAlign: "center",
     color: COLORS.themeb,
+    marginStart: 30,
   },
   container: {
     flex: 1,
@@ -70,18 +100,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     position: "absolute",
-    backgroundColor: COLORS.themeg,
+    backgroundColor: COLORS.themew,
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 999,
-    height: 120,
+    height: 60,
   },
 
   backBtn: {
     left: 10,
   },
   buttonWrap: {
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.themeg,
     padding: 15,
     borderRadius: 100,
     justifyContent: "center",
@@ -103,5 +133,13 @@ const styles = StyleSheet.create({
   },
   number: {
     color: COLORS.white,
+  },
+  docRow: {
+    marginTop: 70,
+    // backgroundColor: COLORS.themeg,
+  },
+  listHeader: {
+    fontFamily: "lufgaMedium",
+    marginStart: 15,
   },
 });

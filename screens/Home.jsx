@@ -22,8 +22,10 @@ import DoctorsList from "../components/home/DoctorsList";
 const Home = () => {
   const { userData, userLogin, hasRole } = useContext(AuthContext);
   const navigation = useNavigation();
-  const { cart } = useCart();
   const [refreshList, setRefreshList] = useState(false);
+  const [selectedCat, setSelectedCat] = useState("");
+  const [doctorCount, setDoctorCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
   const route = useRoute();
   // console.log("navige", route.key);
 
@@ -82,12 +84,12 @@ const Home = () => {
             </TouchableOpacity>
           </View>
           <View style={{ padding: 7 }}>
-            <Welcome />
+            <Welcome setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
           </View>
         </View>
       </View>
 
-      <View style={{ flex: 1, borderRadius: 45 }}>
+      <View style={{ flex: 1, borderRadius: 45, marginBottom: 30 }}>
         <ScrollView
           refreshControl={
             <RefreshControl
@@ -102,9 +104,22 @@ const Home = () => {
           <View style={styles.lowerWelcomeWrapper}>
             <View style={styles.lowerWelcome}>
               <Headings heading={"Doctors Categories"} />
-              <DoctorsCategoriesRow refreshList={refreshList} setRefreshList={setRefreshList} />
-              <Headings heading={"Popular Doctors"} />
-              <DoctorsList refreshList={refreshList} setRefreshList={setRefreshList} />
+              <DoctorsCategoriesRow
+                refreshList={refreshList}
+                setRefreshList={setRefreshList}
+                backColor={COLORS.themeg}
+                setSelectedCat={setSelectedCat}
+              />
+              <Headings heading={selectedCat || "Popular Doctors"} />
+              <DoctorsList
+                refreshList={refreshList}
+                setRefreshList={setRefreshList}
+                limit={8}
+                field="medic"
+                speciality={selectedCat}
+                setDoctorCount={setDoctorCount}
+                searchQuery={searchQuery}
+              />
             </View>
           </View>
         </ScrollView>

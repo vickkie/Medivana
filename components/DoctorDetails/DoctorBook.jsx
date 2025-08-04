@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -23,6 +23,7 @@ import DoctorCard from "../home/DoctorCard";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Yup from "yup";
 import Toast from "react-native-toast-message";
+import { AuthContext } from "../auth/AuthContext";
 
 const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const route = useRoute();
@@ -36,20 +37,21 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
     { id: 3, name: "Others" },
   ];
 
+  const { userData } = useContext(AuthContext);
+
   const [doctorData, setDoctorData] = useState(doctor || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [calendarDays, setCalendarDays] = useState([]);
+
   const [selectedDate, setSelectedDate] = useState(passedDate || null);
   const [selectedDay, setSelectedDay] = useState(passedDay || "");
-  const [currentMonth, setCurrentMonth] = useState("");
+
   const [availableHours, setAvailableHours] = useState([]);
   const [weekOffset, setWeekOffset] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
-
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [gender, setGender] = useState("");
+  const [firstName, setFirstName] = useState(userData?.firstname || "");
+  const [lastName, setLastName] = useState(userData?.lastname || "");
+  const [gender, setGender] = useState(userData?.gender || "");
   const [age, setAge] = useState(selectedDateObj || new Date());
 
   const [show, setShow] = useState(false);
@@ -57,7 +59,8 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const [uploading, setUploading] = useState(false);
   const [hourlySlots, setHourlySlots] = useState([]);
   const [selectedTime, setSelectedTime] = useState(null);
-  const isPastDate = age && new Date(age).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0);
+  const [isPastDate, setPastDate] = useState(false);
+
   const isDayUnavailable = hourlySlots.length === 0;
   const isBookDisabled = isPastDate || isDayUnavailable;
 
@@ -89,24 +92,49 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
     updateAvailableHours(selectedDay);
   }, [doctorData, selectedDay]);
 
+  const isEighteenPlus = (dob) => {
+    if (!dob) return false;
+
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    // Zero the time for accurate date-only comparison
+    birthDate.setHours(0, 0, 0, 0);
+    today.setHours(0, 0, 0, 0);
+
+    const eighteenYearsAgo = new Date(today);
+    eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
+
+    return birthDate <= eighteenYearsAgo;
+  };
   const onChange = (event, selectedDate) => {
     setShow(false);
-    if (selectedDate) setAge(selectedDate);
+    if (selectedDate) {
+      setAge(selectedDate);
+    }
   };
+
+  useEffect(() => {
+    if (!isEighteenPlus(age)) {
+      setPastDate(true);
+    } else {
+      setPastDate(false);
+    }
+  }, [selectedDate, age]);
 
   const showDatepicker = () => {
     setShow(true);
   };
 
   const handleContinueBook = () => {
-    // if (!firstName || !lastName || !age || !gender) {
-    //   // alert("Please fill all the fields.");
-    //   Toast.show({
-    //     text1: "Please fill all the fields.",
-    //     type: "error",
-    //   });
-    //   return;
-    // }
+    if (!firstName || !lastName || !age || !gender) {
+      // alert("Please fill all the fields.");
+      Toast.show({
+        text1: "Please fill all the fields.",
+        type: "error",
+      });
+      return;
+    }
     const doctorData = doctor?._id;
 
     let bookingData = {
@@ -114,9 +142,9 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
       lastName,
       age,
       gender,
-
       selectedTime,
       selectedDate,
+      selectedDateObj,
       doctorData,
     };
 
@@ -231,7 +259,10 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                     )}
                   />
                 ) : (
-                  <Text style={styles.timeslotH}>No allocated hours</Text>
+                  <View style={{ background: COLORS.themeg, paddingVertical: 10 }}>
+                    <Text style={styles.timeslotH2}>No allocation hours</Text>
+                    <Text style={styles.timeslotH2}>Pick available day in previous screen</Text>
+                  </View>
                 )}
               </View>
             </View>

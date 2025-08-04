@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { View, Text, ScrollView, TouchableOpacity, Image, StatusBar, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -19,13 +19,15 @@ import {
   Timer,
   UsersIcon,
 } from "lucide-react-native";
-import { Time } from "react-native-gifted-chat";
+import Toast from "react-native-toast-message";
+import { AuthContext } from "../auth/AuthContext";
 
 const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   const route = useRoute();
   const navigation = useNavigation();
   const params = route.params || routeParams;
   const { routeParam, category, doctor } = params;
+  const { userLogin, userData } = useContext(AuthContext);
 
   const getWeekDays = (offset = 0) => {
     const now = new Date();
@@ -150,13 +152,24 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     updateAvailableHours(selectedDay);
   }, [doctorData, selectedDay]);
 
-  const handleBookAppointment = () => {
-    navigation.navigate("DoctorBook", {
-      doctor: doctorData,
-      selectedDate,
-      selectedDay,
-      selectedDateObj,
+  function handleShowLogin() {
+    Toast.show({
+      type: "error",
+      text1: "Please login to book an appointment",
+      position: "top",
+      visibilityTime: 2000,
     });
+  }
+
+  const handleBookAppointment = () => {
+    userLogin
+      ? navigation.navigate("DoctorBook", {
+          doctor: doctorData,
+          selectedDate,
+          selectedDay,
+          selectedDateObj,
+        })
+      : handleShowLogin();
   };
 
   if (error) {

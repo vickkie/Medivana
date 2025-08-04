@@ -48,7 +48,7 @@ export default StyleSheet.create({
   },
   scrollContainer: {
     marginTop: 90,
-
+    marginBottom: 60,
     background: COLORS.red,
     flex: 1,
     paddingHorizontal: 10,
@@ -401,7 +401,14 @@ export default StyleSheet.create({
   },
   timeslotH: {
     fontSize: 16,
-    color: "#333",
+    fontFamily: "lufgaBold",
+    color: COLORS.themeb,
+  },
+  timeslotH2: {
+    fontSize: 16,
+    color: COLORS.red,
+    fontFamily: "lufgaBold",
+    textAlign: "center",
   },
   slotsHolderH: {
     marginVertical: 5,

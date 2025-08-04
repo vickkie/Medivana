@@ -48,7 +48,7 @@ const DoctorCard = ({ doctor, showBook }) => {
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.name}>Dr. {name}</Text>
+        <Text style={styles.name}> {name}</Text>
         <Text style={styles.speciality}>{doctor?.specialization?.name || "doctor"}</Text>
 
         <Text style={styles.fee}>Ksh {fee}</Text>
