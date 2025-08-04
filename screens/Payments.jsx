@@ -69,8 +69,8 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
     validationSchema: paymentValidationSchema,
 
     onSubmit: (values) => {
-      // handleSubmitOrder(values);
-      // console.log("sub", values);
+      handleSubmitOrder(values);
+      console.log("sub", values);
       validatePayment(values);
     },
     validateOnMount: true,

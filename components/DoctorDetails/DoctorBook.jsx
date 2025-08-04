@@ -62,7 +62,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const [isPastDate, setPastDate] = useState(false);
 
   const isDayUnavailable = hourlySlots.length === 0;
-  const isBookDisabled = isPastDate || isDayUnavailable;
+  const isBookDisabled = isDayUnavailable;
 
   const updateAvailableHours = (dayName) => {
     if (!dayName) return;
@@ -107,6 +107,26 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
 
     return birthDate <= eighteenYearsAgo;
   };
+
+  const calculateAge = (dob) => {
+    if (!dob) return null;
+
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    const hasBirthdayPassedThisYear =
+      today.getMonth() > birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+
+    if (!hasBirthdayPassedThisYear) {
+      age -= 1;
+    }
+
+    return age;
+  };
+
   const onChange = (event, selectedDate) => {
     setShow(false);
     if (selectedDate) {
@@ -140,7 +160,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
     let bookingData = {
       firstName,
       lastName,
-      age,
+      userAge: calculateAge(age),
       gender,
       selectedTime,
       selectedDate,

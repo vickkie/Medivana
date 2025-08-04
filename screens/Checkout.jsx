@@ -29,6 +29,7 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
+import { ChevronRightIcon } from "lucide-react-native";
 
 const Checkout = () => {
   const route = useRoute();
@@ -92,14 +93,10 @@ const Checkout = () => {
     if (phoneNumber) {
       checkoutSchema
         .validate({ phoneNumber })
-        .then(() => setPhoneError(true))
+        .then(() => setPhoneError(false))
         .catch((err) => setPhoneError("Please fill phone Number field"));
     }
   }, [phoneNumber]);
-
-  //fetch stock availability
-
-  console.log(step);
 
   const handleNext = () => {
     console.log(phoneError, finalPhoneNumber);
@@ -107,9 +104,11 @@ const Checkout = () => {
       case 1:
         // Example usage in handleNext
         if (phoneError) {
-          showToast("error", "Please fill phone number", "Please try again later");
+          showToast("error", "Please fill phone number", "");
           return;
         }
+
+        setStep(step + 1);
 
         break;
       case 3:
@@ -159,12 +158,31 @@ const Checkout = () => {
 
   const handleSubmitOrder = async (paymentInfo) => {
     const orderData = {
-      userId,
-      bookingData,
-      paymentInfo,
-      totalAmount: estimatedAmount,
-      additionalFees: 0,
-      subtotal: estimatedAmount + additionalFees,
+      // For Appointment
+      user: userData?._id,
+      doctor: bookingData.doctorData,
+      appointmentDate: `${bookingData.selectedDateObj}`,
+      appointmentTime: `${bookingData?.selectedTime}`,
+      userNotes: `${bookingData.firstName} ${bookingData.lastName} | Gender: ${bookingData.gender} | Age: ${bookingData?.userAge}, ${moreDescription}`,
+
+      // For Transaction
+      userSnapshot: {
+        username: userData?.username,
+        email: userData?.email,
+        phone: paymentInfo.phoneNumber,
+      },
+      amount: estimatedAmount,
+      paymentMethod: paymentInfo.selectedPaymentMethod,
+      phoneNumber: paymentInfo.phoneNumber,
+      paypalEmail: paymentInfo.email,
+      cardInfo: {
+        cardNumber: paymentInfo.cardNumber,
+        cvv: paymentInfo.cvv,
+        expiry: paymentInfo.expiryDate,
+        nameOnCard: paymentInfo.nameOnCard,
+      },
+
+      paymentResponse: {},
     };
 
     console.log("orderDATA", orderData);
@@ -176,17 +194,18 @@ const Checkout = () => {
     try {
       setIsLoading(true);
       setErrorState(false);
+      console.log(BACKEND_PORT);
 
-      const response = await axios.post(`${BACKEND_PORT}/api/appointment`, orderData);
+      const response = await axios.post(`${BACKEND_PORT}/api/v1/appointment`, orderData);
 
-      setBookingId(response.data.booking.bookingId);
+      setBookingId(response.data?.bookingId);
       setSuccess(true);
 
       // Only proceed with next steps if the order creation was successful
       if (response.data.success) {
         clearCart();
 
-        navigation.navigate("OrderSuccess", { orderId: response.data.booking.orderId });
+        navigation.navigate("OrderSuccess", { orderId: response.data?.bookingId });
       } else {
         setErrorMessage(response.data.message || "Unknown error occurred");
 
@@ -210,11 +229,6 @@ const Checkout = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("searching");
-    handleSearch("");
-  }, []);
-
   const handleSearch = (query) => {
     const test = "";
     const filtered = allcountries.filter((country) => {
@@ -228,7 +242,7 @@ const Checkout = () => {
     setPhoneNumber(unmaskedPhoneNumber);
     console.log("changing", unmaskedPhoneNumber.length, isVerified);
 
-    if (unmaskedPhoneNumber.length > 8) {
+    if (unmaskedPhoneNumber.length < 8) {
       setPhoneError(true);
     } else {
       setPhoneError(false);
@@ -243,13 +257,16 @@ const Checkout = () => {
       // console.log(countr.code);
     });
 
-    // handleSearch("");
     return (
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <SafeAreaView style={{ flex: 1, backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
           <View style={styles.modalContainer}>
             <View style={styles.searchContainer}>
-              <TextInput style={styles.searchInput} placeholder="Search Country" onChangeText={handleSearch} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Type to search country ..."
+                onChangeText={handleSearch}
+              />
               <Text style={styles.searchIcon}>🔍</Text>
             </View>
 
@@ -320,21 +337,6 @@ const Checkout = () => {
                     <View style={styles.shippingContainer}>
                       <Text style={styles.label}>Phone Number</Text>
                       <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
-                        <TouchableWithoutFeedback
-                          style={{
-                            backgroundColor: "red",
-                            position: "absolute",
-                            left: 30,
-                            width: 50,
-                            top: 0,
-                            bottom: 0,
-                            zIndex: 7,
-                          }}
-                          onPress={() => {
-                            console.log("touch");
-                            handleSearch("");
-                          }}
-                        ></TouchableWithoutFeedback>
                         <IntlPhoneInput
                           placeholder={getPhoneMeta(finalPhoneNumber)?.nationalNumber || ""}
                           ref={(ref) => (phoneInput = ref)}
@@ -348,10 +350,10 @@ const Checkout = () => {
                       </View>
 
                       <View style={styles.instructions}>
-                        <Text style={styles.label}>Additional Instructions</Text>
+                        <Text style={styles.label}>Additional Notes (issue)</Text>
                         <TextInput
                           style={styles.descriptionInput}
-                          placeholder="Additional Instructions"
+                          placeholder="Patient details to note"
                           value={moreDescription}
                           onChangeText={(text) => setmoreDescription(text)}
                           multiline
@@ -373,13 +375,11 @@ const Checkout = () => {
                     </View>
 
                     <View style={styles.next2wrapper}>
-                      <TouchableOpacity onPress={handlePrevious} style={styles.previous} disabled={!bookingData}>
-                        <Text>
-                          <Icon name="backbutton" size={36} />
-                        </Text>
-                      </TouchableOpacity>
                       <TouchableOpacity onPress={handleNext} style={styles.next2}>
                         <Text style={styles.buttonText}>Next step</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleNext} style={styles.previous} disabled={!bookingData}>
+                        <ChevronRightIcon size={30} color={COLORS.themew} />
                       </TouchableOpacity>
                     </View>
                   </>

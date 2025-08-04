@@ -204,7 +204,7 @@ export default StyleSheet.create({
     alignItems: "center",
     width: SIZES.width - 100,
     backgroundColor: COLORS.themey,
-    borderRadius: SIZES.medium,
+    borderRadius: SIZES.xxLarge,
     height: 60,
   },
   input: {
@@ -221,7 +221,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
+    borderRadius: SIZES.xLarge,
     width: SIZES.width - 40,
     marginStart: 5,
   },

@@ -19,10 +19,13 @@ import { BACKEND_PORT } from "@env";
 import { StatusBar } from "expo-status-bar";
 import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-toast-message";
+import AppointmentPage from "./AppointmentList";
+import { FilterIcon, SearchIcon } from "lucide-react-native";
 
 const Orders = () => {
   const [userId, setUserId] = useState(null);
   const { userData, userLogin } = useContext(AuthContext);
+
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -34,8 +37,6 @@ const Orders = () => {
       setUserId(userData._id);
     }
   }, [userLogin, userData]);
-
-  // const { data, isLoading, error, refetch } = useFetch(`orders/user/${userId}`);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -49,6 +50,7 @@ const Orders = () => {
   // State for orders, loading, and error
   const [data, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearching, setIsSearching] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -87,12 +89,6 @@ const Orders = () => {
     // console.log(data);
   }, [data, ordersData]);
 
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     refetch();
-  //   }, [])
-  // );
-
   useEffect(() => {
     if (!isLoading && !error && data.orders && data.orders.length !== 0) {
       // Destructure orders from data
@@ -112,39 +108,6 @@ const Orders = () => {
     }
   }, [data, isLoading, error]);
 
-  const primaryData = [
-    {
-      id: "1",
-      title: "Order tracker",
-      image: require("../assets/images/isometric.webp"),
-      // shippingId: "V789456AR123",
-      shippingId: last3orders[0] ? last3orders[0].id : "Order now",
-
-      color: "#ffedd2",
-      stylez: '{"height": 220, "width": 220, "position": "absolute", "right": -50, "top": -10, "opacity": 0.6}',
-    },
-    {
-      id: "2",
-      // title: "Small Box Packing",
-      title: "Shipment Tracker",
-      image: require("../assets/images/isometric2.png"),
-      shippingId: last3orders[1] ? last3orders[1].id : "Order now",
-      color: "#a3eed8",
-      stylez:
-        '{"height": 170, "width": 170, "position": "absolute", "right": -67, "top": 25, "opacity": 0.8,"transform": [{ "rotate": "-15deg" }]}',
-    },
-    {
-      id: "3",
-      title: "Order tracker",
-      // title: "Gift Packing",
-      image: require("../assets/images/gift.webp"),
-      color: "#e6bfdf",
-      shippingId: last3orders[2] ? last3orders[2].id : "Order now",
-
-      stylez: '{"height": 220, "width": 220, "position": "absolute", "right": -70, "top": 10, "opacity": 0.6}',
-    },
-  ];
-
   useEffect(() => {
     if (sortedOrdersData.length > 0) {
       function extractProductDetails(orders) {
@@ -160,12 +123,6 @@ const Orders = () => {
             const { _id, title, price, imageUrl, description } = product._id || {};
 
             setProducts();
-
-            // console.log(items);
-
-            // console.log(
-            //   `ID: ${_id}, Title: ${title}, Price: ${price}, Image URL: ${imageUrl}, Description: ${description}`
-            // );
           });
         });
       }
@@ -201,124 +158,6 @@ const Orders = () => {
     });
   };
 
-  const handleCopy = async (shippingId) => {
-    await Clipboard.setStringAsync(shippingId);
-    showToast("success", "Copied to clipboard", "Your order tracking number has been copied to clipboard");
-  };
-
-  const Card = ({ title, image, shippingId, color, stylez }) => {
-    const parsedStyle = stylez ? JSON.parse(stylez) : {};
-    return (
-      <View
-        style={{
-          backgroundColor: color || COLORS.themey,
-          height: 170,
-          width: 250,
-          borderRadius: SIZES.medium,
-          overflow: "hidden",
-        }}
-      >
-        <View style={styles.cardContent}>
-          <Image source={image} style={[styles.image, parsedStyle]} />
-          <View style={{ gap: 10, flexDirection: "column" }}>
-            <Text style={styles.title}>{title}</Text>
-            <View style={{ alignSelf: "flex-start" }}>
-              <TouchableOpacity
-                onPress={() => {
-                  handleCopy(shippingId);
-                }}
-              >
-                <Text style={styles.shippingId}>{`ID: ${shippingId}`}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-          <View>
-            <TouchableOpacity onPress={() => {}} style={[styles.backBtn, styles.buttonView]}>
-              <Icon name="backbutton" size={26} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
-    );
-  };
-
-  const SearchResultCard = ({ orderId, item, products, status, icon, color, totals }) => {
-    const titles = products
-      .map((product, index) => {
-        const { title } = product._id || {};
-        return {
-          title,
-        };
-      })
-      .filter(({ title }) => Boolean(title)); // Filter out undefined titles, in case some products don't have titles
-
-    const titlesString = titles.map(({ title }) => title).join(", ");
-
-    // console.log("titles", titlesString);
-
-    return (
-      <View
-        style={[
-          styles.searchResultCards,
-          {
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 6,
-            paddingVertical: 10,
-            backgroundColor: COLORS.lightWhite,
-            paddingHorizontal: 10,
-            borderRadius: 8,
-            overflow: "hidden",
-          },
-        ]}
-      >
-        <TouchableOpacity
-          // key={index}
-          style={{
-            borderRadius: 100,
-            padding: 17,
-            backgroundColor: color,
-            width: 36,
-            height: 36,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity style={styles.checkmark}>
-            <Icon name="check" size={11} />
-          </TouchableOpacity>
-          <Icon name={icon} size={21} />
-        </TouchableOpacity>
-
-        <View>
-          <Text style={styles.searchResultTitle}>{titlesString}</Text>
-          <Text style={styles.searchResultdetail}>Order id : {orderId}</Text>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("OrderDetails", { orderId, item, products, totals });
-          }}
-          style={[styles.flexEnd, styles.buttonView]}
-        >
-          <Icon name="backbutton" size={26} />
-        </TouchableOpacity>
-      </View>
-    );
-  };
-
-  const renderCards = useCallback(
-    ({ item }) => (
-      <Card
-        title={item.title}
-        image={item.image}
-        color={item.color}
-        stylez={item.stylez}
-        shippingId={item.shippingId}
-      />
-    ),
-    [data]
-  );
-
   return (
     <SafeAreaView style={styles.containerx}>
       <StatusBar backgroundColor={COLORS.themey} />
@@ -331,49 +170,40 @@ const Orders = () => {
             <View style={styles.upperButtons}>
               <Text style={styles.heading}>My Appointments</Text>
             </View>
-            <TouchableOpacity onPress={() => {}} style={styles.outWrap}>
-              <Icon name="bellfilled" size={26} />
+            <TouchableOpacity
+              onPress={() => {
+                setIsSearching(!isSearching);
+              }}
+              style={styles.outWrap}
+            >
+              {isSearching ? (
+                <FilterIcon size={23} color={COLORS.themey} />
+              ) : (
+                <SearchIcon size={23} color={COLORS.themey} />
+              )}
             </TouchableOpacity>
-            <View style={styles.lowerheader}>
-              <Text style={styles.statement}>Track your checkups</Text>
-            </View>
           </View>
         </View>
 
         <ScrollView>
-          <View style={{ marginTop: 130 }}>
-            {/* <View style={{ paddingTop: 20, width: SIZES.width - 20, paddingHorizontal: 22 }}>
-              <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium + 4, fontWeight: "600" }}>
-                Latest Appointments
-              </Text>
-            </View> */}
-
-            {/* <View style={styles.carouselContainer}>
-              <FlatList
-                data={primaryData}
-                renderItem={renderCards}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.list}
-              />
-            </View>
-
-            <View style={styles.searchBarContainer}>
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Search Appointments"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-              />
-              <TouchableOpacity style={styles.searchButton}>
-                <Icon name="search" size={26} />
-              </TouchableOpacity>
-            </View>
+          <View style={{ marginTop: 78 }}>
+            {isSearching && (
+              <View style={styles.searchBarContainer}>
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Search Appointments"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                />
+                <TouchableOpacity style={styles.searchButton}>
+                  <Icon name="search" size={26} />
+                </TouchableOpacity>
+              </View>
+            )}
 
             <FlatList
               horizontal
-              data={["All", "pending", "transit", "completed"]}
+              data={["All", "pending", "completed"]}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
@@ -387,34 +217,7 @@ const Orders = () => {
             />
 
             <View style={styles.detailsWrapper}>
-              {sortedOrdersData.length > 0 && (
-                <FlatList
-                  // {...console.log(sortedOrdersData)}
-                  data={filteredOrders}
-                  // data={sortedOrdersData}
-                  renderItem={({ item, index }) => {
-                    const icons = ["isometric", "isometric2", "isometric3"];
-                    const colors = ["#FFD2D5", "#D7F6D4", "#C3ECFE"];
-
-                    const iconIndex = index % icons.length;
-                    const colorIndex = index % colors.length;
-                    return (
-                      <SearchResultCard
-                        item={item}
-                        orderId={item.orderId}
-                        products={item.products}
-                        totals={item.totalAmount}
-                        status={item.status}
-                        icon={icons[iconIndex]}
-                        color={colors[colorIndex]}
-                      />
-                    );
-                  }}
-                  keyExtractor={(item) => item._id}
-                  contentContainerStyle={styles.list}
-                  scrollEnabled={false}
-                />
-              )}
+              <AppointmentPage />
 
               {!isLoading && filteredOrders.length == 0 && (
                 <View style={styles.containLottie}>
@@ -431,7 +234,7 @@ const Orders = () => {
                   </View>
                 </View>
               )}
-            </View> */}
+            </View>
           </View>
         </ScrollView>
       </View>
@@ -444,7 +247,7 @@ export default Orders;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9F9F9",
+    backgroundColor: COLORS.themew,
   },
   wrapper: {
     flexDirection: "column",
