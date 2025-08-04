@@ -50,7 +50,7 @@ const Orders = () => {
   // State for orders, loading, and error
   const [data, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isSearching, setIsSearching] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -201,7 +201,7 @@ const Orders = () => {
               </View>
             )}
 
-            <FlatList
+            {/* <FlatList
               horizontal
               data={["All", "pending", "completed"]}
               renderItem={({ item }) => (
@@ -214,12 +214,12 @@ const Orders = () => {
               )}
               keyExtractor={(item) => item}
               contentContainerStyle={styles.filterContainer}
-            />
+            /> */}
 
             <View style={styles.detailsWrapper}>
               <AppointmentPage />
 
-              {!isLoading && filteredOrders.length == 0 && (
+              {/* {!isLoading && filteredOrders.length == 0 && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView
@@ -233,7 +233,7 @@ const Orders = () => {
                     <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
                   </View>
                 </View>
-              )}
+              )} */}
             </View>
           </View>
         </ScrollView>

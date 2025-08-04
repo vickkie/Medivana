@@ -10,12 +10,18 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
-import { Clock, MessageCircle, Video } from "lucide-react-native";
-import { COLORS } from "../constants";
+import { ChevronLeft, ChevronRightIcon, Clock, MessageCircle, Video } from "lucide-react-native";
+import { COLORS, SIZES } from "../constants";
 
 const API_URL = "http://192.168.100.80:3000/api/v1/appointment/user/688dd620ebd1bcf030beab58";
 
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const today = new Date();
+const datesThisWeek = weekDays.map((_, idx) => {
+  const d = new Date();
+  d.setDate(today.getDate() - today.getDay() + idx); // Start from Sunday
+  return d;
+});
 
 export default function AppointmentPage() {
   const [selectedIndex, setSelectedIndex] = useState(new Date().getDay());
@@ -23,6 +29,27 @@ export default function AppointmentPage() {
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [weekOffset, setWeekOffset] = useState(0);
+  const [weekDates, setWeekDates] = useState([]);
+  const [isMonth, setIsMonth] = useState("");
+
+  const generateWeekDates = (offset = 0) => {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - startOfWeek.getDay() + offset * 7); // Sunday start
+
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      dates.push(date);
+    }
+    return dates;
+  };
+
+  useEffect(() => {
+    setWeekDates(generateWeekDates(weekOffset));
+  }, [weekOffset]);
 
   // fetch all appointments once
   useEffect(() => {
@@ -47,14 +74,27 @@ export default function AppointmentPage() {
 
   // filter on day change or data change
   useEffect(() => {
-    const dayName = weekDays[selectedIndex];
+    const selectedDate = weekDates[selectedIndex];
+    if (!selectedDate) return;
+
     setFiltered(
       appointments.filter((appt) => {
-        const apptDay = new Date(appt.appointmentDate).toLocaleDateString("en-US", { weekday: "short" });
-        return apptDay === dayName;
+        const apptDate = new Date(appt.appointmentDate);
+        return (
+          apptDate.getDate() === selectedDate.getDate() &&
+          apptDate.getMonth() === selectedDate.getMonth() &&
+          apptDate.getFullYear() === selectedDate.getFullYear()
+        );
       })
     );
-  }, [appointments, selectedIndex]);
+  }, [appointments, selectedIndex, weekDates]);
+  useEffect(() => {
+    if (weekDates.length > 0) {
+      const middleDay = weekDates[3]; // pick mid-week to avoid month jumps on edge days
+      const month = middleDay.toLocaleDateString("en-US", { month: "long" });
+      setIsMonth(month);
+    }
+  }, [weekDates]);
 
   if (loading) {
     return (
@@ -72,15 +112,23 @@ export default function AppointmentPage() {
     );
   }
 
-  const renderDay = (day, idx) => (
-    <TouchableOpacity
-      key={day}
-      style={[styles.dayButton, idx === selectedIndex && styles.dayButtonActive]}
-      onPress={() => setSelectedIndex(idx)}
-    >
-      <Text style={[styles.dayText, idx === selectedIndex && styles.dayTextActive]}>{day}</Text>
-    </TouchableOpacity>
-  );
+  const renderDay = (date, idx) => {
+    const dayShort = date.toLocaleDateString("en-US", { weekday: "short" });
+    const monthShort = date.toLocaleDateString("en-US", { month: "long" });
+
+    return (
+      <>
+        <TouchableOpacity
+          key={idx}
+          style={[styles.dayButton, idx === selectedIndex && styles.dayButtonActive]}
+          onPress={() => setSelectedIndex(idx)}
+        >
+          <Text style={[styles.dayText, idx === selectedIndex && styles.dayTextActive]}>{dayShort}</Text>
+          <Text style={[styles.dateText, idx === selectedIndex && styles.dayTextActive]}>{date.getDate()}</Text>
+        </TouchableOpacity>
+      </>
+    );
+  };
 
   const renderItem = ({ item }) => {
     const status = item.isCancelled
@@ -90,7 +138,6 @@ export default function AppointmentPage() {
       : { label: "Upcoming", style: styles.badgeUpcoming };
 
     const isVideo = item.userNotes.toLowerCase().includes("video");
-    const IconComp = isVideo ? Video : MessageCircle;
 
     return (
       <View style={styles.card}>
@@ -102,8 +149,7 @@ export default function AppointmentPage() {
             <Text style={styles.time}>{item?.appointmentTime}</Text>
           </View>
           <View style={styles.row}>
-            <IconComp size={14} color={COLORS.black} />
-            <Text style={styles.type}>{isVideo ? "Video Call" : "Messaging"}</Text>
+            <Text style={styles.type}>{item?.bookingId}</Text>
           </View>
         </View>
         <View style={[styles.badge, status.style]}>
@@ -115,7 +161,21 @@ export default function AppointmentPage() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.weekContainer}>{weekDays.map(renderDay)}</View>
+      <View>
+        <Text style={styles.monthHeader}>{isMonth}</Text>
+      </View>
+      <View style={styles.weekHeader}>
+        <TouchableOpacity onPress={() => setWeekOffset((prev) => prev - 1)}>
+          <ChevronLeft size={20} color="#333" />
+        </TouchableOpacity>
+
+        <View style={styles.weekContainer}>{weekDates.map(renderDay)}</View>
+
+        <TouchableOpacity onPress={() => setWeekOffset((prev) => prev + 1)}>
+          <ChevronRightIcon size={20} color="#333" />
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={filtered}
         keyExtractor={(i) => i._id}
@@ -142,7 +202,7 @@ const styles = StyleSheet.create({
   dayButtonActive: { backgroundColor: "#E0F7FA" },
   dayText: { fontSize: 14, color: "#888" },
   dayTextActive: { color: "#00796B", fontWeight: "bold" },
-
+  monthHeader: { fontSize: SIZES.large, textAlign: "center", fontFamily: "lufgaBold", marginTop: -10 },
   card: {
     flexDirection: "row",
     alignItems: "center",
@@ -151,8 +211,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FAFAFA",
     borderRadius: 8,
   },
-  avatar: { width: 90, height: 90, borderRadius: 12, marginRight: 7, backgroundColor: "red" },
+  avatar: {
+    width: 90,
+    height: 90,
+    borderRadius: 12,
+    marginRight: 7,
+    backgroundColor: COLORS.themew,
+    resizeMode: "contain",
+  },
   info: { flex: 1 },
+  dateText: { textAlign: "center" },
   name: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
   row: { flexDirection: "row", alignItems: "center", marginBottom: 2 },
   time: { marginLeft: 4, fontSize: 14, color: "#555" },
@@ -164,4 +232,11 @@ const styles = StyleSheet.create({
   badgeCancelled: { backgroundColor: "#F44336" },
 
   emptyText: { textAlign: "center", color: "#AAA", marginTop: 50 },
+  weekHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
 });
