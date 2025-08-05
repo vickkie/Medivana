@@ -1,156 +1,30 @@
 {
   "changelog": [
     {
-      "releaseDate": "2024-08-03",
-      "version": "1.2.2",
-      "whatsNew": [],
-      "fixed": ["App crash on navigation bug"]
-    },
-    {
-      "releaseDate": "2024-08-02",
-      "version": "1.2.0",
-      "whatsNew": ["Search available for products","Improved navigation across","Better UI across application"],
-      "fixed": []
-    },
-    {
-      "releaseDate": "2024-07-30",
-      "version": "1.1.0",
-      "whatsNew": ["Orders tracking available", "Upload images during customer support available"],
-      "fixed": []
-    },
-    {
-      "releaseDate": "2024-07-25",
-      "version": "1.0.0",
-      "whatsNew": ["The first full release ", "Products ordering", "Orders payments available","Customer support available","Products inquiry available", "Account management /Deletion","Orders tracking available","Notifications available ","Frequently asked questions"],
-      "fixed": ["Profile picture updating issue bug", "Cart products addition issue bug"]
-    },
-    {
-      "releaseDate": "2024-07-11",
-      "version": "0.4.0",
-      "whatsNew": ["User profile update available","Products Detailed view", 
-      "Improved security enhancement ","General UI improvements"],
-      "fixed": ["Security patches on registration"],
-      "beta":"true"
-    },
-    {
-      "releaseDate": "2024-06-25",
-      "version": "0.3.0",
-      "whatsNew": ["Account Registration", "Account Login and viewing"],
-      "fixed": ["User registration issues"]
-    },
-    {
-      "releaseDate": "2024-06-15",
-      "version": "0.2.1",
-      "whatsNew": ["Products adding to cart", "Products adding to favourites", "Products tracking availability"],
-      "fixed": ["Categories listing issues on android 8"],
-      "beta":"true"
-    },
-    {
-      "releaseDate": "2024-06-10",
-      "version": "0.2.0",
-      "whatsNew": ["Products viewing", "Categories listing", "General UI improvements"],
-      "fixed": []
-    },
-    {
-      "releaseDate": "2024-08-22",
-      "version": "1.3.0",
-      "whatsNew": ["Product Management", "Staff Integration", "General UI improvements"],
-      "fixed": ["login bug for stuff","Improved security mechanism"]
-    },
-    {
-      "releaseDate": "2024-09-01",
-      "version": "1.3.1",
-      "whatsNew": ["Cart view in product details", "Currency changes", "General UI improvements"],
-      "fixed": ["Chat bug issue","Product cart UI view"]
-    },
-    {
-      "releaseDate": "2024-09-02",
-      "version": "1.3.2",
-      "whatsNew": ["Location not required in signup", "General UI improvements"],
-      "fixed": ["product view width"]
-    },
-    {
-      "releaseDate": "2024-12-02",
-      "version": "1.3.3",
-      "whatsNew": ["Easier selection of country", "General UI improvements"],
-      "fixed": ["Account Logout screen bug"],
-      "beta":"true"
-    },
-    {
-      "releaseDate": "2024-16-02",
-      "version": "1.3.4",
-      "whatsNew": ["Cart improvements","Faster load time", "General UI improvements"],
-      "fixed": ["Fixed crash bug on v1.3.3"]
-    },
-    {
-      "releaseDate": "2025-02-11",
-      "version": "1.3.5",
-      "whatsNew": ["Local Favourite management", "Local cart management","General UI improvements","Speed improvement 50%"],
-      "fixed": ["Fixed Fatal crash bug on v1.3.4"]
-    },
-    {
-      "releaseDate": "2025-02-15",
-      "version": "1.3.6",
-      "whatsNew": ["Order payment tracking", "Cache in-app clearing","General UI improvements","Fast loading images"],
-      "fixed": ["Slow profile update"]
-    },
-    {
-      "releaseDate": "2025-02-20",
-      "version": "1.3.7",
-      "whatsNew": ["Delivery Tracking","Security updates","General UI improvements","Sales Tracking","Shipment assignments"],
-      "fixed": [""]
-    },
-    {
-      "releaseDate": "2025-03-11",
-      "version": "1.3.9",
-      "whatsNew": ["Profile Completion Tracking","Delivery Update","Detailed Delivery Tracking","Security updates","General UI improvements","Shipment assignments"],
-      "fixed": ["Major Crash Bug on version 1.3.8"]
-    },
-    {
-      "releaseDate": "2025-03-17",
-      "version": "1.4.0",
-      "whatsNew": ["App size optimization","Company details added","Customer receipt generation","General UI improvements","Shipment assignments"],
-      "fixed": ["Changelog date updates"]
-    },
-    {
-      "releaseDate": "2025-03-18",
-      "version": "1.4.1",
-      "whatsNew": ["Customer order pickup","Global chat system across users","Company About Us","User order receipt generation","New messages notification"],
-      "fixed": [""]
-    },
-    {
-      "releaseDate": "2025-03-19",
-      "version": "1.4.2",
-      "whatsNew": ["Dispatch management","Global Ui improvement","New messages notification"],
-      "fixed": ["Forced navigation to login page"]
-    },
-    {
-      "releaseDate": "2025-04-11",
-      "version": "1.4.3",
-      "whatsNew": ["Receipt/Invoice saving & sharing",
-      "Payments tracking",
-      "Phone Number SignUp",
-      "Global UI/UX improvement"],
-      "fixed": ["Frequently asked questions not available offline"]
-    },
-    {
-      "releaseDate": "2025-04-28",
-      "version": "1.4.5",
-      "whatsNew": ["Major release rollout","Now targets android 13","Refined Transaction tracking","Revamped checkout process","Added payment & delivery methods",
-      "Home items pull down refresh"],
-      "fixed": ["Size applicable to all products bug","Double navigation fix"]
+      "releaseDate": "2025-07-03",
+      "version": "0.0.1",
+      "whatsNew": ["Login page added","Signup page added",
+      "Home page added"],
+      "fixed": ["Manifest values fixed"]
     },{
-      "releaseDate": "2025-04-30",
-      "version": "1.4.6",
-      "whatsNew": ["Order status notifications added ",
-      "Home items pull down refresh"],
+      "releaseDate": "2025-07-30",
+      "version": "0.0.2",
+      "whatsNew": ["Doctors list added ",
+      "About page added","Profile page added"],
       "fixed": ["Delete account fix."]
     }
     ,{
-      "releaseDate": "2025-05-09",
-      "version": "1.4.7",
-      "whatsNew": ["Customer support refurbished ",
-      "Messages marked as read","Featured products added","Quote based category added","Order success screen revamped","Better customer chat UI"],
+      "releaseDate": "2025-08-02",
+      "version": "0.0.5",
+      "whatsNew": ["Doctor categories added ",
+      "Doctor details view","Booking added","Appointment tracking and view","Better customer profile UI"],
+      "fixed": ["Breaking changes on appointment tracking"]
+    }
+    ,{
+      "releaseDate": "2025-08-05",
+      "version": "0.1.0",
+      "whatsNew": ["Payment tracking added",
+      "Bottom navigation added","Welcome page added","Appointment filtering revamped","Messaging support started"],
       "fixed": [""]
     }
   ]

@@ -18,7 +18,6 @@ const DoctorCard = ({ doctor, showBook }) => {
 
   const DoctorAvatar = ({ uri }) => {
     const [error, setError] = useState(false);
-    console.log("uri", uri);
 
     return (
       <Image
@@ -59,7 +58,6 @@ const DoctorCard = ({ doctor, showBook }) => {
 
         {showBook ? (
           <TouchableOpacity style={styles.bookButton} onPress={() => navigation.navigate("DoctorDetails", { doctor })}>
-            {console.log("doctor", doctor)}
             <Text style={styles.bookButtonText}>Book</Text>
           </TouchableOpacity>
         ) : (

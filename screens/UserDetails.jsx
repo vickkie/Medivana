@@ -289,7 +289,6 @@ const UserDetails = () => {
           </View>
         </View>
       </View>
-      <UserProfileCompletion />
 
       <ScrollView>
         <View style={styles.detailsWrapper}>
