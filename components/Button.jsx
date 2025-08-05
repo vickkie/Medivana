@@ -5,14 +5,18 @@ import { COLORS, SIZES } from "../constants";
 const CustomButton = ({ title, onPress, isValid, loader, titleStyle }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.btnStyle}>
-      {loader === false ? <Text style={[styles.btnText, titleStyle]}>{title}</Text> : <ActivityIndicator />}
+      {loader === false ? (
+        <Text style={[styles.btnText, titleStyle]}>{title}</Text>
+      ) : (
+        <ActivityIndicator color={COLORS.themew} />
+      )}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   btnText: {
-    color: COLORS.white,
+    color: COLORS.themew,
     fontSize: 18,
   },
   btnStyle: {

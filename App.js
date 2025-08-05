@@ -13,6 +13,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import ErrorBoundary2 from "./screens_options/ErrorBoundary";
 
 import { AuthProvider } from "./components/auth/AuthContext";
+import { useAuthLoader } from "./components/auth/useAuthLoader";
 import { CartProvider } from "./contexts/CartContext";
 import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionContext";
 import { WishProvider } from "./contexts/WishContext";
@@ -132,24 +133,25 @@ export default function App() {
     lufgaLight: require("./assets/fonts/lufga/LufgaLight.ttf"),
   });
 
+  const { userData, authLoading } = useAuthLoader(); // ✅ Called at top level
+
   useEffect(() => {
     const prepare = async () => {
-      if (fontsLoaded) {
+      if (fontsLoaded && !authLoading) {
         await SplashScreen.hideAsync();
       }
     };
     prepare();
-  }, [fontsLoaded]);
+  }, [fontsLoaded, authLoading]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  if (!fontsLoaded || authLoading) return null;
+
+  const initialRoute = userData ? "Bottom Navigation" : "Onboarding";
 
   return (
     <ErrorBoundary2>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <UpdateCheck />
-
         <BottomSheetModalProvider>
           <AuthProvider>
             <ProfileCompletionProvider>
@@ -157,7 +159,7 @@ export default function App() {
                 <WishProvider>
                   <NavigationContainer theme={MyTheme}>
                     <PushNotification />
-                    <Stack.Navigator initialRouteName="Onboarding">
+                    <Stack.Navigator initialRouteName={initialRoute}>
                       {screens.map((screen, index) => (
                         <Stack.Screen
                           key={index}
@@ -168,7 +170,6 @@ export default function App() {
                       ))}
                     </Stack.Navigator>
                     <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
-                    {/* <RouteProvider /> */}
                   </NavigationContainer>
                 </WishProvider>
               </CartProvider>
