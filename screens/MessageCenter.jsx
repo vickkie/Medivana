@@ -4,6 +4,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
 import { AuthContext } from "../components/auth/AuthContext";
+import {
+  BellElectricIcon,
+  ChartBar,
+  ChevronsRight,
+  ChevronsRightLeft,
+  HelpCircle,
+  MessageCircle,
+  MessageCircleCodeIcon,
+} from "lucide-react-native";
 
 const MessageCenter = ({ navigation }) => {
   const { userData } = useContext(AuthContext);
@@ -40,10 +49,10 @@ const MessageCenter = ({ navigation }) => {
             >
               <View style={[styles.menuItem(0.5)]}>
                 <View style={styles.itswrap}>
-                  <Icon name="message" size={24} color={COLORS.primary} />
+                  <MessageCircleCodeIcon name="message" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>Messaging</Text>
                 </View>
-                <Icon name="forward" size={24} color={COLORS.primary} />
+                <ChevronsRight name="forward" size={24} color={COLORS.primary} />
               </View>
             </TouchableOpacity>
 
@@ -57,10 +66,10 @@ const MessageCenter = ({ navigation }) => {
               >
                 <View style={[styles.menuItem(0.5)]}>
                   <View style={styles.itswrap}>
-                    <Icon name="customerservice" size={24} color={COLORS.primary} />
+                    <HelpCircle name="customerservice" size={24} color={COLORS.primary} />
                     <Text style={styles.menuText}>Customer support</Text>
                   </View>
-                  <Icon name="forward" size={24} color={COLORS.primary} />
+                  <ChevronsRight name="forward" size={24} color={COLORS.primary} />
                 </View>
               </TouchableOpacity>
             )}
@@ -68,47 +77,12 @@ const MessageCenter = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate("SystemMessages")}>
               <View style={styles.menuItem(0.5)}>
                 <View style={styles.itswrap}>
-                  <Icon name="bellfilled" size={24} color={COLORS.primary} />
+                  <BellElectricIcon name="bellfilled" size={24} color={COLORS.primary} />
                   <Text style={styles.menuText}>My Notifications</Text>
                 </View>
-                <Icon name="forward" size={24} color={COLORS.primary} />
+                <ChevronsRight name="forward" size={24} color={COLORS.primary} />
               </View>
             </TouchableOpacity>
-            {!userData?.position && (
-              <>
-                <TouchableOpacity onPress={() => navigation.navigate("Faqs")}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.itswrap}>
-                      <Icon name="faqs" size={26} color={COLORS.primary} />
-                      <Text style={styles.menuText}>Frequently asked Questions</Text>
-                    </View>
-                    <Icon name="forward" size={24} color={COLORS.primary} />
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => navigation.navigate("Orders")}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.itswrap}>
-                      <Icon name="cartcheck" size={26} color={COLORS.primary} />
-                      <Text style={styles.menuText}>Order Tracking</Text>
-                    </View>
-                    <Icon name="forward" size={24} color={COLORS.primary} />
-                  </View>
-                </TouchableOpacity>
-              </>
-            )}
-
-            {["sales", "customer support"].includes(userData?.position) && (
-              <TouchableOpacity onPress={() => navigation.navigate("HelpListScreen")}>
-                <View style={styles.menuItem(0.5)}>
-                  <View style={styles.itswrap}>
-                    <Icon name="customerservice" size={26} color={COLORS.primary} />
-                    <Text style={styles.menuText}>Customer support management</Text>
-                  </View>
-                  <Icon name="forward" size={24} color={COLORS.primary} />
-                </View>
-              </TouchableOpacity>
-            )}
           </View>
         </View>
       </View>

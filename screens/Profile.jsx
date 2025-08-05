@@ -261,7 +261,7 @@ const Profile = () => {
                 <Icon size={26} name="pencil" />
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
+              <TouchableOpacity onPress={() => navigation.navigate("ChatListScreen")} style={styles.buttonWrap1}>
                 <Icon size={26} name="bellfilled" />
               </TouchableOpacity>
             </View>
