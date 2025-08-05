@@ -72,8 +72,8 @@ const Home = () => {
                   justifyContent: "center",
                 }}
               >
-                <Text style={styles.welcomeText2}>Hello, {userData ? userData.username : "Alex Kimani"} !</Text>
-                <Text style={styles.welcomeText}>Welcome back</Text>
+                <Text style={styles.welcomeText2}>Hello, {userData ? userData.username : "There"}</Text>
+                <Text style={styles.welcomeText}> {userData ? "Welcome Back" : "Start journey today"}</Text>
               </View>
             </View>
 

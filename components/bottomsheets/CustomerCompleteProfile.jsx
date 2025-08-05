@@ -30,6 +30,10 @@ const CustomerCompleteProfile = forwardRef((props, ref) => {
 
   const [loader, setLoader] = useState(false);
 
+  if (!userData) {
+    return null;
+  }
+
   // Create a ref for the BottomSheetModal if not provided
   const bottomSheetRef = ref || useRef(null);
 

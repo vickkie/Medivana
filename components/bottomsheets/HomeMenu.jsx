@@ -95,16 +95,10 @@ const HomeMenu = forwardRef((props, ref) => {
             </View>
           </TouchableOpacity>
           <View style={styles.menuCombineContainer}>
-            <TouchableOpacity onPress={() => handleNavigation("Orders")}>
+            <TouchableOpacity onPress={() => handleNavigation("Appointments")}>
               <View style={styles.menuCombinelist}>
                 <Icon name="basket" size={26} color={COLORS.primary} />
-                <Text style={styles.menuText}>Orders</Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigation("Favourites")}>
-              <View style={styles.menuItem(0.5)}>
-                <Icon name="favouritebag" size={24} color={COLORS.primary} />
-                <Text style={styles.menuText}>Wishlist</Text>
+                <Text style={styles.menuText}>Appointments</Text>
               </View>
             </TouchableOpacity>
           </View>
