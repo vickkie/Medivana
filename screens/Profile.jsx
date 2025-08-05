@@ -476,7 +476,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     minHeight: SIZES.height / 1.5 + 20,
     backgroundColor: COLORS.white,
-    marginTop: 0,
+    marginTop: 20,
     elevation: 1,
   },
   profile: {
