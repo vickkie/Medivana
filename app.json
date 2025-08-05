@@ -7,7 +7,7 @@
     "icon": "./assets/icons/medivana-light.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/icons/medivana-whitephone.png",
+      "image": "./assets/icons/medivana-splash-light.png",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [

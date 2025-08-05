@@ -23,140 +23,10 @@ import AppointmentPage from "./AppointmentList";
 import { FilterIcon, SearchIcon } from "lucide-react-native";
 
 const Orders = () => {
-  const [userId, setUserId] = useState(null);
-  const { userData, userLogin } = useContext(AuthContext);
-
   const navigation = useNavigation();
 
-  useEffect(() => {
-    if (!userLogin) {
-      setUserId(1);
-      navigation.navigate("Login");
-      return;
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
-    }
-  }, [userLogin, userData]);
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("All");
-  const [ordersData, setOrdersData] = useState([]);
-  const [products, setProducts] = useState("");
-  const [orderItems, setOrderItems] = useState("");
-
-  const [sortedOrdersData, setSortedOrdersData] = useState([]);
-  const [last3orders, setlast3orders] = useState([]);
-
-  // State for orders, loading, and error
-  const [data, setOrders] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (!userLogin) {
-      setUserId(1); // Consider handling this differently, maybe redirecting to login immediately
-      navigation.navigate("Login");
-      return;
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
-    }
-  }, [userLogin, userData]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      setError(null);
-      try {
-        const response = await fetch(`${BACKEND_PORT}/api/orders/user/${userId}`);
-        const data = await response.json();
-
-        // console.log(data);
-        setOrders(data || []);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (userId) {
-      fetchData();
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    // console.log(data);
-  }, [data, ordersData]);
-
-  useEffect(() => {
-    if (!isLoading && !error && data.orders && data.orders.length !== 0) {
-      // Destructure orders from data
-      const orders = data.orders || [];
-      setOrdersData(orders);
-
-      // Sort orders
-      const sortedOrders = [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setSortedOrdersData(sortedOrders);
-
-      // Get the latest three orders
-      const latestThreeOrders = sortedOrders.slice(0, 3).map((order) => ({
-        id: order.orderId,
-      }));
-
-      setlast3orders(latestThreeOrders);
-    }
-  }, [data, isLoading, error]);
-
-  useEffect(() => {
-    if (sortedOrdersData.length > 0) {
-      function extractProductDetails(orders) {
-        orders.forEach((order) => {
-          // console.log("orderid", order._id);
-
-          setOrderItems();
-
-          order.products.forEach((product) => {
-            // console.log(product);
-            const items = product._id;
-
-            const { _id, title, price, imageUrl, description } = product._id || {};
-
-            setProducts();
-          });
-        });
-      }
-      extractProductDetails(data.orders);
-    }
-  }, [sortedOrdersData, data]);
-
-  const filterOrdersByStatus = useCallback(() => {
-    if (selectedStatus === "All") {
-      return sortedOrdersData;
-    }
-    return sortedOrdersData.filter((order) => order.status === selectedStatus);
-  }, [selectedStatus, sortedOrdersData]);
-
-  const filterOrdersBySearchQuery = useCallback(
-    (orders) => {
-      return orders.filter((order) => order.orderId.includes(searchQuery));
-    },
-    [searchQuery]
-  );
-
-  const filteredOrders = useMemo(() => {
-    const statusFiltered = filterOrdersByStatus();
-    return filterOrdersBySearchQuery(statusFiltered);
-  }, [filterOrdersByStatus, filterOrdersBySearchQuery]);
-
-  const showToast = (type, text1, text2) => {
-    Toast.show({
-      type: type,
-      text1: text1,
-      text2: text2 ? text2 : "",
-      visibilityTime: 3000,
-    });
-  };
 
   return (
     <SafeAreaView style={styles.containerx}>
@@ -201,39 +71,8 @@ const Orders = () => {
               </View>
             )}
 
-            {/* <FlatList
-              horizontal
-              data={["All", "pending", "completed"]}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  style={[styles.filterButton, selectedStatus === item && styles.selectedFilter]}
-                  onPress={() => setSelectedStatus(item)}
-                >
-                  <Text>{item}</Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={(item) => item}
-              contentContainerStyle={styles.filterContainer}
-            /> */}
-
             <View style={styles.detailsWrapper}>
-              <AppointmentPage />
-
-              {/* {!isLoading && filteredOrders.length == 0 && (
-                <View style={styles.containLottie}>
-                  <View style={styles.animationWrapper}>
-                    <LottieView
-                      source={require("../assets/data/emptybox.json")}
-                      autoPlay
-                      loop
-                      style={styles.animation}
-                    />
-                  </View>
-                  <View style={{ marginTop: -20, paddingBottom: 10 }}>
-                    <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}> Nothing to see here</Text>
-                  </View>
-                </View>
-              )} */}
+              <AppointmentPage filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
             </View>
           </View>
         </ScrollView>

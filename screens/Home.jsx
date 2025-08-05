@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   topWelcomeWrapper: {
-    minHeight: 130,
+    minHeight: 110,
     backgroundColor: COLORS.themey,
     borderBottomLeftRadius: SIZES.medium,
     borderBottomRightRadius: SIZES.medium,

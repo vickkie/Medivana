@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useMemo, useCallback } from "react";
 import {
   View,
   Text,
@@ -10,10 +10,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
-import { ChevronLeft, ChevronRightIcon, Clock, MessageCircle, Video } from "lucide-react-native";
+import { ChevronLeft, ChevronRightIcon, Clock, MessageCircle, RefreshCcw, Video } from "lucide-react-native";
 import { COLORS, SIZES } from "../constants";
-
-const API_URL = "http://192.168.100.80:3000/api/v1/appointment/user/688dd620ebd1bcf030beab58";
+import { BACKEND_PORT } from "@env";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { AuthContext } from "../components/auth/AuthContext";
+import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const today = new Date();
@@ -23,98 +25,131 @@ const datesThisWeek = weekDays.map((_, idx) => {
   return d;
 });
 
-export default function AppointmentPage() {
+const generateWeekDates = (offset = 0) => {
+  const baseDate = new Date();
+  const startOfWeek = new Date(baseDate);
+  startOfWeek.setDate(baseDate.getDate() - baseDate.getDay() + offset * 7);
+
+  return Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(startOfWeek);
+    date.setDate(startOfWeek.getDate() + i);
+    return date;
+  });
+};
+
+export default function AppointmentPage({ filterList, searchQuery1 = "", isSearching }) {
   const [selectedIndex, setSelectedIndex] = useState(new Date().getDay());
   const [appointments, setAppointments] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   const [weekOffset, setWeekOffset] = useState(0);
   const [weekDates, setWeekDates] = useState([]);
   const [isMonth, setIsMonth] = useState("");
 
-  const generateWeekDates = (offset = 0) => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - startOfWeek.getDay() + offset * 7); // Sunday start
+  const { userData, userLogin } = useContext(AuthContext);
+  const [userId, setUserId] = useState(null);
+  const navigation = useNavigation();
 
-    const dates = [];
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
-      dates.push(date);
+  useEffect(() => {
+    if (!userLogin) {
+      setUserId(1);
+      navigation.navigate("Login");
+      return;
+    } else if (userData && userData._id) {
+      setUserId(userData._id);
     }
-    return dates;
-  };
+  }, [userLogin, userData]);
+
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  // console.log(searchQuery1, "s");
 
   useEffect(() => {
     setWeekDates(generateWeekDates(weekOffset));
   }, [weekOffset]);
 
   // fetch all appointments once
+  const API_URL = useMemo(() => `${BACKEND_PORT}/api/v1/appointment/user/${userData?._id}`, [userData]);
+
+  // console.log(API_URL);
+
   useEffect(() => {
-    axios
-      .get(API_URL)
-      .then((res) => {
-        if (res.data.success) {
-          console.log("2", res.data.appointments);
-          setAppointments(res.data.appointments);
-        } else {
+    // console.log("fetching");
+    const fetchAppointments = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(API_URL);
+        // console.log(res.data.success);
+
+        if (!res?.data?.success) {
           throw new Error("API returned success: false");
         }
-      })
-      .catch((err) => {
-        console.warn(err.message);
-        setError(err.message);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
 
-  // filter on day change or data change
+        setAppointments(res.data.appointments || []);
+        setError(null);
+      } catch (err) {
+        setError(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+        setRefreshing(false);
+      }
+    };
+
+    fetchAppointments();
+  }, [refreshing]);
+  const getAppointmentStatus = (appt) => {
+    if (appt.isCancelled) return "Cancelled";
+    if (appt.isFinished) return "Completed";
+    if (appt.isConfirmed) return "Upcoming";
+    return "Pending Approval";
+  };
+
   useEffect(() => {
     const selectedDate = weekDates[selectedIndex];
     if (!selectedDate) return;
 
-    setFiltered(
-      appointments.filter((appt) => {
-        const apptDate = new Date(appt.appointmentDate);
-        return (
-          apptDate.getDate() === selectedDate.getDate() &&
-          apptDate.getMonth() === selectedDate.getMonth() &&
-          apptDate.getFullYear() === selectedDate.getFullYear()
-        );
-      })
-    );
-  }, [appointments, selectedIndex, weekDates]);
+    const search = searchQuery1.toLowerCase();
+
+    const newFiltered = appointments.filter((appt) => {
+      const apptDate = new Date(appt.appointmentDate);
+
+      const status = getAppointmentStatus(appt);
+      const matchesStatus = selectedStatus === "All" || status === selectedStatus;
+
+      const search = searchQuery1.toLowerCase();
+      const matchesSearch =
+        appt?.doctor?.fullName?.toLowerCase().includes(search) ||
+        appt?.bookingId?.toLowerCase().includes(search) ||
+        apptDate.toDateString().toLowerCase().includes(search);
+
+      const isSameDate =
+        apptDate.getDate() === selectedDate.getDate() &&
+        apptDate.getMonth() === selectedDate.getMonth() &&
+        apptDate.getFullYear() === selectedDate.getFullYear();
+
+      if (isSearching) {
+        // In search mode, ignore date
+        return matchesSearch && matchesStatus;
+      }
+
+      // Normal mode: date + optional search + status
+      return isSameDate && matchesSearch && matchesStatus;
+    });
+
+    setFiltered(newFiltered);
+  }, [appointments, selectedIndex, weekDates, searchQuery1, selectedStatus]);
+
   useEffect(() => {
     if (weekDates.length > 0) {
-      const middleDay = weekDates[3]; // pick mid-week to avoid month jumps on edge days
+      const middleDay = weekDates[3];
       const month = middleDay.toLocaleDateString("en-US", { month: "long" });
       setIsMonth(month);
     }
   }, [weekDates]);
 
-  if (loading) {
-    return (
-      <SafeAreaView style={styles.center}>
-        <ActivityIndicator size="large" />
-      </SafeAreaView>
-    );
-  }
-
-  if (error) {
-    return (
-      <SafeAreaView style={styles.center}>
-        <Text style={styles.errorText}>Error: {error}</Text>
-      </SafeAreaView>
-    );
-  }
-
   const renderDay = (date, idx) => {
     const dayShort = date.toLocaleDateString("en-US", { weekday: "short" });
-    const monthShort = date.toLocaleDateString("en-US", { month: "long" });
 
     return (
       <>
@@ -130,59 +165,116 @@ export default function AppointmentPage() {
     );
   };
 
-  const renderItem = ({ item }) => {
-    const status = item.isCancelled
-      ? { label: "Cancelled", style: styles.badgeCancelled }
-      : item.isConfirmed
-      ? { label: "Completed", style: styles.badgeCompleted }
-      : { label: "Upcoming", style: styles.badgeUpcoming };
+  const renderItem = useCallback(
+    ({ item }) => {
+      const status = getAppointmentStatus(item);
+      const badgeStyle = {
+        Cancelled: styles.badgeCancelled,
+        Completed: styles.badgeCompleted,
+        Upcoming: styles.badgeUpcoming,
+        "Pending Approval": styles.badgePending,
+      }[status];
 
-    const isVideo = item.userNotes.toLowerCase().includes("video");
-
-    return (
-      <View style={styles.card}>
-        <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
-        <View style={styles.info}>
-          <Text style={styles.name}>Dr. {item?.doctor.fullName}</Text>
-          <View style={styles.row}>
-            <Clock size={14} />
-            <Text style={styles.time}>{item?.appointmentTime}</Text>
+      return (
+        <TouchableOpacity style={styles.card}>
+          <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
+          <View style={styles.info}>
+            <Text style={styles.name}>Dr. {item?.doctor.fullName}</Text>
+            <View style={styles.row}>
+              <Clock size={14} color={COLORS.themey} />
+              <Text style={styles.time}>{item?.appointmentTime}</Text>
+            </View>
+            <View style={styles.row}>
+              <Text style={styles.type}>ID: {item?.bookingId}</Text>
+            </View>
           </View>
-          <View style={styles.row}>
-            <Text style={styles.type}>{item?.bookingId}</Text>
+          <View style={[styles.badge, badgeStyle]}>
+            <Text style={styles.badgeText}>{status}</Text>
           </View>
-        </View>
-        <View style={[styles.badge, status.style]}>
-          <Text style={styles.badgeText}>{status.label}</Text>
-        </View>
-      </View>
-    );
-  };
+        </TouchableOpacity>
+      );
+    },
+    [appointments]
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
-        <Text style={styles.monthHeader}>{isMonth}</Text>
-      </View>
-      <View style={styles.weekHeader}>
-        <TouchableOpacity onPress={() => setWeekOffset((prev) => prev - 1)}>
-          <ChevronLeft size={20} color="#333" />
-        </TouchableOpacity>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            onRefresh={() => {
+              // console.log("dragged");
+              setRefreshing(true);
+            }}
+          />
+        }
+      >
+        {!isSearching ? (
+          <>
+            <View style={{ marginTop: 10 }}>
+              <Text style={styles.monthHeader}>{isMonth}</Text>
+            </View>
+            <View style={styles.weekHeader}>
+              <TouchableOpacity onPress={() => setWeekOffset((prev) => prev - 1)}>
+                <ChevronLeft size={20} color="#333" />
+              </TouchableOpacity>
 
-        <View style={styles.weekContainer}>{weekDates.map(renderDay)}</View>
+              <View style={styles.weekContainer}>{weekDates.map(renderDay)}</View>
 
-        <TouchableOpacity onPress={() => setWeekOffset((prev) => prev + 1)}>
-          <ChevronRightIcon size={20} color="#333" />
-        </TouchableOpacity>
-      </View>
-
-      <FlatList
-        data={filtered}
-        keyExtractor={(i) => i._id}
-        renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles.emptyText}>No appointments</Text>}
-        contentContainerStyle={{ padding: 16 }}
-      />
+              <TouchableOpacity onPress={() => setWeekOffset((prev) => prev + 1)}>
+                <ChevronRightIcon size={20} color="#333" />
+              </TouchableOpacity>
+            </View>
+          </>
+        ) : (
+          <View style={{ flexDirection: "row", justifyContent: "space-around", marginVertical: 10 }}>
+            {["All", "Completed", "Upcoming", "Cancelled", "Pending Approval"].map((status) => (
+              <TouchableOpacity
+                key={status}
+                onPress={() => setSelectedStatus(status)}
+                style={{
+                  padding: 8,
+                  backgroundColor: selectedStatus === status ? COLORS.themey : "#ddd",
+                  borderRadius: 20,
+                }}
+              >
+                <Text style={{ color: selectedStatus === status ? "#fff" : "#333" }}>{status}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
+        <SafeAreaView>
+          {error && !loading ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>Error: {error}</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setRefreshing(true);
+                }}
+                style={styles.retryButton}
+              >
+                <RefreshCcw size={24} color={COLORS.white} />
+              </TouchableOpacity>
+            </View>
+          ) : loading ? (
+            <ActivityIndicator size="large" />
+          ) : filtered.length === 0 ? (
+            <Text style={styles.emptyText}>No appointments {isSearching ? "Found" : "today"}</Text>
+          ) : (
+            <FlatList
+              data={filtered}
+              keyExtractor={(i) => i._id}
+              renderItem={renderItem}
+              contentContainerStyle={{
+                padding: 3,
+                backgroundColor: COLORS.themew,
+                borderRadius: SIZES.medium,
+                gap: 2,
+              }}
+            />
+          )}
+        </SafeAreaView>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -206,10 +298,11 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 4,
+    padding: SIZES.xSmall - 3,
     marginBottom: 12,
-    backgroundColor: "#FAFAFA",
-    borderRadius: 8,
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium,
+    // width: SIZES.width - 20,
   },
   avatar: {
     width: 90,
@@ -228,9 +321,9 @@ const styles = StyleSheet.create({
   badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
   badgeText: { fontSize: 12, fontWeight: "600", color: "#FFF" },
   badgeCompleted: { backgroundColor: "#4CAF50" },
-  badgeUpcoming: { backgroundColor: "#2196F3" },
+  badgePending: { backgroundColor: "#FFC107" },
+  badgeUpcoming: { backgroundColor: "#03A9F4" },
   badgeCancelled: { backgroundColor: "#F44336" },
-
   emptyText: { textAlign: "center", color: "#AAA", marginTop: 50 },
   weekHeader: {
     flexDirection: "row",
@@ -238,5 +331,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 12,
     paddingVertical: 8,
+  },
+  errorContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  errorMessage: {
+    fontFamily: "bold",
+  },
+
+  retryButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 14,
+    marginTop: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  retryButtonText: {
+    color: COLORS.white,
+    fontSize: SIZES.medium,
+    textAlign: "center",
   },
 });
