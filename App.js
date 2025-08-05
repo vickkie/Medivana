@@ -57,6 +57,7 @@ import {
   ResetPassword,
   DoctorDetails,
   DoctorBook,
+  AppointmentDetails,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -106,6 +107,7 @@ const screens = [
   { name: "ResetPassword", component: ResetPassword, options: { headerShown: false } },
   { name: "DoctorDetails", component: DoctorDetails, options: { headerShown: false } },
   { name: "DoctorBook", component: DoctorBook, options: { headerShown: false } },
+  { name: "AppointmentDetails", component: AppointmentDetails, options: { headerShown: false } },
 ];
 
 export default function App() {

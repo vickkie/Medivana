@@ -22,7 +22,7 @@ import About from "./About";
 import Faqs from "./Faqs";
 import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
-import OrderDetails from "./OrderDetails";
+import OrderDetails from "./AppointmentDetails";
 import AboutUs from "./AboutUs";
 import SupplierRegister from "./SupplierRegister";
 import ChatScreen from "./ChatScreen";
@@ -35,6 +35,7 @@ import RequestCode from "./RequestCode";
 import ResetPassword from "./ResetPassword";
 import DoctorDetails from "../components/DoctorDetails/DoctorDetails";
 import DoctorBook from "../components/DoctorDetails/DoctorBook";
+import AppointmentDetails from "./AppointmentDetails";
 
 // Export only user screens
 export {
@@ -74,4 +75,5 @@ export {
   ResetPassword,
   DoctorDetails,
   DoctorBook,
+  AppointmentDetails,
 };

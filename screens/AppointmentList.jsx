@@ -185,16 +185,26 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
       }[status];
 
       return (
-        <TouchableOpacity style={styles.card}>
+        <TouchableOpacity
+          style={styles.card}
+          onPress={() => {
+            if (typeof item?._id === "string") {
+              navigation.navigate("AppointmentDetails", { id: item._id });
+              console.log("Navigating to:", item._id);
+            } else {
+              console.warn("Invalid ID, not navigating", item?._id);
+            }
+          }}
+        >
           <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
           <View style={styles.info}>
             <Text style={styles.name}>Dr. {item?.doctor.fullName}</Text>
-            {isSearching && (
-              <View style={styles.row}>
-                <Calendar1 size={14} color={COLORS.themey} />
-                <Text style={styles.time}>{new Date(item?.appointmentDate).toLocaleDateString()}</Text>
-              </View>
-            )}
+            {/* {isSearching && ( */}
+            <View style={styles.row}>
+              <Calendar1 size={14} color={COLORS.themey} />
+              <Text style={styles.time}>{new Date(item?.appointmentDate).toLocaleDateString()}</Text>
+            </View>
+            {/* )} */}
             <View style={styles.row}>
               <Clock size={14} color={COLORS.themey} />
               <Text style={styles.time}>{item?.appointmentTime}</Text>
@@ -216,11 +226,7 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
     <SafeAreaView style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={() => setRefreshing(true)}
-            tintColor="#000" // optional
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={() => setRefreshing(true)} tintColor="#000" />
         }
       >
         {!isSearching ? (

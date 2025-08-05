@@ -233,7 +233,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
               </View>
 
               <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Gender</Text>
+                <Text style={styles.pickerLabel}>Patient Gender</Text>
                 <Picker
                   selectedValue={gender}
                   onValueChange={(itemValue) => setGender(itemValue)}
@@ -247,7 +247,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
               </View>
 
               <View style={{ marginTop: 20 }}>
-                <Text style={styles.label}>Date of birth</Text>
+                <Text style={styles.label}>Patient Date of birth</Text>
                 <TouchableOpacity style={[styles.dateBox, styles.input]} onPress={showDatepicker}>
                   <Text>{age.toDateString()}</Text>
                   <Icon name="calendar" size={15} />
