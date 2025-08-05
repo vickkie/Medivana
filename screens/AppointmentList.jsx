@@ -10,7 +10,16 @@ import {
   ActivityIndicator,
 } from "react-native";
 import axios from "axios";
-import { ChevronLeft, ChevronRightIcon, Clock, MessageCircle, RefreshCcw, Video } from "lucide-react-native";
+import {
+  Calendar,
+  Calendar1,
+  ChevronLeft,
+  ChevronRightIcon,
+  Clock,
+  MessageCircle,
+  RefreshCcw,
+  Video,
+} from "lucide-react-native";
 import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -180,6 +189,12 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
           <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
           <View style={styles.info}>
             <Text style={styles.name}>Dr. {item?.doctor.fullName}</Text>
+            {isSearching && (
+              <View style={styles.row}>
+                <Calendar1 size={14} color={COLORS.themey} />
+                <Text style={styles.time}>{new Date(item?.appointmentDate).toLocaleDateString()}</Text>
+              </View>
+            )}
             <View style={styles.row}>
               <Clock size={14} color={COLORS.themey} />
               <Text style={styles.time}>{item?.appointmentTime}</Text>
@@ -202,10 +217,9 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
       <ScrollView
         refreshControl={
           <RefreshControl
-            onRefresh={() => {
-              // console.log("dragged");
-              setRefreshing(true);
-            }}
+            refreshing={refreshing}
+            onRefresh={() => setRefreshing(true)}
+            tintColor="#000" // optional
           />
         }
       >

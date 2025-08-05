@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const DoctorCard = ({ doctor, showBook }) => {
   const navigation = useNavigation();
-  const name = doctor?.fullName || doctor?.email?.split("@")[0];
+  const name = doctor?.fullName || `${doctor?.firstname} ${doctor?.lastname}` || doctor?.email?.split("@")[0];
   const fee = doctor?.consultationFee;
 
   const rating = doctor?.ratings?.length

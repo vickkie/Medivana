@@ -1,26 +1,26 @@
-import { FlatList, Text, View, ActivityIndicator, RefreshControl, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState, useCallback } from "react";
+import { View, FlatList, Text, TouchableOpacity, ActivityIndicator, Image, RefreshControl } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { COLORS, SIZES } from "../../constants";
-import styles from "./styles/doctorCategoriesRow.js";
-
-import useFetch from "../../hook/useFetch";
-import Icon from "../../constants/icons";
 import { ListFilter, RefreshCcw } from "lucide-react-native";
 
-const DoctorCategoryCard = ({ item, backColor, setSelectedCat, setisselected, isselected }) => {
-  const isActive = isselected === item?._id;
+import styles from "./styles/doctorCategoriesRow";
+import Icon from "../../constants/icons";
+import { COLORS, SIZES } from "../../constants";
+import useFetch from "../../hook/useFetch";
+
+// === Constants ===
+const CACHE_KEY = "cached_specializations";
+const CACHE_TTL = 5 * 60 * 60 * 1000; // 5 hrs
+
+// === Category Card Component ===
+const DoctorCategoryCard = ({ item, backColor, isSelected, onSelect }) => {
+  const isActive = isSelected === item._id;
+
   const formatIconName = (str) => (str ? str.toLowerCase() : item?.bodypart);
 
   return (
-    <TouchableOpacity
-      style={[styles.card]}
-      onPress={() => {
-        setSelectedCat(item?.name === "all" ? null : item?.name);
-        setisselected(item?._id);
-      }}
-    >
-      {item?._id === "all" ? (
+    <TouchableOpacity style={styles.card} onPress={() => onSelect(item)}>
+      {item._id === "all" ? (
         <View
           style={[
             styles.allCatFilter,
@@ -39,11 +39,11 @@ const DoctorCategoryCard = ({ item, backColor, setSelectedCat, setisselected, is
               isActive && { borderWidth: 1, borderColor: COLORS.themey },
             ]}
           >
-            <Icon name={formatIconName(item?.bodypart)} size={24} color={COLORS.white} />
-            <Image source={{ uri: item?.icon }} style={styles.icon} />
+            <Icon name={formatIconName(item.bodypart)} size={24} color={COLORS.white} />
+            <Image source={{ uri: item.icon }} style={styles.icon} />
           </View>
           <Text style={[styles.title, isActive && { color: COLORS.themey }]}>
-            {item?.bodypart.charAt(0).toUpperCase() + item?.bodypart.slice(1).toLowerCase()}
+            {item.bodypart.charAt(0).toUpperCase() + item.bodypart.slice(1).toLowerCase()}
           </Text>
         </>
       )}
@@ -51,101 +51,103 @@ const DoctorCategoryCard = ({ item, backColor, setSelectedCat, setisselected, is
   );
 };
 
-const CACHE_KEY = "cached_specializationss";
-const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-
+// === Main Component ===
 const DoctorsCategoriesRow = ({ refreshList, setRefreshList, backColor = "#F0F5F9", setSelectedCat }) => {
   const { data, isLoading, error, refetch } = useFetch("specialization");
+
   const [categories, setCategories] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
-  const [isselected, setisselected] = useState();
+  const [selectedId, setSelectedId] = useState();
 
-  // Load cache on mount
+  // Load cached data first
   useEffect(() => {
-    const loadCachedData = async () => {
+    const loadCache = async () => {
       try {
         const cached = await AsyncStorage.getItem(CACHE_KEY);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          const isFresh = Date.now() - parsed.timestamp < CACHE_TTL;
-          if (isFresh) setCategories(parsed.data);
+        if (!cached) return;
+
+        const { data: cachedData, timestamp } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_TTL) {
+          setCategories(cachedData);
         }
-      } catch (e) {
-        console.warn("Failed to load specialization cache", e);
+      } catch (err) {
+        console.warn("Failed to load cache:", err);
       }
     };
-    loadCachedData();
+
+    loadCache();
   }, []);
 
-  // Update state + cache when data comes in
+  // When data from API comes in, update state + cache
   useEffect(() => {
-    if (Array.isArray(data) && data.length) {
-      const sorted = [...data].sort((a, b) => a.bodypart?.localeCompare(b.bodypart));
+    if (!Array.isArray(data) || data.length === 0) return;
 
-      const withAll = [
-        {
-          _id: "all",
-          name: "all",
-          bodypart: "All",
-          icon: "https://cdn-icons-png.flaticon.com/512/992/992651.png", // optional custom icon
-        },
-        ...sorted,
-      ];
+    const sorted = data.sort((a, b) => a.bodypart?.localeCompare(b.bodypart));
 
-      setCategories(withAll);
+    const withAll = [
+      {
+        _id: "all",
+        name: "all",
+        bodypart: "All",
+        icon: "https://cdn-icons-png.flaticon.com/512/992/992651.png",
+      },
+      ...sorted,
+    ];
 
-      AsyncStorage.setItem(CACHE_KEY, JSON.stringify({ data: withAll, timestamp: Date.now() })).catch((e) =>
-        console.warn("Failed to cache specialization data", e)
-      );
-    }
+    setCategories(withAll);
+
+    AsyncStorage.setItem(CACHE_KEY, JSON.stringify({ data: withAll, timestamp: Date.now() })).catch((e) =>
+      console.warn("Failed to cache data:", e)
+    );
   }, [data]);
 
+  // Trigger refetch if external refresh is requested
   useEffect(() => {
-    if (refreshList) refetch();
-    return () => setRefreshList(false);
+    if (refreshList) {
+      refetch();
+      setRefreshList(false);
+    }
   }, [refreshList]);
 
+  // Handle pull-to-refresh
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    try {
-      refetch();
-    } finally {
-      setRefreshing(false);
-    }
+    refetch();
+    setTimeout(() => setRefreshing(false), 1000); // Prevents UI flicker
   }, []);
 
-  const keyExtractor = useCallback((item) => item._id, []);
+  // Handle category selection
+  const handleSelect = (item) => {
+    setSelectedCat(item.name === "all" ? null : item.name);
+    setSelectedId(item._id);
+  };
+
   const renderItem = useCallback(
     ({ item }) => (
-      <DoctorCategoryCard
-        item={item}
-        backColor={backColor}
-        setSelectedCat={setSelectedCat}
-        setisselected={setisselected}
-        isselected={isselected}
-      />
+      <DoctorCategoryCard item={item} backColor={backColor} isSelected={selectedId} onSelect={handleSelect} />
     ),
-    [backColor, isselected, setisselected, setSelectedCat]
+    [backColor, selectedId]
   );
 
   return (
     <View style={[styles.container, { marginBottom: 20 }]}>
-      {isLoading && !categories.length ? (
+      {isLoading && categories.length === 0 ? (
         <ActivityIndicator size={SIZES.xxLarge} color={COLORS.primary} />
-      ) : error && !categories.length ? (
+      ) : error && categories.length === 0 ? (
         <View style={styles.errorContainer}>
           <TouchableOpacity onPress={refetch} style={styles.retryButton}>
             <RefreshCcw size={24} color={COLORS.white} />
           </TouchableOpacity>
+          <Text style={styles.errorText}>No internet. Try again.</Text>
         </View>
       ) : (
         <FlatList
-          data={categories}
-          keyExtractor={keyExtractor}
-          renderItem={renderItem}
           horizontal
+          data={categories}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ columnGap: 8, paddingHorizontal: 10 }}
+          contentContainerStyle={{ paddingHorizontal: 10, columnGap: 8 }}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
         />
       )}
