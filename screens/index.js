@@ -7,7 +7,7 @@ import ProductDetails from "../components/products/ProductDetails";
 import Products from "./Products";
 import ProductList from "../components/products/ProductList";
 import LoginPage from "./LoginPage";
-import Orders from "./Orders";
+import Orders from "./Appointments";
 import Favourites from "./Favourites";
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
@@ -36,6 +36,8 @@ import ResetPassword from "./ResetPassword";
 import DoctorDetails from "../components/DoctorDetails/DoctorDetails";
 import DoctorBook from "../components/DoctorDetails/DoctorBook";
 import AppointmentDetails from "./AppointmentDetails";
+import Appointments from "./Appointments";
+Appointments;
 
 // Export only user screens
 export {
@@ -76,4 +78,5 @@ export {
   DoctorDetails,
   DoctorBook,
   AppointmentDetails,
+  Appointments,
 };

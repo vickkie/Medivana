@@ -58,6 +58,7 @@ import {
   DoctorDetails,
   DoctorBook,
   AppointmentDetails,
+  Appointments,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -108,6 +109,7 @@ const screens = [
   { name: "DoctorDetails", component: DoctorDetails, options: { headerShown: false } },
   { name: "DoctorBook", component: DoctorBook, options: { headerShown: false } },
   { name: "AppointmentDetails", component: AppointmentDetails, options: { headerShown: false } },
+  { name: "Appointments", component: Appointments, options: { headerShown: false } },
 ];
 
 export default function App() {

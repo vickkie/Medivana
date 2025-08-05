@@ -5,6 +5,7 @@ import { COLORS, SIZES, FONTS } from "../../../constants";
 export default StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 20,
     backgroundColor: COLORS.background,
   },
   loadingContainer: {
@@ -47,7 +48,7 @@ export default StyleSheet.create({
     fontWeight: "600",
   },
   scrollContainer: {
-    marginTop: 90,
+    marginTop: 60,
     marginBottom: 60,
     background: COLORS.red,
     flex: 1,
@@ -352,11 +353,12 @@ export default StyleSheet.create({
   },
   picker: {
     height: 40,
+    overflow: "hidden",
     borderColor: "gray",
     borderWidth: 1,
     color: COLORS.black,
     backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.medium,
+    borderRadius: 50,
   },
   heading: {
     fontFamily: "bold",

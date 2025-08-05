@@ -5,7 +5,7 @@ import { COLORS, SIZES, FONTS } from "../../../constants";
 export default StyleSheet.create({
   container: {
     flex: 1,
-
+    marginTop: 20,
     backgroundColor: COLORS.background,
   },
   loadingContainer: {
@@ -48,7 +48,7 @@ export default StyleSheet.create({
     fontWeight: "600",
   },
   scrollContainer: {
-    marginTop: 85,
+    marginTop: 55,
     background: COLORS.red,
     flex: 1,
     paddingHorizontal: 10,
@@ -67,20 +67,24 @@ export default StyleSheet.create({
     resizeMode: "contain",
   },
   doctorInfo: {
-    // alignItems: "center",
+    backgroundColor: COLORS.themew,
     justifyContent: "flex-start",
-    marginBottom: 15,
+    padding: 3,
+    paddingHorizontal: 10,
+    justifyContent: "center",
+    alignContent: "center",
+    borderRadius: SIZES.medium,
   },
   doctorName: {
-    color: COLORS.themew,
-    fontSize: 20,
+    color: COLORS.themey,
+    fontSize: SIZES.medium,
     fontFamily: "bold",
     marginBottom: 5,
   },
   doctorSpecialty: {
-    color: COLORS.themew,
+    color: COLORS.themey,
     fontSize: 14,
-    fontFamily: "lufgaBold",
+    fontFamily: "bold",
   },
   wholeCardView: {
     backgroundColor: COLORS.themeg,
@@ -150,6 +154,7 @@ export default StyleSheet.create({
     color: COLORS.themey,
     fontSize: SIZES.large,
     fontWeight: "600",
+    fontFamily: "semibold",
   },
   monthSelector: {
     flexDirection: "row",
@@ -281,6 +286,8 @@ export default StyleSheet.create({
   timeslots: {
     borderRadius: SIZES.large,
     padding: 10,
+    borderWidth: 1,
+    borderColor: COLORS.themey,
     backgroundColor: COLORS.themeg,
   },
   slotsHolder: {
@@ -290,12 +297,90 @@ export default StyleSheet.create({
     gap: 10,
   },
   timeslot: {
-    fontFamily: "lufgaSemiBold",
+    fontFamily: "LufgaSemiBold",
   },
   backgroundLoader: {
     position: "absolute",
     top: 70,
     right: SIZES.width / 2,
     zIndex: 10,
+  },
+  doctorDetails: {
+    flex: 1,
+  },
+  doctorSpecialization: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+    color: COLORS.gray,
+    marginBottom: 3,
+  },
+  doctorLocation: {
+    fontFamily: "regular",
+    fontSize: SIZES.small + 5,
+    color: COLORS.gray2,
+    marginBottom: 3,
+  },
+  doctorExperience: {
+    fontFamily: "regular",
+    fontSize: SIZES.small + 5,
+    color: COLORS.gray2,
+  },
+  doctorBio: {
+    marginBottom: 15,
+  },
+  bioTitle: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+    marginBottom: 8,
+    color: COLORS.gray,
+  },
+  bioText: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+    color: COLORS.gray,
+    lineHeight: 20,
+  },
+  doctorQualifications: {
+    marginBottom: 15,
+  },
+  qualificationTitle: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+    marginBottom: 5,
+    color: COLORS.gray,
+  },
+  qualificationList: {
+    paddingLeft: 10,
+  },
+  qualificationItem: {
+    fontFamily: "LufgaRegular",
+    fontSize: SIZES.medium - 2,
+    color: COLORS.gray,
+    marginBottom: 2,
+  },
+  doctorLanguages: {
+    marginBottom: 15,
+  },
+  languageTitle: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+    marginBottom: 8,
+    color: COLORS.themey,
+  },
+  languageList: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  languageTag: {
+    backgroundColor: COLORS.themeg,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+  },
+  languageText: {
+    fontFamily: "regular",
+    fontSize: SIZES.medium - 2,
+    color: COLORS.themeb,
   },
 });

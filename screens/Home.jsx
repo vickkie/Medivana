@@ -3,13 +3,11 @@ import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Welcome } from "../components/home";
-import Carousel from "../components/home/Carousel";
+
 import Headings from "../components/home/Headings";
-import ProductsRow from "../components/products/ProductsRow";
-import LatestProducts from "../components/products/LatestProducts";
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
-import { useCart } from "../contexts/CartContext";
+
 import HomeMenu from "../components/bottomsheets/HomeMenu";
 import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
 

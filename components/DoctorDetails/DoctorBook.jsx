@@ -232,6 +232,16 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 </View>
               </View>
 
+              <View style={{ marginTop: 0 }}>
+                <Text style={styles.label}>Patient Date of birth</Text>
+                <TouchableOpacity style={[styles.dateBox, styles.input]} onPress={showDatepicker}>
+                  <Text>{age.toDateString()}</Text>
+                  <Icon name="calendar" size={15} />
+                </TouchableOpacity>
+                {show && (
+                  <DateTimePicker testID="dateTimePicker" value={age} mode={mode} is24Hour={true} onChange={onChange} />
+                )}
+              </View>
               <View style={styles.pickerWrapper}>
                 <Text style={styles.pickerLabel}>Patient Gender</Text>
                 <Picker
@@ -246,15 +256,15 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 </Picker>
               </View>
 
-              <View style={{ marginTop: 20 }}>
-                <Text style={styles.label}>Patient Date of birth</Text>
-                <TouchableOpacity style={[styles.dateBox, styles.input]} onPress={showDatepicker}>
-                  <Text>{age.toDateString()}</Text>
-                  <Icon name="calendar" size={15} />
-                </TouchableOpacity>
-                {show && (
-                  <DateTimePicker testID="dateTimePicker" value={age} mode={mode} is24Hour={true} onChange={onChange} />
-                )}
+              <View style={[styles.pickerWrappers, { marginTop: 10 }]}>
+                <Text style={styles.pickerLabel}>Appointment date</Text>
+                <TextInput
+                  editable={false}
+                  style={[styles.inputH, { color: COLORS.themeb }]}
+                  placeholder="selected Date"
+                >
+                  {selectedDay}
+                </TextInput>
               </View>
 
               <View style={styles.slotsHolderH}>
