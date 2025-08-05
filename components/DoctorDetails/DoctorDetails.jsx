@@ -232,7 +232,9 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
               <View style={styles.actionButtons}>
                 {doctorData ? (
                   <View style={styles.doctorInfo}>
-                    <Text style={styles.doctorName}>{`${doctorData?.fullName}` || "Dr. Susan Lal"}</Text>
+                    <Text style={styles.doctorName}>
+                      {`${doctorData?.firstname} ${doctorData?.lastname}` || "Dr. Susan Lal"}
+                    </Text>
                     <Text style={styles.doctorSpecialty}>{doctorData?.specialization?.name || "Bone Expert"}</Text>
                   </View>
                 ) : (

@@ -1,21 +1,19 @@
-## PromoKings App
-
-![epromoking](https://github.com/user-attachments/assets/bf9b6685-4d2d-45c6-9daa-c22613c8c148)
+## Medivana App
 
 ### Overview
 
-The **PromoKings App** is a React Native application designed to deliver a seamless experience in product purchasing.
+The **Medivana App** is a React Native application designed to deliver a seamless experience in appointement with medical practicioners.
 
 ### Getting Started for developers
 
-To get started with the PromoKings App, follow these steps:
+To get started with the Medivana App, follow these steps:
 
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/vickkie/Promokings.git
+   git clone https://github.com/vickkie/Medivana.git
 
-   cd Promokings
+   cd Medivana
    ```
 
 2. Install Dependencies
