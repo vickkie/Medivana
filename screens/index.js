@@ -42,9 +42,11 @@ Appointments;
 import SecurityDetails from "../components/Profile/SecurityDetails";
 import MedicalDetails from "../components/Profile/MedicalDetails";
 import NotificationSettings from "../components/Profile/NotificationSettings";
+import PrivacyPolicy from "../components/Profile/PrivacyPolicy";
 
 // Export only user screens
 export {
+  PrivacyPolicy,
   NotificationSettings,
   MedicalDetails,
   SecurityDetails,

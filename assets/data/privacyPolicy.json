@@ -1,0 +1,120 @@
+{
+  "lastUpdated": "2025-08-11",
+  "version": "1.2",
+  "sections": [
+    {
+      "id": "information-collection",
+      "title": "Information We Collect",
+      "icon": "eye",
+      "content": [
+        {
+          "subtitle": "Personal Information",
+          "text": "We collect information you provide directly to us, such as when you create an account, update your profile, or contact us for support."
+        },
+        {
+          "subtitle": "Health Data",
+          "text": "With your explicit consent, we may collect health-related information including medical history, medications, and appointment data to provide personalized healthcare services."
+        },
+        {
+          "subtitle": "Usage Information",
+          "text": "We automatically collect information about how you use our app, including features accessed, time spent, and interaction patterns."
+        }
+      ]
+    },
+    {
+      "id": "data-usage",
+      "title": "How We Use Your Data",
+      "icon": "users",
+      "content": [
+        {
+          "subtitle": "Service Provision",
+          "text": "We use your information to provide, maintain, and improve our healthcare services, including appointment scheduling and medical reminders."
+        },
+        {
+          "subtitle": "Communication",
+          "text": "We may use your contact information to send you important updates about your account, appointments, or changes to our services."
+        },
+        {
+          "subtitle": "Analytics",
+          "text": "We analyze usage patterns to improve our app's functionality and user experience, always using aggregated and anonymized data."
+        }
+      ]
+    },
+    {
+      "id": "data-protection",
+      "title": "Data Protection & Security",
+      "icon": "lock",
+      "content": [
+        {
+          "subtitle": "Encryption",
+          "text": "All sensitive data is encrypted both in transit and at rest using industry-standard encryption protocols."
+        },
+        {
+          "subtitle": "Access Controls",
+          "text": "We implement strict access controls and authentication measures to ensure only authorized personnel can access your data."
+        },
+        {
+          "subtitle": "Regular Audits",
+          "text": "Our security practices are regularly audited and updated to meet the latest healthcare data protection standards."
+        }
+      ]
+    },
+    {
+      "id": "data-sharing",
+      "title": "Data Sharing",
+      "icon": "users",
+      "content": [
+        {
+          "subtitle": "Healthcare Providers",
+          "text": "With your explicit consent, we may share relevant health information with your healthcare providers to facilitate better care coordination."
+        },
+        {
+          "subtitle": "Legal Requirements",
+          "text": "We may disclose information when required by law, such as in response to a court order or government request."
+        },
+        {
+          "subtitle": "No Sale of Data",
+          "text": "We never sell your personal or health information to third parties for marketing or commercial purposes."
+        }
+      ]
+    },
+    {
+      "id": "your-rights",
+      "title": "Your Rights",
+      "icon": "shield",
+      "content": [
+        {
+          "subtitle": "Access & Portability",
+          "text": "You have the right to access, download, and transfer your personal data at any time through your account settings."
+        },
+        {
+          "subtitle": "Correction & Deletion",
+          "text": "You can update or delete your personal information directly in the app or by contacting our support team."
+        },
+        {
+          "subtitle": "Consent Withdrawal",
+          "text": "You may withdraw your consent for data processing at any time, though this may limit some app functionality."
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Contact Information",
+      "icon": "filetext",
+      "content": [
+        {
+          "subtitle": "Privacy Officer",
+          "text": "For privacy-related questions or concerns, contact our Privacy Officer at privacy@healthapp.com"
+        },
+        {
+          "subtitle": "Support Team",
+          "text": "For general inquiries about data handling, reach out to our support team through the app or at support@healthapp.com"
+        },
+        {
+          "subtitle": "Mailing Address",
+          "text": "Hypercritical studio Inc., 20400 Nairobi, Nairobi Health , HC 45993"
+        }
+      ]
+    }
+  ]
+}

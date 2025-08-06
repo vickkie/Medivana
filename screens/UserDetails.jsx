@@ -26,7 +26,6 @@ import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
 import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
 
-import UserProfileCompletion from "./UserProfileCompletion";
 import {
   BellRing,
   BotMessageSquare,
@@ -356,7 +355,11 @@ const UserDetails = () => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("Message");
+                  }}
+                >
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
                       <TouchableOpacity style={styles.menuItemIcon}>
@@ -367,7 +370,11 @@ const UserDetails = () => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={""}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("PrivacyPolicy");
+                  }}
+                >
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
                       <TouchableOpacity style={styles.menuItemIcon}>
@@ -392,16 +399,6 @@ const UserDetails = () => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => {}}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <UserMinus name="person-remove" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Delete Account</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
                 <TouchableOpacity>
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
