@@ -24,7 +24,7 @@ import { Eye, EyeOff, Lock, LockKeyholeIcon, MailIcon } from "lucide-react-nativ
 
 const validationSchema = Yup.object().shape({
   password: Yup.string()
-    .min(8, "Password must be at least 8 characters")
+    .min(6, "Password must be at least 8 characters")
     .transform((value) => (value ? value.trim() : value))
     .required("Required"),
   email: Yup.string().email("Provide a valid email address").required("Required"),
@@ -303,8 +303,9 @@ const styles = StyleSheet.create({
   errorMessage: {
     color: COLORS.red,
     fontFamily: "regular",
-    fontSize: SIZES.xSmall,
-    marginLeft: 5,
+    fontSize: SIZES.small + 2,
+    marginLeft: 15,
+    marginBottom: 5,
     marginTop: 5,
   },
 

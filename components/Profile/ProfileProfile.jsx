@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { COLORS, SIZES } from "../constants";
-import Icon from "../constants/icons";
+import { COLORS, SIZES } from "../../constants";
+import Icon from "../../constants/icons";
 import { useNavigation } from "@react-navigation/native";
-import { AuthContext } from "../components/auth/AuthContext";
+import { AuthContext } from "../auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -12,41 +12,14 @@ import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
-import ButtonMain from "../components/ButtonMain";
+import ButtonMain from "../ButtonMain";
 import Toast from "react-native-toast-message";
-import { ProfileCompletionContext } from "../components/auth/ProfileCompletionContext";
-
-import UserProfileCompletion from "./UserProfileCompletion";
-import {
-  AudioWaveformIcon,
-  BellElectricIcon,
-  BellRing,
-  BotMessageSquare,
-  ChevronsRight,
-  FileWarningIcon,
-  HeartIcon,
-  InfoIcon,
-  LockKeyhole,
-  LockKeyholeOpen,
-  LogInIcon,
-  LogOutIcon,
-  MailWarning,
-  MessageCircleReply,
-  RefreshCwOff,
-  ShieldAlert,
-  UserCog,
-  UserLockIcon,
-  UserMinus,
-  UserRoundCog,
-  UserX2Icon,
-} from "lucide-react-native";
-import { StatusBar } from "expo-status-bar";
-import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
+import { ProfileCompletionContext } from "../auth/ProfileCompletionContext";
 
 // Global axios-retry
 axiosRetry(axios, { retries: 3 });
 
-const UserDetails = () => {
+const ProfileDetails = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -172,7 +145,7 @@ const UserDetails = () => {
         setLocalProfilePicture(null);
 
         navigation.navigate("Bottom Navigation", {
-          screen: "UserDetails",
+          screen: "ProfileDetails",
         });
       }
     } catch (err) {
@@ -259,7 +232,6 @@ const UserDetails = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ExpoStatusBar backgroundColor={COLORS.themey} barStyle="dark-content" />
       <View style={styles.wrapper}>
         <TouchableOpacity
           onPress={() => {
@@ -285,7 +257,7 @@ const UserDetails = () => {
             </TouchableOpacity>
           )}
           <View style={styles.lowerheader}>
-            <Text style={[styles.heading, { alignSelf: "center" }]}>Profile settings</Text>
+            <Text style={[styles.heading, { alignSelf: "center" }]}>User Details</Text>
 
             <View>
               {isComplete && completionPercentage === 100 && (
@@ -318,115 +290,151 @@ const UserDetails = () => {
 
       <ScrollView>
         <View style={styles.detailsWrapper}>
-          <View style={styles.imageWrapper}>
-            {localProfilePicture ? (
-              <Image source={{ uri: localProfilePicture }} style={styles.profileImage} />
-            ) : profilePicture ? (
-              <Image source={{ uri: `${profilePicture}` }} style={styles.profileImage} />
-            ) : (
-              <Image source={require("../assets/images/userDefault.webp")} style={styles.profileImage} />
-            )}
-            <TouchableOpacity style={styles.editpencil} onPress={pickImage}>
-              <View styles={styles.pencilWrapper}>
-                <Icon name="pencil" size={25} />
-              </View>
-            </TouchableOpacity>
-
-            <View>{userData && <Text>{userData?.email}</Text>}</View>
-          </View>
-          {userLogin && userData !== null ? (
-            <View style={styles.profileData}>
-              <View style={styles.menuboxwrapin}>
-                <TouchableOpacity onPress={navigation.navigate("ProfileDetails")}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <UserRoundCog name="reload" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>User details</Text>
+          {userData !== null ? (
+            <Formik
+              initialValues={{
+                email: userData.email || "",
+                location: userData.location || "",
+                username: userData.username || "",
+                currentPassword: "",
+                newPassword: "",
+                confirmPassword: "",
+              }}
+              validationSchema={getValidationSchema(showPasswordFields)}
+              onSubmit={(values) => updateUserProfile(values)}
+            >
+              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
+                <View style={styles.profileData}>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>UserName</Text>
+                    <View style={[styles.inputWrapper, touched.username && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder="Username"
+                        onFocus={() => setFieldTouched("username")}
+                        onBlur={() => setFieldTouched("username", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.username}
+                        onChangeText={handleChange("username")}
+                      />
                     </View>
+                    {touched.username && errors.username && <Text style={styles.errorMessage}>{errors.username}</Text>}
                   </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <HeartIcon name="log-out" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Medical details</Text>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Email</Text>
+                    <View style={[styles.inputWrapper, touched.email && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder="Enter email"
+                        onFocus={() => setFieldTouched("email")}
+                        onBlur={() => setFieldTouched("email", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.email}
+                        onChangeText={handleChange("email")}
+                      />
                     </View>
+                    {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                   </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("SecurityDetails");
-                  }}
-                >
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <LockKeyhole name="reload" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Security details</Text>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Location</Text>
+                    <View style={[styles.inputWrapper, touched.location && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder="Enter location"
+                        onFocus={() => setFieldTouched("location")}
+                        onBlur={() => setFieldTouched("location", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.location}
+                        onChangeText={handleChange("location")}
+                      />
                     </View>
+                    {touched.location && errors.location && <Text style={styles.errorMessage}>{errors.location}</Text>}
                   </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => {}}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <BotMessageSquare name="person-remove" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Messages</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={""}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <ShieldAlert name="reload" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Privacy Policy</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={""}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <BellRing name="reload" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Notification settings</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => {}}>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <UserMinus name="person-remove" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Delete Account</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <View style={styles.menuItem(0.5)}>
-                    <View style={styles.menuItemInner}>
-                      <TouchableOpacity style={styles.menuItemIcon}>
-                        <LogOutIcon name="log-out" size={24} color={COLORS.gray} />
-                      </TouchableOpacity>
-                      <Text style={styles.menuText}>Logout</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            </View>
+                  <TouchableOpacity
+                    style={styles.changePasswordButton}
+                    onPress={() => setShowPasswordFields(!showPasswordFields)}
+                  >
+                    <Text style={styles.changePasswordButtonText}>
+                      {showPasswordFields ? "Cancel Change Password" : "Change Password ?"}
+                    </Text>
+                  </TouchableOpacity>
+                  {showPasswordFields && (
+                    <>
+                      <View style={styles.wrapper}>
+                        <Text style={styles.label}>Current Password</Text>
+                        <View
+                          style={[styles.inputWrapper, touched.currentPassword && { borderColor: COLORS.secondary }]}
+                        >
+                          <TextInput
+                            placeholder="Enter current password"
+                            onFocus={() => setFieldTouched("currentPassword")}
+                            onBlur={() => setFieldTouched("currentPassword", "")}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                            style={{ flex: 1 }}
+                            value={values.currentPassword}
+                            onChangeText={handleChange("currentPassword")}
+                          />
+                        </View>
+                        {touched.currentPassword && errors.currentPassword && (
+                          <Text style={styles.errorMessage}>{errors.currentPassword}</Text>
+                        )}
+                      </View>
+                      <View style={styles.wrapper}>
+                        <Text style={styles.label}>New Password</Text>
+                        <View style={[styles.inputWrapper, touched.newPassword && { borderColor: COLORS.secondary }]}>
+                          <TextInput
+                            placeholder="Enter new password"
+                            onFocus={() => setFieldTouched("newPassword")}
+                            onBlur={() => setFieldTouched("newPassword", "")}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                            style={{ flex: 1 }}
+                            value={values.newPassword}
+                            onChangeText={handleChange("newPassword")}
+                          />
+                        </View>
+                        {touched.newPassword && errors.newPassword && (
+                          <Text style={styles.errorMessage}>{errors.newPassword}</Text>
+                        )}
+                      </View>
+                      <View style={styles.wrapper}>
+                        <Text style={styles.label}>Confirm New Password</Text>
+                        <View
+                          style={[styles.inputWrapper, touched.confirmPassword && { borderColor: COLORS.secondary }]}
+                        >
+                          <TextInput
+                            placeholder="Confirm new password"
+                            onFocus={() => setFieldTouched("confirmPassword")}
+                            onBlur={() => setFieldTouched("confirmPassword", "")}
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            secureTextEntry
+                            style={{ flex: 1 }}
+                            value={values.confirmPassword}
+                            onChangeText={handleChange("confirmPassword")}
+                          />
+                        </View>
+                        {touched.confirmPassword && errors.confirmPassword && (
+                          <Text style={styles.errorMessage}>{errors.confirmPassword}</Text>
+                        )}
+                      </View>
+                    </>
+                  )}
+                  <ButtonMain
+                    title={"Update Profile"}
+                    onPress={isValid ? handleSubmit : inValidForm}
+                    isValid={isValid}
+                    loader={loader}
+                  />
+                </View>
+              )}
+            </Formik>
           ) : (
             <Text style={styles.pleaseLogin}>Please login to edit your profile.</Text>
           )}
@@ -436,7 +444,7 @@ const UserDetails = () => {
   );
 };
 
-export default UserDetails;
+export default ProfileDetails;
 
 const styles = StyleSheet.create({
   textStyles: {
@@ -642,7 +650,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
     padding: 4,
     borderWidth: 0.4,
-    borderColor: COLORS.gray,
+    borderColor: COLORS.primary,
     borderRadius: SIZES.xxLarge,
     margin: 30,
     width: SIZES.large * 3,
@@ -676,42 +684,5 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
-  },
-  menuWrapper: {
-    width: SIZES.width - SIZES.large,
-    backgroundColor: COLORS.white,
-    borderRadius: 12,
-    gap: 6,
-  },
-  menuboxwrapin: {
-    backgroundColor: COLORS.lightWhite,
-    borderRadius: 25,
-    paddingVertical: 7,
-    display: "flex",
-    flexDirection: "column",
-    gap: 10,
-    marginBottom: 6,
-  },
-  menuItem: (borderBottomWidth) => ({
-    flexDirection: "row",
-    paddingVertical: 3,
-    paddingHorizontal: 30,
-    borderColor: COLORS.gray,
-    justifyContent: "space-between",
-  }),
-  menuItemInner: { flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 },
-  versionWrapper: {
-    paddingTop: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  menuText: {
-    fontFamily: "regular",
-    color: COLORS.themeb,
-    marginLeft: 10,
-    marginRight: 20,
-    fontWeight: "600",
-    fontSize: 14,
-    lineHeight: 26,
   },
 });

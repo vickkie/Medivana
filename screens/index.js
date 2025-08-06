@@ -37,10 +37,14 @@ import DoctorDetails from "../components/DoctorDetails/DoctorDetails";
 import DoctorBook from "../components/DoctorDetails/DoctorBook";
 import AppointmentDetails from "./AppointmentDetails";
 import Appointments from "./Appointments";
+import ProfileDetails from "../components/Profile/ProfileProfile";
 Appointments;
+import SecurityDetails from "../components/Profile/SecurityDetails";
 
 // Export only user screens
 export {
+  SecurityDetails,
+  ProfileDetails,
   ChatListScreen,
   ChatScreen,
   Home,

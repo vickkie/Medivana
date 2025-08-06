@@ -64,13 +64,13 @@ export default function UpdateCheck() {
       if (isNewerVersion(currentVersion, newVersion) && skippedVersion !== newVersion) {
         setUpdateUrl(
           data?.downloadUrl ||
-            `https://github.com/vickkie/Promokings/releases/download/v${newVersion}/Promokings-v${newVersion}.apk`
+            `https://github.com/vickkie/Medivana/releases/download/v${newVersion}/Promokings-v${newVersion}.apk`
         );
         setIsForced(data.forceUpdate);
         showUpdateAlert(data.forceUpdate, newVersion);
       }
     } catch (error) {
-      console.error("Error checking update:", error);
+      // console.error("Error checking update:", error);
     } finally {
       setIsChecking(false);
     }

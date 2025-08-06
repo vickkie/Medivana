@@ -252,9 +252,6 @@ const Profile = () => {
         <StatusBar backgroundColor={COLORS.themey} />
         <View style={styles.mediTop}>
           <View style={styles.upperRow}>
-            {/* <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonWrap}>
-              <Icon size={26} name="backbutton" />
-            </TouchableOpacity> */}
             <Text style={styles.heading}>Profile</Text>
             <View style={styles.lovebuy}>
               <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap1}>
