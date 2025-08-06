@@ -27,5 +27,12 @@
       "Bottom navigation added","Welcome page added","Appointment filtering revamped","Messaging support started"],
       "fixed": [""]
     }
+    ,{
+      "releaseDate": "2025-08-06",
+      "version": "0.1.1",
+      "whatsNew": ["User Details update",
+      "Notifications management","Security updates","Privacy policy added","Medical details update"],
+      "fixed": ["User details failure to update"]
+    }
   ]
 }
