@@ -228,12 +228,12 @@ const Profile = () => {
           {loading && (
             <ActivityIndicator
               size="small"
-              color="#000"
+              color={COLORS.themew}
               style={{ position: "absolute", alignSelf: "center", top: "50%" }}
             />
           )}
           <Image
-            source={{ uri: userData.profilePicture }}
+            source={{ uri: userData?.profilePicture }}
             style={styles.profile}
             onLoadStart={() => setLoading(true)}
             onLoad={() => setLoading(false)}

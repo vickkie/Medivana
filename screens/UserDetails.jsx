@@ -1,5 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
@@ -18,27 +28,18 @@ import { ProfileCompletionContext } from "../components/auth/ProfileCompletionCo
 
 import UserProfileCompletion from "./UserProfileCompletion";
 import {
-  AudioWaveformIcon,
-  BellElectricIcon,
   BellRing,
   BotMessageSquare,
-  ChevronsRight,
-  FileWarningIcon,
+  CloudUpload,
   HeartIcon,
-  InfoIcon,
   LockKeyhole,
-  LockKeyholeOpen,
-  LogInIcon,
   LogOutIcon,
-  MailWarning,
-  MessageCircleReply,
-  RefreshCwOff,
+  Pencil,
+  PencilOffIcon,
   ShieldAlert,
-  UserCog,
-  UserLockIcon,
+  Upload,
   UserMinus,
   UserRoundCog,
-  UserX2Icon,
 } from "lucide-react-native";
 import { StatusBar } from "expo-status-bar";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
@@ -75,27 +76,8 @@ const UserDetails = () => {
     }
   }, [userLogin, userData]);
 
-  const inValidForm = () => {
-    Alert.alert("Invalid Form", "Please provide required fields", [
-      { text: "Cancel", onPress: () => {} },
-      { text: "Continue", onPress: () => {} },
-    ]);
-  };
-
   const successUpdate = () => {
-    Alert.alert(
-      "Update Successful",
-      "Your profile has been updated!",
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            // console.log("OK Pressed")
-          },
-        },
-      ],
-      { cancelable: false }
-    );
+    showToast("success", "Profile updated succesfully");
   };
 
   const uploadImage = async (uri) => {
@@ -138,20 +120,11 @@ const UserDetails = () => {
       }
 
       const userUpdateData = {
-        name: values.name || undefined,
-        email: values.email || userData?.email,
-        location: values.location,
-        username: values.username,
         userId: userId || userData?._id,
         profilePictureUrl: profilePictureUrl || undefined,
-        ...(showPasswordFields && {
-          currentPassword: values.currentPassword,
-          newPassword: values.newPassword,
-        }),
       };
-      // console.log(userUpdateData);
 
-      const endpoint = `${BACKEND_PORT}/api/user/updateDetails/${userData?._id}`;
+      const endpoint = `${BACKEND_PORT}/api/user/profPic/${userData?._id}`;
 
       const response = await axios.put(endpoint, userUpdateData, {
         headers: {
@@ -163,7 +136,7 @@ const UserDetails = () => {
 
       if (response.status === 200) {
         const updatedUserData = {
-          ...userData, // Keep original data
+          ...userData,
           ...response.data,
           TOKEN: userData.TOKEN,
         };
@@ -199,26 +172,6 @@ const UserDetails = () => {
       const pickedUri = pickerResult.assets[0].uri;
       setLocalProfilePicture(pickedUri);
     }
-  };
-
-  // Dynamic validation schema
-  const getValidationSchema = (showPasswordFields) => {
-    return Yup.object().shape({
-      email: Yup.string().email("Provide a valid email address").required("Required"),
-      location: Yup.string().min(3, "Provide your location").required("Required"),
-      username: Yup.string().min(3, "Provide a valid username").required("Required"),
-      currentPassword: showPasswordFields
-        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
-        : Yup.string(),
-      newPassword: showPasswordFields
-        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
-        : Yup.string(),
-      confirmPassword: showPasswordFields
-        ? Yup.string()
-            .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-            .required("Required")
-        : Yup.string(),
-    });
   };
 
   const showToast = (type, text1, text2) => {
@@ -328,16 +281,43 @@ const UserDetails = () => {
             )}
             <TouchableOpacity style={styles.editpencil} onPress={pickImage}>
               <View styles={styles.pencilWrapper}>
-                <Icon name="pencil" size={25} />
+                <Pencil name="pencil" size={19} color={COLORS.white} />
               </View>
             </TouchableOpacity>
 
-            <View>{userData && <Text>{userData?.email}</Text>}</View>
+            <View style={styles.nameBtn}>
+              {localProfilePicture ? (
+                <TouchableOpacity
+                  style={{ flexDirection: "row", alignItems: "center" }}
+                  onPress={() => {
+                    updateUserProfile();
+                  }}
+                >
+                  {loader ? (
+                    <>
+                      <Text style={styles.upload}>Uploading...</Text>
+                      <ActivityIndicator color={COLORS.themew} size={24} />
+                    </>
+                  ) : (
+                    <>
+                      <Text style={styles.upload}>Upload picture</Text>
+                      <CloudUpload size={25} color={COLORS.themew} />
+                    </>
+                  )}
+                </TouchableOpacity>
+              ) : (
+                <Text style={styles.email}>{userData?.email}</Text>
+              )}
+            </View>
           </View>
           {userLogin && userData !== null ? (
             <View style={styles.profileData}>
               <View style={styles.menuboxwrapin}>
-                <TouchableOpacity onPress={navigation.navigate("ProfileDetails")}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("ProfileDetails");
+                  }}
+                >
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
                       <TouchableOpacity style={styles.menuItemIcon}>
@@ -602,7 +582,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: 50,
     width: 50,
-    bottom: "10%",
+    bottom: "50%",
     right: "30%",
     justifyContent: "center",
     alignItems: "center",
@@ -694,9 +674,10 @@ const styles = StyleSheet.create({
   },
   menuItem: (borderBottomWidth) => ({
     flexDirection: "row",
+    borderBottomWidth: borderBottomWidth,
     paddingVertical: 3,
     paddingHorizontal: 30,
-    borderColor: COLORS.gray,
+    borderColor: COLORS.themeg,
     justifyContent: "space-between",
   }),
   menuItemInner: { flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 },
@@ -713,5 +694,21 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 14,
     lineHeight: 26,
+  },
+  nameBtn: {
+    backgroundColor: COLORS.themey,
+    padding: 2,
+    marginTop: 10,
+    borderColor: COLORS.primary,
+    borderRadius: SIZES.xxLarge,
+  },
+  email: {
+    color: COLORS.themew,
+    padding: 10,
+  },
+  upload: {
+    color: COLORS.themew,
+    fontFamily: "semibold",
+    padding: 10,
   },
 });

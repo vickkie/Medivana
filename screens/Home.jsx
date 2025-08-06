@@ -252,8 +252,9 @@ const styles = StyleSheet.create({
     // marginTop: SIZES.xxSmall,
   },
   profilePicture: {
-    height: 35,
-    width: 35,
+    height: 42,
+    width: 42,
+    padding: 1,
     borderRadius: 100,
   },
   closeButton: {
