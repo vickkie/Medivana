@@ -9,12 +9,11 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import axiosRetry from "axios-retry";
-
 import { BACKEND_PORT } from "@env";
-import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../ButtonMain";
 import Toast from "react-native-toast-message";
 import { ProfileCompletionContext } from "../auth/ProfileCompletionContext";
+import { Pencil } from "lucide-react-native";
 
 // Global axios-retry
 axiosRetry(axios, { retries: 3 });
@@ -22,29 +21,17 @@ axiosRetry(axios, { retries: 3 });
 const ProfileDetails = () => {
   const navigation = useNavigation();
   const [loader, setLoader] = useState(false);
-  const [profilePicture, setProfilePicture] = useState(null);
-  const [localProfilePicture, setLocalProfilePicture] = useState(null); // New state variable for local image URI
   const [userId, setUserId] = useState(null);
   const { userData, userLogin, updateUserData, userLogout } = useContext(AuthContext);
-  const {
-    completionPercentage,
-    missingFields,
-    message,
-    isComplete,
-    refreshProfileCompletion,
-    syncProfileCompletionFromServer,
-  } = useContext(ProfileCompletionContext);
-
-  const [showPasswordFields, setShowPasswordFields] = useState(false); // State for toggling password fields
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
       setUserId(1);
-      // navigation.navigate("Login");
+      navigation.navigate("Login");
       return;
     } else if (userData && userData._id) {
       setUserId(userData._id);
-      setProfilePicture(userData.profilePicture);
     }
   }, [userLogin, userData]);
 
@@ -56,94 +43,42 @@ const ProfileDetails = () => {
   };
 
   const successUpdate = () => {
-    Alert.alert(
-      "Update Successful",
-      "Your profile has been updated!",
-      [
-        {
-          text: "OK",
-          onPress: () => {
-            // console.log("OK Pressed")
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-
-  const uploadImage = async (uri) => {
-    const formData = new FormData();
-    formData.append("file", {
-      uri,
-      name: "profilePicture.jpg",
-      type: "image/jpeg",
-    });
-
-    try {
-      const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      console.log("Uploaded file URL:", response.data.fileUrl);
-      return response.data.fileUrl;
-    } catch (error) {
-      console.log("Error occurred, but extracting file URL anyway...");
-
-      //  Extract fileUrl even if error happens
-      if (error.response?.data?.fileUrl) {
-        return error.response.data.fileUrl;
-      }
-      // console.log(error.response?.data?.fileUrl);
-
-      return null; // If no fileUrl, return null
-    }
+    showToast("success", "Updated Successful", "profile updated");
   };
 
   const updateUserProfile = async (values) => {
     setLoader(true);
     try {
-      let profilePictureUrl = null;
-
-      // Upload profile picture first if it's new
-      if (localProfilePicture) {
-        profilePictureUrl = await uploadImage(localProfilePicture);
-        if (!profilePictureUrl) throw new Error("Image upload failed");
-      }
-
+      // Properly structured data for backend
       const userUpdateData = {
-        name: values.name || undefined,
-        email: values.email || userData?.email,
+        firstname: values.firstname,
+        lastname: values.lastname,
+        gender: values.gender,
+        phoneNumber: values.phoneNumber,
         location: values.location,
         username: values.username,
-        userId: userId || userData?._id,
-        profilePictureUrl: profilePictureUrl || undefined,
-        ...(showPasswordFields && {
-          currentPassword: values.currentPassword,
-          newPassword: values.newPassword,
-        }),
+        userId: userData?._id,
       };
-      // console.log(userUpdateData);
+
+      console.log("Sending to backend:", userUpdateData);
+      // return;
 
       const endpoint = `${BACKEND_PORT}/api/user/updateDetails/${userData?._id}`;
-
       const response = await axios.put(endpoint, userUpdateData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
-      // console.log("response", response.data);
-
       if (response.status === 200) {
         const updatedUserData = {
-          ...userData, // Keep original data
+          ...userData,
           ...response.data,
           TOKEN: userData.TOKEN,
         };
         await updateUserData(updatedUserData);
         successUpdate();
-        setLocalProfilePicture(null);
-
+        setEditing(false);
         navigation.navigate("Bottom Navigation", {
           screen: "ProfileDetails",
         });
@@ -151,46 +86,19 @@ const ProfileDetails = () => {
     } catch (err) {
       console.log(err);
     }
-
     setLoader(false);
-  };
-  const pickImage = async () => {
-    let result = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (result.granted === false) {
-      alert("Permission to access gallery is required!");
-      return;
-    }
-
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {
-      const pickedUri = pickerResult.assets[0].uri;
-      setLocalProfilePicture(pickedUri);
-    }
   };
 
   // Dynamic validation schema
-  const getValidationSchema = (showPasswordFields) => {
+  const getValidationSchema = () => {
     return Yup.object().shape({
-      email: Yup.string().email("Provide a valid email address").required("Required"),
-      location: Yup.string().min(3, "Provide your location").required("Required"),
-      username: Yup.string().min(3, "Provide a valid username").required("Required"),
-      currentPassword: showPasswordFields
-        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
-        : Yup.string(),
-      newPassword: showPasswordFields
-        ? Yup.string().min(6, "Password must be at least 6 characters").required("Required")
-        : Yup.string(),
-      confirmPassword: showPasswordFields
-        ? Yup.string()
-            .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
-            .required("Required")
-        : Yup.string(),
+      email: Yup.string().email("Enter a valid email address").required("Email is required"),
+      location: Yup.string().min(3, "Location must be at least 3 characters").required("Location is required"),
+      username: Yup.string().min(3, "Username must be at least 3 characters").required("Username is required"),
+      firstname: Yup.string().min(2, "First name must be at least 2 characters").required("First name is required"),
+      lastname: Yup.string().min(2, "Last name must be at least 2 characters").required("Last name is required"),
+      gender: Yup.string().oneOf(["male", "female", "other"], "Select a valid gender").required("Gender is required"),
+      phoneNumber: Yup.string().min(8, "Phone number atleast 8 digits"),
     });
   };
 
@@ -202,31 +110,37 @@ const ProfileDetails = () => {
       visibilityTime: 3000,
     });
   };
-  const logout = () => {
-    Alert.alert(
-      "Logout",
-      "Are you sure you want to logout?",
-      [
-        {
-          text: "Cancel",
-          onPress: () => {},
-          style: "cancel",
-        },
-        {
-          text: "Continue",
-          onPress: () => {
-            showToast("success", "You have been logged out", "Thank you for being with us");
 
-            // Reset the navigation stack
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "Bottom Navigation" }],
-            });
-            userLogout();
-          },
-        },
-      ],
-      { cancelable: true }
+  // Gender selection component
+  const GenderSelector = ({ selectedGender, onGenderSelect, disabled }) => {
+    const genders = [
+      { key: "male", label: "Male" },
+      { key: "female", label: "Female" },
+      { key: "other", label: "Other" },
+    ];
+
+    return (
+      <View style={styles.genderContainer}>
+        <Text style={styles.label}>Gender</Text>
+        <View style={styles.genderButtonsContainer}>
+          {genders.map((gender) => (
+            <TouchableOpacity
+              key={gender.key}
+              style={[
+                styles.genderButton,
+                selectedGender === gender.key && styles.genderButtonSelected,
+                disabled && styles.genderButtonDisabled,
+              ]}
+              onPress={() => !disabled && onGenderSelect(gender.key)}
+              disabled={disabled}
+            >
+              <Text style={[styles.genderButtonText, selectedGender === gender.key && styles.genderButtonTextSelected]}>
+                {gender.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
     );
   };
 
@@ -241,10 +155,16 @@ const ProfileDetails = () => {
         >
           <Icon name="backbutton" size={26} />
         </TouchableOpacity>
+
         <View style={styles.upperRow}>
           {userLogin ? (
-            <TouchableOpacity onPress={logout} style={styles.outWrap}>
-              <Icon name="logout" size={26} />
+            <TouchableOpacity
+              onPress={() => {
+                setEditing(!editing);
+              }}
+              style={styles.outWrap}
+            >
+              <Pencil size={23} color={COLORS.white} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -258,31 +178,8 @@ const ProfileDetails = () => {
           )}
           <View style={styles.lowerheader}>
             <Text style={[styles.heading, { alignSelf: "center" }]}>User Details</Text>
-
-            <View>
-              {isComplete && completionPercentage === 100 && (
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: "#CBFCCD",
-                    paddingVertical: 4,
-                    paddingHorizontal: 8,
-                    borderRadius: SIZES.medium,
-                    minwidth: 120,
-                    alignSelf: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: COLORS.themeb,
-                    }}
-                  >
-                    Profile completed
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </View>
             <Text style={[styles.statement, { alignItems: "center", textAlign: "center" }]}>
-              You can edit your profile from here
+              {editing ? "Edit your profile details" : "You can edit your profile from here"}
             </Text>
           </View>
         </View>
@@ -296,15 +193,59 @@ const ProfileDetails = () => {
                 email: userData.email || "",
                 location: userData.location || "",
                 username: userData.username || "",
-                currentPassword: "",
-                newPassword: "",
-                confirmPassword: "",
+                firstname: userData?.personalDetails?.firstname || "",
+                lastname: userData?.personalDetails?.lastname || "",
+                phoneNumber: userData?.phoneNumber || "",
+                gender: userData?.personalDetails?.gender || "",
               }}
-              validationSchema={getValidationSchema(showPasswordFields)}
+              validationSchema={getValidationSchema}
               onSubmit={(values) => updateUserProfile(values)}
             >
-              {({ handleChange, handleBlur, handleSubmit, values, errors, isValid, setFieldTouched, touched }) => (
+              {({
+                handleChange,
+
+                handleSubmit,
+                values,
+                errors,
+                isValid,
+                setFieldTouched,
+                touched,
+                setFieldValue,
+              }) => (
                 <View style={styles.profileData}>
+                  {/* Name Fields - Same styling, toggled by editing */}
+                  <View style={styles.wrapper}>
+                    <View style={styles.rowNames}>
+                      <View style={styles.halfInput}>
+                        <Text style={styles.label}>First Name</Text>
+                        <TextInput
+                          style={[styles.inputH, !editing && styles.inputDisabled]}
+                          placeholder="First name"
+                          value={values.firstname}
+                          onChangeText={handleChange("firstname")}
+                          editable={editing}
+                        />
+                        {touched.firstname && errors.firstname && (
+                          <Text style={styles.errorMessage}>{errors.firstname}</Text>
+                        )}
+                      </View>
+
+                      <View style={styles.halfInput}>
+                        <Text style={styles.label}>Last Name</Text>
+                        <TextInput
+                          style={[styles.inputH, !editing && styles.inputDisabled]}
+                          placeholder="Last name"
+                          value={values.lastname}
+                          onChangeText={handleChange("lastname")}
+                          editable={editing}
+                        />
+                        {touched.lastname && errors.lastname && (
+                          <Text style={styles.errorMessage}>{errors.lastname}</Text>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>UserName</Text>
                     <View style={[styles.inputWrapper, touched.username && { borderColor: COLORS.secondary }]}>
@@ -317,10 +258,12 @@ const ProfileDetails = () => {
                         style={{ flex: 1 }}
                         value={values.username}
                         onChangeText={handleChange("username")}
+                        editable={editing}
                       />
                     </View>
                     {touched.username && errors.username && <Text style={styles.errorMessage}>{errors.username}</Text>}
                   </View>
+
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Email</Text>
                     <View style={[styles.inputWrapper, touched.email && { borderColor: COLORS.secondary }]}>
@@ -332,11 +275,31 @@ const ProfileDetails = () => {
                         autoCorrect={false}
                         style={{ flex: 1 }}
                         value={values.email}
-                        onChangeText={handleChange("email")}
+                        editable={false}
                       />
                     </View>
-                    {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}
                   </View>
+                  <View style={styles.wrapper}>
+                    <Text style={styles.label}>Phone Number</Text>
+                    <View style={[styles.inputWrapper, touched.phoneNumber && { borderColor: COLORS.secondary }]}>
+                      <TextInput
+                        placeholder="Enter phoneNumber"
+                        onFocus={() => setFieldTouched("phoneNumber")}
+                        onBlur={() => setFieldTouched("phoneNumber", "")}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        style={{ flex: 1 }}
+                        value={values.phoneNumber}
+                        onChangeText={handleChange("phoneNumber")}
+                        editable={editing}
+                        keyboardType="number-pad"
+                      />
+                    </View>
+                    {touched.phoneNumber && errors.phoneNumber && (
+                      <Text style={styles.errorMessage}>{errors.phoneNumber}</Text>
+                    )}
+                  </View>
+
                   <View style={styles.wrapper}>
                     <Text style={styles.label}>Location</Text>
                     <View style={[styles.inputWrapper, touched.location && { borderColor: COLORS.secondary }]}>
@@ -349,89 +312,28 @@ const ProfileDetails = () => {
                         style={{ flex: 1 }}
                         value={values.location}
                         onChangeText={handleChange("location")}
+                        editable={editing}
                       />
                     </View>
                     {touched.location && errors.location && <Text style={styles.errorMessage}>{errors.location}</Text>}
                   </View>
-                  <TouchableOpacity
-                    style={styles.changePasswordButton}
-                    onPress={() => setShowPasswordFields(!showPasswordFields)}
-                  >
-                    <Text style={styles.changePasswordButtonText}>
-                      {showPasswordFields ? "Cancel Change Password" : "Change Password ?"}
-                    </Text>
-                  </TouchableOpacity>
-                  {showPasswordFields && (
-                    <>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>Current Password</Text>
-                        <View
-                          style={[styles.inputWrapper, touched.currentPassword && { borderColor: COLORS.secondary }]}
-                        >
-                          <TextInput
-                            placeholder="Enter current password"
-                            onFocus={() => setFieldTouched("currentPassword")}
-                            onBlur={() => setFieldTouched("currentPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.currentPassword}
-                            onChangeText={handleChange("currentPassword")}
-                          />
-                        </View>
-                        {touched.currentPassword && errors.currentPassword && (
-                          <Text style={styles.errorMessage}>{errors.currentPassword}</Text>
-                        )}
-                      </View>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>New Password</Text>
-                        <View style={[styles.inputWrapper, touched.newPassword && { borderColor: COLORS.secondary }]}>
-                          <TextInput
-                            placeholder="Enter new password"
-                            onFocus={() => setFieldTouched("newPassword")}
-                            onBlur={() => setFieldTouched("newPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.newPassword}
-                            onChangeText={handleChange("newPassword")}
-                          />
-                        </View>
-                        {touched.newPassword && errors.newPassword && (
-                          <Text style={styles.errorMessage}>{errors.newPassword}</Text>
-                        )}
-                      </View>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>Confirm New Password</Text>
-                        <View
-                          style={[styles.inputWrapper, touched.confirmPassword && { borderColor: COLORS.secondary }]}
-                        >
-                          <TextInput
-                            placeholder="Confirm new password"
-                            onFocus={() => setFieldTouched("confirmPassword")}
-                            onBlur={() => setFieldTouched("confirmPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.confirmPassword}
-                            onChangeText={handleChange("confirmPassword")}
-                          />
-                        </View>
-                        {touched.confirmPassword && errors.confirmPassword && (
-                          <Text style={styles.errorMessage}>{errors.confirmPassword}</Text>
-                        )}
-                      </View>
-                    </>
-                  )}
-                  <ButtonMain
-                    title={"Update Profile"}
-                    onPress={isValid ? handleSubmit : inValidForm}
-                    isValid={isValid}
-                    loader={loader}
+
+                  {/* Gender Selector - Button style */}
+                  <GenderSelector
+                    selectedGender={values.gender}
+                    onGenderSelect={(gender) => setFieldValue("gender", gender)}
+                    disabled={!editing}
                   />
+                  {touched.gender && errors.gender && <Text style={styles.errorMessage}>{errors.gender}</Text>}
+
+                  {editing && (
+                    <ButtonMain
+                      title={"Update Profile"}
+                      onPress={isValid ? handleSubmit : inValidForm}
+                      isValid={isValid}
+                      loader={loader}
+                    />
+                  )}
                 </View>
               )}
             </Formik>
@@ -472,14 +374,12 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: "column",
   },
-
   upperRow: {
     width: SIZES.width - 12,
     marginHorizontal: 6,
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "center",
-    // position: "absolute",
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
@@ -515,9 +415,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: COLORS.themeb,
     fontFamily: "semibold",
-    // paddingTop: 20,
   },
-
   lowerheader: {
     flexDirection: "column",
     justifyContent: "flex-start",
@@ -568,7 +466,6 @@ const styles = StyleSheet.create({
   rotateMe: {
     transform: [{ rotate: "180deg" }],
   },
-
   numbers: {
     padding: 3,
     width: 20,
@@ -623,12 +520,38 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: COLORS.black,
   },
+  profileData: {
+    padding: SIZES.medium,
+  },
+
+  // Enhanced styles for name fields
+  rowNames: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: SIZES.small,
+  },
+  halfInput: {
+    flex: 0.48,
+  },
+  inputH: {
+    backgroundColor: COLORS.themeg,
+    padding: 12,
+    borderRadius: SIZES.medium,
+    marginBottom: 5,
+    fontSize: SIZES.small + 3,
+    fontFamily: "regular",
+  },
+  inputDisabled: {
+    backgroundColor: COLORS.gray2 + "20",
+    color: COLORS.gray,
+  },
 
   label: {
-    fontSize: SIZES.xSmall,
+    fontSize: SIZES.small + 3,
+    fontFamily: "lufgaMedium",
     marginBottom: SIZES.xSmall,
     color: COLORS.gray,
-    marginStart: SIZES.large,
+    // marginStart: SIZES.large,
   },
   inputWrapper: {
     flexDirection: "row",
@@ -637,8 +560,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: SIZES.medium,
     marginBottom: 10,
-    width: SIZES.width - 30,
-    marginStart: 10,
+    width: SIZES.width - 40,
   },
   errorMessage: {
     color: COLORS.red,
@@ -646,6 +568,46 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginStart: SIZES.large,
   },
+
+  // Gender selector styles
+  genderContainer: {
+    marginBottom: SIZES.medium,
+  },
+  genderButtonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: SIZES.large,
+  },
+  genderButton: {
+    flex: 1,
+    backgroundColor: COLORS.themeg,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: SIZES.medium,
+    marginHorizontal: 4,
+    borderWidth: 2,
+    borderColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  genderButtonSelected: {
+    backgroundColor: COLORS.themey,
+    borderColor: COLORS.themey,
+  },
+  genderButtonDisabled: {
+    backgroundColor: COLORS.gray2 + "20",
+    opacity: 0.6,
+  },
+  genderButtonText: {
+    fontSize: SIZES.small + 4,
+    fontFamily: "medium",
+    color: COLORS.gray,
+  },
+  genderButtonTextSelected: {
+    color: COLORS.themeb,
+    fontFamily: "bold",
+  },
+
   loginBtn: {
     backgroundColor: COLORS.themey,
     padding: 4,
