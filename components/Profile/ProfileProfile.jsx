@@ -60,9 +60,6 @@ const ProfileDetails = () => {
         userId: userData?._id,
       };
 
-      console.log("Sending to backend:", userUpdateData);
-      // return;
-
       const endpoint = `${BACKEND_PORT}/api/user/updateDetails/${userData?._id}`;
       const response = await axios.put(endpoint, userUpdateData, {
         headers: {

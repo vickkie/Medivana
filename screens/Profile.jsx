@@ -471,7 +471,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     flex: 1,
     alignItems: "center",
-    minHeight: SIZES.height / 1.5 + 20,
+    minHeight: SIZES.height - 260,
     backgroundColor: COLORS.white,
     marginTop: 20,
     elevation: 1,

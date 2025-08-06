@@ -62,6 +62,8 @@ import {
   Appointments,
   ProfileDetails,
   SecurityDetails,
+  MedicalDetails,
+  NotificationSettings,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -115,6 +117,8 @@ const screens = [
   { name: "Appointments", component: Appointments, options: { headerShown: false } },
   { name: "ProfileDetails", component: ProfileDetails, options: { headerShown: false } },
   { name: "SecurityDetails", component: SecurityDetails, options: { headerShown: false } },
+  { name: "MedicalDetails", component: MedicalDetails, options: { headerShown: false } },
+  { name: "NotificationSettings", component: NotificationSettings, options: { headerShown: false } },
 ];
 
 export default function App() {

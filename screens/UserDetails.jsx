@@ -93,7 +93,6 @@ const UserDetails = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      console.log("Uploaded file URL:", response.data.fileUrl);
       return response.data.fileUrl;
     } catch (error) {
       console.log("Error occurred, but extracting file URL anyway...");
@@ -327,11 +326,15 @@ const UserDetails = () => {
                     </View>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("MedicalDetails");
+                  }}
+                >
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
                       <TouchableOpacity style={styles.menuItemIcon}>
-                        <HeartIcon name="log-out" size={24} color={COLORS.gray} />
+                        <HeartIcon size={24} color={COLORS.gray} />
                       </TouchableOpacity>
                       <Text style={styles.menuText}>Medical details</Text>
                     </View>
@@ -374,7 +377,11 @@ const UserDetails = () => {
                     </View>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={""}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate("NotificationSettings");
+                  }}
+                >
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
                       <TouchableOpacity style={styles.menuItemIcon}>
@@ -563,7 +570,7 @@ const styles = StyleSheet.create({
     marginTop: SIZES.xSmall,
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
-    minHeight: SIZES.height - 200,
+    minHeight: SIZES.height - 120,
   },
   profileImage: {
     position: "relative",
@@ -675,7 +682,7 @@ const styles = StyleSheet.create({
   menuItem: (borderBottomWidth) => ({
     flexDirection: "row",
     borderBottomWidth: borderBottomWidth,
-    paddingVertical: 3,
+    paddingVertical: 7,
     paddingHorizontal: 30,
     borderColor: COLORS.themeg,
     justifyContent: "space-between",

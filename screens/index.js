@@ -40,9 +40,13 @@ import Appointments from "./Appointments";
 import ProfileDetails from "../components/Profile/ProfileProfile";
 Appointments;
 import SecurityDetails from "../components/Profile/SecurityDetails";
+import MedicalDetails from "../components/Profile/MedicalDetails";
+import NotificationSettings from "../components/Profile/NotificationSettings";
 
 // Export only user screens
 export {
+  NotificationSettings,
+  MedicalDetails,
   SecurityDetails,
   ProfileDetails,
   ChatListScreen,

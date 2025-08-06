@@ -28,6 +28,7 @@
         "foregroundImage": "./assets/icons/medivana-adaptive.png",
         "backgroundColor": "#ffffff"
       },
+      "permissions":["NOTIFICATIONS"],
       "package": "com.uzitrake.medivana"
     },
     "web": {
