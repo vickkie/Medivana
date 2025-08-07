@@ -22,7 +22,8 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (userData?._id) {
-      startPermissionCheck(userData._id);
+      console.log("started notification for", userData?._id);
+      startPermissionCheck(userData?._id);
     }
   }, [userData]);
 

@@ -15,15 +15,6 @@ export async function registerForPushNotificationsAsync(userId) {
     return;
   }
 
-  const lastCheck = await AsyncStorage.getItem("lastNotificationPermissionCheck");
-  const now = Date.now();
-  const CHECK_INTERVAL = 60000;
-
-  if (lastCheck && now - parseInt(lastCheck) < CHECK_INTERVAL) {
-    console.log("Skipping permission check: Checked recently.");
-    return;
-  }
-
   let { status } = await Notifications.getPermissionsAsync();
 
   if (Platform.OS === "android" && Platform.Version >= 33) {
@@ -34,32 +25,40 @@ export async function registerForPushNotificationsAsync(userId) {
     status = newStatus;
   }
 
-  if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("alarms", {
-      name: "Scheduled Notifications",
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#a7e7fa",
-    });
+  const lastToken = await AsyncStorage.getItem("lastExpoPushToken");
+  const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? EAS_PROJECT_ID;
+
+  console.log(lastToken, projectId, "last push token");
+
+  let token = null;
+
+  try {
+    const response = await Notifications.getExpoPushTokenAsync({ projectId });
+
+    if (response?.data) {
+      token = response.data;
+      console.log(" Expo Push Token:", token);
+    } else {
+      console.warn("⚠️ No token returned from getExpoPushTokenAsync. Response:", response);
+    }
+  } catch (err) {
+    console.error(" Error while fetching Expo Push Token:", err);
   }
 
   if (status !== "granted") {
-    console.log("Failed to get push token for push notification");
+    console.log("Failed to get permission for push notification");
     return;
   }
 
-  console.log("Notification permission granted:", status);
-
-  await AsyncStorage.setItem("lastNotificationPermissionCheck", now.toString());
-
-  const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? EAS_PROJECT_ID;
   if (!projectId) {
     console.error("Missing EAS Project ID! Push notifications may fail.");
     return;
   }
 
-  const token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
-  console.log("Expo Push Token:", token);
+  if (token === lastToken) {
+    console.log("Same token already sent, skipping update");
+    return;
+  }
 
   try {
     const response = await axios.post(`${BACKEND_PORT}/api/notification/updatePushToken`, {
@@ -67,6 +66,7 @@ export async function registerForPushNotificationsAsync(userId) {
       expoPushToken: token,
     });
 
+    await AsyncStorage.setItem("lastExpoPushToken", token);
     console.log("Push token updated successfully", response.data);
   } catch (err) {
     console.error("Error updating push token:", err);
@@ -78,15 +78,17 @@ export function startPermissionCheck(userId) {
     console.log("Checking notification permission...");
 
     const { status } = await Notifications.getPermissionsAsync();
+    console.log(status);
+
+    registerForPushNotificationsAsync(userId);
 
     if (status === "granted") {
       console.log("Permission granted, stopping checks.");
       clearInterval(interval);
-      registerForPushNotificationsAsync(userId);
     } else if (status === "denied") {
       console.log("Permission denied. User needs to enable manually.");
-    } else {
+    } else if (!status) {
       console.log("Permission status is unknown or not determined yet.");
     }
-  }, 30000);
+  }, 3000);
 }

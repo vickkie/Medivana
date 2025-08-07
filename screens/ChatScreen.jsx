@@ -8,6 +8,7 @@ import { ref, onValue, set, update } from "firebase/database";
 import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
+import { BACKEND_PORT } from "@env";
 
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
@@ -28,7 +29,7 @@ const ChatScreen = () => {
 
   // Reference to the conversation in Firebase
   const conversationRef = useMemo(() => {
-    return conversationId ? ref(db, `messages/${conversationId}`) : null;
+    return conversationId ? ref(db, `medivana/messages/${conversationId}`) : null;
   }, [conversationId]);
 
   const [messages, setMessages] = useState([]);
@@ -72,7 +73,7 @@ const ChatScreen = () => {
     });
 
     if (Object.keys(updates).length > 0) {
-      update(ref(db, `messages/${conversationId}`), updates).catch((error) =>
+      update(ref(db, `medivana/messages/${conversationId}`), updates).catch((error) =>
         console.error("Error updating read status:", error)
       );
     }
@@ -138,7 +139,7 @@ const ChatScreen = () => {
       const messageId = uuid.v4();
 
       try {
-        await set(ref(db, `messages/${conversationId}/${messageId}`), {
+        await set(ref(db, `medivana/messages/${conversationId}/${messageId}`), {
           text: `${message.text}${prefilledMessage ? `\n\n${prefilledMessage}` : ""}`,
           createdAt: message.createdAt.getTime(),
           user: {
@@ -214,7 +215,7 @@ const ChatScreen = () => {
         </TouchableOpacity>
         <View style={styles.upperRow}>
           <View style={styles.upperButtons}>
-            <Text style={styles.heading}>{chatWith?.username || "Chat"}</Text>
+            <Text style={styles.heading}>{chatWith?.fullName || "Chat"}</Text>
           </View>
           <TouchableOpacity onPress={() => {}} style={styles.buttonWrap2}>
             {chatWith?.profilePicture ? (

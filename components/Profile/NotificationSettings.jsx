@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Bell, BellOff } from "lucide-react-native";
 import Icon from "../../constants/icons";
 import { COLORS, SIZES } from "../../constants";
+import { Linking } from "react-native";
 
 const NotificationSettings = () => {
   const navigation = useNavigation();
@@ -23,17 +24,36 @@ const NotificationSettings = () => {
     loadNotificationSettings();
   }, []);
 
+  const openSettings = () => {
+    if (Platform.OS === "ios") {
+      Linking.openURL("app-settings:");
+    } else {
+      Linking.openSettings(); // Android
+    }
+  };
+
   const checkNotificationPermissions = async () => {
     const { status } = await Notifications.getPermissionsAsync();
     setNotificationPermission(status === "granted");
   };
 
   const requestNotificationPermission = async () => {
-    const { status } = await Notifications.requestPermissionsAsync();
+    const { status, canAskAgain } = await Notifications.requestPermissionsAsync();
+
     if (status === "granted") {
       setNotificationPermission(true);
       showToast("success", "Permission Granted", "Notifications enabled successfully");
       return true;
+    } else if (!canAskAgain) {
+      Alert.alert(
+        "Permission Required",
+        "You have disabled notification permission. Please enable it from device settings.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Open Settings", onPress: openSettings },
+        ]
+      );
+      return false;
     } else {
       showToast("error", "Permission Denied", "Please enable notifications in settings");
       return false;

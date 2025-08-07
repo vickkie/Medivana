@@ -19,7 +19,7 @@ const ChatListScreen = () => {
   const [loading, setLoading] = useState(true);
   const { userData } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState("");
-  const [unreadCounts, setUnreadCounts] = useState({}); // New state for unread counts
+  const [unreadCounts, setUnreadCounts] = useState({});
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const ChatListScreen = () => {
 
   const fetchUsers = async () => {
     try {
-      const userRole = userData?.position || userData?.role || "customer";
+      const userRole = userData?.role || userData?.role || "customer";
       const datapoint = `${BACKEND_URL}/api/chat/chat-users`;
       // console.log(datapoint);
 
@@ -59,7 +59,7 @@ const ChatListScreen = () => {
     users.forEach((user) => {
       // Compute conversationId by sorting the two IDs
       const conversationId = [userData._id, user._id].sort().join("_");
-      const conversationRef = ref(db, `messages/${conversationId}`);
+      const conversationRef = ref(db, `medivana/messages/${conversationId}`);
 
       const unsubscribe = onValue(conversationRef, (snapshot) => {
         const data = snapshot.val();
@@ -96,9 +96,9 @@ const ChatListScreen = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           senderId: userData._id,
-          senderRole: userData.position ? "staff" : "customer", // Default to "customer"
+          senderRole: userData.role ? "staff" : "customer", // Default to "customer"
           receiverId: user._id,
-          receiverRole: user.position ? "staff" : "customer",
+          receiverRole: user.role ? "doctor" : "customer",
         }),
       });
 
@@ -177,17 +177,14 @@ const ChatListScreen = () => {
                       style={{ flexDirection: "row", alignItems: "center", padding: 10, gap: 8 }}
                     >
                       {item?.profilePicture ? (
-                        <Image
-                          source={{ uri: item?.profilePicture }}
-                          style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
-                        />
+                        <Image style={styles.profPic} source={{ uri: item?.profilePicture }} />
                       ) : (
                         <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
                       )}
 
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={styles.username}>
-                          {capitalize(item?.fullname || item?.username)} ({capitalize(item?.position || "customer")})
+                          {capitalize(item?.fullName || item?.username)} ({capitalize(item?.role || "customer")})
                         </Text>
                         {unreadCount > 0 && (
                           <View style={styles.unreadBadge}>
@@ -350,7 +347,9 @@ const styles = StyleSheet.create({
     height: 52,
     width: 52,
     borderRadius: 100,
+    objectFit: "contain",
   },
+  profPic: { width: 52, height: 52, borderRadius: 25, marginRight: 10, objectFit: "contain" },
   closeButton: {
     position: "absolute",
     top: 40,
@@ -466,7 +465,8 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   image: {
-    position: "absolute", // Default styles, overridden by `parsedStyle`
+    position: "absolute",
+    objectFit: "contain",
   },
   title: {
     fontSize: 16,

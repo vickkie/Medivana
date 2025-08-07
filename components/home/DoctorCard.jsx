@@ -21,7 +21,7 @@ const DoctorCard = ({ doctor, showBook }) => {
 
     return (
       <Image
-        source={error || !uri ? FALLBACK_AVATAR : { uri }}
+        source={error || !uri || typeof uri !== "string" || uri.trim() === "" ? FALLBACK_AVATAR : { uri }}
         style={styles.avatarImage}
         onError={() => setError(true)}
       />

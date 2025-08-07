@@ -8,8 +8,6 @@ import { COLORS, SIZES } from "../../constants";
 import privacyData from "../../assets/data/privacyPolicy.json";
 import { BACKEND_PORT } from "@env";
 
-console.log(privacyData);
-
 const PrivacyPolicy = () => {
   const navigation = useNavigation();
   const [policyData, setPolicyData] = useState(privacyData);

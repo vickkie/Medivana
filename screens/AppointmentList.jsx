@@ -161,16 +161,14 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
     const dayShort = date.toLocaleDateString("en-US", { weekday: "short" });
 
     return (
-      <>
-        <TouchableOpacity
-          key={idx}
-          style={[styles.dayButton, idx === selectedIndex && styles.dayButtonActive]}
-          onPress={() => setSelectedIndex(idx)}
-        >
-          <Text style={[styles.dayText, idx === selectedIndex && styles.dayTextActive]}>{dayShort}</Text>
-          <Text style={[styles.dateText, idx === selectedIndex && styles.dayTextActive]}>{date.getDate()}</Text>
-        </TouchableOpacity>
-      </>
+      <TouchableOpacity
+        key={idx}
+        style={[styles.dayButton, idx === selectedIndex && styles.dayButtonActive]}
+        onPress={() => setSelectedIndex(idx)}
+      >
+        <Text style={[styles.dayText, idx === selectedIndex && styles.dayTextActive]}>{dayShort}</Text>
+        <Text style={[styles.dateText, idx === selectedIndex && styles.dayTextActive]}>{date.getDate()}</Text>
+      </TouchableOpacity>
     );
   };
 
@@ -283,6 +281,7 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
           ) : (
             <FlatList
               data={filtered}
+              scrollEnabled={false}
               keyExtractor={(i) => i._id}
               renderItem={renderItem}
               contentContainerStyle={{

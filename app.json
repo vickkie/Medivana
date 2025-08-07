@@ -26,7 +26,9 @@
       "versionCode": 7,
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/medivana-adaptive.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#ffffff",
+        "googleServicesFile": "./google-services.json"
+
       },
       "permissions":["NOTIFICATIONS"],
       "package": "com.uzitrake.medivana"
