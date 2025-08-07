@@ -108,18 +108,11 @@ const Profile = () => {
     try {
       const endpoint = `${BACKEND_PORT}/api/user/delete-account/${userData?._id}`;
 
-      console.log(endpoint);
-
       const response = await axios.delete(endpoint);
 
-      console.log(response);
       // Check response status and token first
       if (response.status === 200 && response.data.success) {
-        console.log("here1");
-
-        console.log("here2");
         await clearCache();
-        console.log("here3");
 
         userLogout();
 
@@ -201,7 +194,6 @@ const Profile = () => {
   };
 
   const controlledNavigation = (route) => {
-    console.log(userData, userLogin);
     if (!userData || !userLogin) {
       navigation.reset({
         index: 0,

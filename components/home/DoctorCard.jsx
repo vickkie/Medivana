@@ -40,7 +40,7 @@ const DoctorCard = ({ doctor, showBook }) => {
   };
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("DoctorDetails", { doctor })}>
       {/* <TouchableOpacity onPress={() => navigation.navigate("DoctorDetails", { doctor })}> */}
       <View style={styles.avatar}>
         <DoctorAvatar uri={doctor?.profilePicture} />
@@ -74,7 +74,7 @@ const DoctorCard = ({ doctor, showBook }) => {
         )}
       </View>
       {/* </TouchableOpacity> */}
-    </View>
+    </TouchableOpacity>
   );
 };
 

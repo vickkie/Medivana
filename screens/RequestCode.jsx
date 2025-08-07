@@ -38,8 +38,6 @@ const RequestCode = ({ navigation }) => {
   const handleRequest = async (values) => {
     setLoader(true);
     try {
-      console.log("Requesting code for:", values.email);
-
       const email = values.email;
       // console.log(userUpdateData);
 

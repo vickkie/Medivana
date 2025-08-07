@@ -49,7 +49,7 @@ const VerificationCode = ({ navigation }) => {
       console.log("Requesting code for:", values.code);
 
       const code = values.code;
-      console.log(email, code);
+      // console.log(email, code);
 
       // return;
 

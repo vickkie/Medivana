@@ -705,10 +705,6 @@ const SupplierRegister = ({ navigation }) => {
                                 `${dialCode}${unmaskedPhoneNumber}`
                               );
                               setfinalMpesaNumber(unmaskedPhoneNumber);
-
-                              console.log(isVerified);
-                              console.log(phoneNumber);
-                              console.log(unmaskedPhoneNumber);
                             }}
                             placeholder={finalMpesaNumber}
                             flagStyle={styles.flagWidth}
