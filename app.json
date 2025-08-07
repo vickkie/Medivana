@@ -24,10 +24,10 @@
     },
     "android": {
       "versionCode": 7,
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/medivana-adaptive.png",
-        "backgroundColor": "#ffffff",
-        "googleServicesFile": "./google-services.json"
+        "backgroundColor": "#ffffff"
 
       },
       "permissions":["NOTIFICATIONS"],

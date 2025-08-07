@@ -3,6 +3,7 @@
   "version": "1.4.7",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
+    "eas-build-prebuild": "node scripts/unpack-google-services.js",
     "start": "npx expo start --dev-client",
     "start-offline": "expo start --offline",
     "android": "expo run:android",
