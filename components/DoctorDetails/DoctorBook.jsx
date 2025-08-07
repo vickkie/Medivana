@@ -170,9 +170,6 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
 
     const estimatedAmount = doctor?.consultationFee;
 
-    // You can send data or navigate here
-    console.log("Booking data: ", { bookingData });
-
     navigation.navigate("Checkout", { bookingData, estimatedAmount });
   };
 
@@ -256,7 +253,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 </Picker>
               </View>
 
-              <View style={[styles.pickerWrappers, { marginTop: 10 }]}>
+              <View style={[styles.pickerWrapper, { marginTop: 10 }]}>
                 <Text style={styles.pickerLabel}>Appointment date</Text>
                 <TextInput
                   editable={false}

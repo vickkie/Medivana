@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
   },
   info: { flex: 1 },
   dateText: { textAlign: "center" },
-  name: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
+  name: { fontSize: 16, fontWeight: "600", marginBottom: 4, fontFamily: "semibold" },
   row: { flexDirection: "row", alignItems: "center", marginBottom: 2 },
   time: { marginLeft: 4, fontSize: 14, color: "#555" },
   type: { marginLeft: 4, fontSize: 14, color: "#555" },

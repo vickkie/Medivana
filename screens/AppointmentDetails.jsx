@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 999,
-    minHeight: 140,
+    minHeight: 150,
     paddingBottom: 10,
   },
   topheading: {
@@ -426,10 +426,11 @@ const styles = StyleSheet.create({
     right: 10,
   },
   bookingId: {
-    fontFamily: "GtAlpine",
+    fontFamily: "medium",
     color: COLORS.themeb,
     fontSize: SIZES.medium,
-    marginVertical: 5,
+    marginBottom: 5,
+    zIndex: 4,
   },
   statusContainer: {
     paddingVertical: 4,
@@ -452,7 +453,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small + 4,
   },
   scrollContainer: {
-    marginTop: 150,
+    marginTop: 160,
   },
   lowerRow: {
     backgroundColor: COLORS.themew,
@@ -490,6 +491,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     marginRight: 15,
+    objectFit: "contain",
   },
   doctorDetails: {
     flex: 1,

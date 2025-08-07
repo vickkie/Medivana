@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     // overflow: "hidden",
   },
   image: {
-    position: "absolute", // Default styles, overridden by `parsedStyle`
+    position: "absolute", 
   },
   title: {
     fontSize: 16,
