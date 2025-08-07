@@ -107,11 +107,14 @@ const screens = [
   { name: "OrderDetails", component: OrderDetails, options: { headerShown: false } },
   { name: "ChatListScreen", component: ChatListScreen, options: { headerShown: false } },
   { name: "ChatScreen", component: ChatScreen, options: { headerShown: false } },
+
   { name: "VerificationCode", component: VerificationCode, options: { headerShown: false } },
   { name: "RequestCode", component: RequestCode, options: { headerShown: false } },
+  { name: "ResetPassword", component: ResetPassword, options: { headerShown: false } },
+
   { name: "HelpListScreen", component: HelpListScreen, options: { headerShown: false } },
   { name: "HelpAgentChatScreen", component: HelpAgentChatScreen, options: { headerShown: false } },
-  { name: "ResetPassword", component: ResetPassword, options: { headerShown: false } },
+
   { name: "DoctorDetails", component: DoctorDetails, options: { headerShown: false } },
   { name: "DoctorBook", component: DoctorBook, options: { headerShown: false } },
   { name: "AppointmentDetails", component: AppointmentDetails, options: { headerShown: false } },

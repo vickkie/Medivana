@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Toast from "react-native-toast-message";
+import { BACKEND_PORT } from "@env";
+import axios from "axios";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
 import { Eye, EyeOff } from "lucide-react-native";
+import { useRoute } from "@react-navigation/native";
 
 const resetSchema = Yup.object().shape({
   password: Yup.string().min(8, "Password must be at least 8 characters").required("Required"),
@@ -20,13 +24,53 @@ const ResetPassword = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const [secure, setSecure] = useState(true);
 
+  const { email = "", code = "" } = useRoute().params || {};
+
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
+
+  const successUpdate = () => {
+    showToast("success", "Pssword has been reset successfully.", "");
+  };
+
+  useEffect(() => {
+    if (!email || !code) {
+      showToast("error", "Invalid Access", "Missing verification info.");
+      // navigation.navigate("Login");
+    }
+  }, [email, code]);
+
   const handleReset = async (values) => {
     setLoader(true);
     try {
-      console.log("Resetting password to:", values.password);
-      // call API to reset password here
-      Alert.alert("Success", "Password has been reset!");
-      navigation.replace("Login");
+      console.log("Requesting code for:", values.password);
+
+      const newPassword = values.password;
+
+      const endpoint = `${BACKEND_PORT}/auth/reset-password`;
+
+      const response = await axios.put(
+        endpoint,
+        { email, code, newPassword },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // console.log("response", response.data);
+
+      if (response.status === 200) {
+        navigation.navigate("Login", { email });
+        successUpdate();
+      }
     } catch {
       Alert.alert("Error", "Failed to reset. Try again.");
     } finally {

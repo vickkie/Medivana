@@ -195,77 +195,73 @@ const SecurityDetails = () => {
                 <View style={styles.profileData}>
                   <TouchableOpacity
                     style={styles.changePasswordButton}
-                    onPress={() => setShowPasswordFields(!showPasswordFields)}
+                    onPress={() => {
+                      navigation.navigate("RequestCode", { email: userData?.email });
+                    }}
                   >
-                    <Text style={styles.changePasswordButtonText}>
-                      {showPasswordFields ? "Cancel Change Password" : "Change Password ?"}
-                    </Text>
+                    <Text style={styles.changePasswordButtonText}>Forgot Password ?</Text>
                   </TouchableOpacity>
-                  {showPasswordFields && (
-                    <>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>Current Password</Text>
-                        <View
-                          style={[styles.inputWrapper, touched.currentPassword && { borderColor: COLORS.secondary }]}
-                        >
-                          <TextInput
-                            placeholder="Enter current password"
-                            onFocus={() => setFieldTouched("currentPassword")}
-                            onBlur={() => setFieldTouched("currentPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.currentPassword}
-                            onChangeText={handleChange("currentPassword")}
-                          />
-                        </View>
+
+                  <>
+                    <View style={styles.wrapper}>
+                      <Text style={styles.label}>Current Password</Text>
+                      <View style={[styles.inputWrapper, touched.currentPassword && { borderColor: COLORS.secondary }]}>
+                        <TextInput
+                          placeholder="Enter current password"
+                          onFocus={() => setFieldTouched("currentPassword")}
+                          onBlur={() => setFieldTouched("currentPassword", "")}
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                          secureTextEntry
+                          style={{ flex: 1 }}
+                          value={values.currentPassword}
+                          onChangeText={handleChange("currentPassword")}
+                        />
                       </View>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>New Password</Text>
-                        {touched.currentPassword && errors.currentPassword && (
-                          <Text style={styles.errorMessage}>{errors.currentPassword}</Text>
-                        )}
-                        <View style={[styles.inputWrapper, touched.newPassword && { borderColor: COLORS.secondary }]}>
-                          <TextInput
-                            placeholder="Enter new password"
-                            onFocus={() => setFieldTouched("newPassword")}
-                            onBlur={() => setFieldTouched("newPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.newPassword}
-                            onChangeText={handleChange("newPassword")}
-                          />
-                        </View>
-                        {touched.newPassword && errors.newPassword && (
-                          <Text style={styles.errorMessage}>{errors.newPassword}</Text>
-                        )}
+                    </View>
+                    <View style={styles.wrapper}>
+                      <Text style={styles.label}>New Password</Text>
+                      {touched.currentPassword && errors.currentPassword && (
+                        <Text style={styles.errorMessage}>{errors.currentPassword}</Text>
+                      )}
+                      <View style={[styles.inputWrapper, touched.newPassword && { borderColor: COLORS.secondary }]}>
+                        <TextInput
+                          placeholder="Enter new password"
+                          onFocus={() => setFieldTouched("newPassword")}
+                          onBlur={() => setFieldTouched("newPassword", "")}
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                          secureTextEntry
+                          style={{ flex: 1 }}
+                          value={values.newPassword}
+                          onChangeText={handleChange("newPassword")}
+                        />
                       </View>
-                      <View style={styles.wrapper}>
-                        <Text style={styles.label}>Confirm New Password</Text>
-                        {touched.confirmPassword && errors.confirmPassword && (
-                          <Text style={styles.errorMessage}>{errors.confirmPassword}</Text>
-                        )}
-                        <View
-                          style={[styles.inputWrapper, touched.confirmPassword && { borderColor: COLORS.secondary }]}
-                        >
-                          <TextInput
-                            placeholder="Confirm new password"
-                            onFocus={() => setFieldTouched("confirmPassword")}
-                            onBlur={() => setFieldTouched("confirmPassword", "")}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            secureTextEntry
-                            style={{ flex: 1 }}
-                            value={values.confirmPassword}
-                            onChangeText={handleChange("confirmPassword")}
-                          />
-                        </View>
+                      {touched.newPassword && errors.newPassword && (
+                        <Text style={styles.errorMessage}>{errors.newPassword}</Text>
+                      )}
+                    </View>
+                    <View style={styles.wrapper}>
+                      <Text style={styles.label}>Confirm New Password</Text>
+                      {touched.confirmPassword && errors.confirmPassword && (
+                        <Text style={styles.errorMessage}>{errors.confirmPassword}</Text>
+                      )}
+                      <View style={[styles.inputWrapper, touched.confirmPassword && { borderColor: COLORS.secondary }]}>
+                        <TextInput
+                          placeholder="Confirm new password"
+                          onFocus={() => setFieldTouched("confirmPassword")}
+                          onBlur={() => setFieldTouched("confirmPassword", "")}
+                          autoCapitalize="none"
+                          autoCorrect={false}
+                          secureTextEntry
+                          style={{ flex: 1 }}
+                          value={values.confirmPassword}
+                          onChangeText={handleChange("confirmPassword")}
+                        />
                       </View>
-                    </>
-                  )}
+                    </View>
+                  </>
+
                   <ButtonMain
                     title={"Update Password"}
                     onPress={isValid ? handleSubmit : inValidForm}
@@ -508,7 +504,9 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   changePasswordButtonText: {
+    color: COLORS.themey,
     fontFamily: "medium",
+    fontSize: SIZES.medium,
   },
   pleaseLogin: {
     fontFamily: "regular",

@@ -3,10 +3,14 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, Styl
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Toast from "react-native-toast-message";
+import { BACKEND_PORT } from "@env";
+import axios from "axios";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const emailSchema = Yup.object().shape({
   email: Yup.string().email("Enter a valid email").required("Required"),
@@ -14,14 +18,49 @@ const emailSchema = Yup.object().shape({
 
 const RequestCode = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
+  const route = useRoute();
+  const params = route.params;
+  const passedEmail = params?.email || "";
+
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
+
+  const successUpdate = () => {
+    showToast("success", "Code has been sent successfully.", "");
+  };
 
   const handleRequest = async (values) => {
     setLoader(true);
     try {
       console.log("Requesting code for:", values.email);
-      // call your API to send code here
-      Alert.alert("Success", "Verification code sent!");
-      navigation.navigate("VerificationCode");
+
+      const email = values.email;
+      // console.log(userUpdateData);
+
+      const endpoint = `${BACKEND_PORT}/auth/send-reset-code`;
+
+      const response = await axios.put(
+        endpoint,
+        { email },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // console.log("response", response.data);
+
+      if (response.status === 200) {
+        navigation.navigate("VerificationCode", email);
+        successUpdate();
+      }
     } catch (error) {
       Alert.alert("Error", "Failed to send code. Try again.");
     } finally {
@@ -41,7 +80,7 @@ const RequestCode = ({ navigation }) => {
         <Image source={require("../assets/images/lockview.png")} style={styles.cover} />
         <Text style={styles.subtitle2}>Enter your email to receive a verification code</Text>
 
-        <Formik initialValues={{ email: "" }} validationSchema={emailSchema} onSubmit={handleRequest}>
+        <Formik initialValues={{ email: passedEmail || "" }} validationSchema={emailSchema} onSubmit={handleRequest}>
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
             <View>
               {touched.email && errors.email && <Text style={styles.errorMessage}>{errors.email}</Text>}

@@ -74,7 +74,6 @@ const LoginPage = ({ navigation }) => {
 
       // Store login data
       await login(response.data);
-      console.log(response.data);
 
       //!TEMPORARY FIX
       navigation.reset({
@@ -194,7 +193,7 @@ const LoginPage = ({ navigation }) => {
                     </TouchableOpacity>
                     <Text style={styles.rememberMeText}>Remember Me</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.forgotPassword} onPress={() => navigation.navigate("ResetPassword")}>
+                  <TouchableOpacity style={styles.forgotPassword} onPress={() => navigation.navigate("RequestCode")}>
                     <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
                   </TouchableOpacity>
                 </View>

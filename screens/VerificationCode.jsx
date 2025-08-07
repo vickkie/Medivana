@@ -3,10 +3,14 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, Styl
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import Toast from "react-native-toast-message";
+import { BACKEND_PORT } from "@env";
+import axios from "axios";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
+import { useRoute } from "@react-navigation/native";
 
 const validationSchema = Yup.object().shape({
   code: Yup.string().length(5, "Code must be 5 digits").required("Required"),
@@ -15,6 +19,10 @@ const validationSchema = Yup.object().shape({
 const VerificationCode = ({ navigation }) => {
   const [loader, setLoader] = useState(false);
   const inputs = useRef([]);
+  const route = useRoute();
+  const params = route.params;
+  const email = params || "";
+  // console.log(params);
 
   const focusNext = (index, text) => {
     if (text && index < 4) inputs.current[index + 1]?.focus();
@@ -22,14 +30,49 @@ const VerificationCode = ({ navigation }) => {
   const focusPrev = (index) => {
     if (index > 0) inputs.current[index - 1]?.focus();
   };
+  const showToast = (type, text1, text2) => {
+    Toast.show({
+      type: type,
+      text1: text1,
+      text2: text2 ? text2 : "",
+      visibilityTime: 3000,
+    });
+  };
+
+  const successUpdate = () => {
+    showToast("success", "Code has been verified.", "");
+  };
 
   const handleVerify = async (values) => {
     setLoader(true);
     try {
-      console.log("Code submitted:", values.code);
-      Alert.alert("Success", "Code verified!");
-    } catch {
-      Alert.alert("Verification Failed", "Please try again.");
+      console.log("Requesting code for:", values.code);
+
+      const code = values.code;
+      console.log(email, code);
+
+      // return;
+
+      const endpoint = `${BACKEND_PORT}/auth/verify-code`;
+
+      const response = await axios.put(
+        endpoint,
+        { email, code },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // console.log("response", response.data);
+
+      if (response.status === 200) {
+        navigation.navigate("ResetPassword", { email, code });
+        successUpdate();
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to send code. Try again.");
     } finally {
       setLoader(false);
     }
