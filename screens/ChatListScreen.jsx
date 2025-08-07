@@ -28,7 +28,7 @@ const ChatListScreen = () => {
 
   const fetchUsers = async () => {
     try {
-      const userRole = userData?.role || userData?.role || "customer";
+      const userRole = userData?.role || userData?.role || "user";
       const datapoint = `${BACKEND_URL}/api/chat/chat-users`;
       // console.log(datapoint);
 
@@ -96,9 +96,9 @@ const ChatListScreen = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           senderId: userData._id,
-          senderRole: userData.role ? "staff" : "customer", // Default to "customer"
+          senderRole: userData.role ? "doctor" : "user",
           receiverId: user._id,
-          receiverRole: user.role ? "doctor" : "customer",
+          receiverRole: user.role ? "doctor" : "user",
         }),
       });
 
@@ -184,7 +184,7 @@ const ChatListScreen = () => {
 
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={styles.username}>
-                          {capitalize(item?.fullName || item?.username)} ({capitalize(item?.role || "customer")})
+                          {capitalize(item?.fullName || item?.username)} ({capitalize(item?.role || "user")})
                         </Text>
                         {unreadCount > 0 && (
                           <View style={styles.unreadBadge}>

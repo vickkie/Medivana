@@ -29,8 +29,8 @@ const HelpAgentChatScreen = () => {
     return <Text>No customer selected</Text>;
   }
 
-  const sentRef = useMemo(() => ref(db, `messages-query/${customerId}/sent`), [customerId]);
-  const receivedRef = useMemo(() => ref(db, `messages-query/${customerId}/received`), [customerId]);
+  const sentRef = useMemo(() => ref(db, `medivana/messages-query/${customerId}/sent`), [customerId]);
+  const receivedRef = useMemo(() => ref(db, `medivana/messages-query/${customerId}/received`), [customerId]);
 
   useEffect(() => {
     const handleDataChange = (snapshot, type) => {

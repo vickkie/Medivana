@@ -350,8 +350,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   previewImage: {
-    width: "96%",
-    height: "96%",
+    width: "100%",
+    height: "100%",
     resizeMode: "contain",
   },
   isSending: {
@@ -367,6 +367,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    resizeMode: "contain",
   },
   avatarContainer: {
     borderRadius: 100,
