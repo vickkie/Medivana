@@ -38,7 +38,7 @@ const Home = () => {
       return <Icon name="user" size={24} color="#000" />;
     }
     return userData?.profilePicture ? (
-      <Image source={{ uri: userData.profilePicture }} style={styles.profilePicture} />
+      <Image source={{ uri: userData?.profilePicture }} style={styles.profilePicture} />
     ) : (
       <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
     );

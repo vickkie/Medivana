@@ -9,9 +9,20 @@ import styles from "./styles/doctorDetails";
 import Icon from "../../constants/icons";
 import { BlurView } from "expo-blur";
 import { COLORS } from "../../constants";
-import { ChevronLeft, ChevronRightIcon, Clock10Icon, MessageCircleMore, Star, UsersIcon } from "lucide-react-native";
+import {
+  ChevronLeft,
+  ChevronRightIcon,
+  Clock10Icon,
+  Heart,
+  HeartOff,
+  HeartPlus,
+  MessageCircleMore,
+  Star,
+  UsersIcon,
+} from "lucide-react-native";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "../auth/AuthContext";
+import { useWish } from "../../contexts/WishContext";
 
 const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   const route = useRoute();
@@ -19,6 +30,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   const params = route.params || routeParams;
   const { routeParam, category, doctor } = params;
   const { userLogin, userData } = useContext(AuthContext);
+  const { toggleWishlistItem, isItemInWishlist } = useWish();
 
   const getWeekDays = (offset = 0) => {
     const now = new Date();
@@ -121,8 +133,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
 
   const handleDateSelect = (item) => {
     setSelectedDate(item.day);
-    setSelectedDateObj(item.dateObj);
-    // console.log("g", item.dayShort);
+    setSelectedDateObj(item?.dateObj);
     setSelectedDay(getFullDayName(item?.dayShort));
   };
 
@@ -158,10 +169,12 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
           doctor: doctorData,
           selectedDate,
           selectedDay,
-          selectedDateObj,
+          selectedDateObj: selectedDateObj,
         })
       : handleShowLogin();
   };
+
+  const isFavorited = isItemInWishlist(doctorData);
 
   if (error) {
     return (
@@ -178,8 +191,8 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
           </TouchableOpacity>
           <Text style={styles.heading}>Doctor Details</Text>
           <View style={styles.lovebuy}>
-            <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.buttonWrap1}>
-              <Icon size={26} name="bellfilled" />
+            <TouchableOpacity style={styles.buttonWrap1}>
+              <Heart color={COLORS.themeg} />
             </TouchableOpacity>
           </View>
         </View>
@@ -210,8 +223,13 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
           </TouchableOpacity>
           <Text style={styles.heading}>Doctor Details</Text>
           <View style={styles.lovebuy}>
-            <TouchableOpacity onPress={() => navigation.navigate("Profile")} style={styles.buttonWrap1}>
-              <Icon size={26} name="bellfilled" />
+            <TouchableOpacity
+              onPress={() => {
+                toggleWishlistItem(doctorData);
+              }}
+              style={styles.buttonWrap1}
+            >
+              {isFavorited ? <HeartPlus color={COLORS.themey} /> : <HeartOff color={COLORS.gray} />}
             </TouchableOpacity>
           </View>
         </View>

@@ -23,6 +23,7 @@ const Favourites = () => {
             <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
               <Icon name="backbutton" size={26} />
             </TouchableOpacity>
+            <Text style={styles.heading}>My WishList</Text>
             <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
               <TouchableOpacity style={styles.buttonWrap}>
                 <Icon name="heart" size={26} />
@@ -34,36 +35,18 @@ const Favourites = () => {
                   )}
                 </View>
               </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.buttonWrap}
-                onPress={() => {
-                  navigation.navigate("Cart");
-                }}
-              >
-                <Icon name="cart" size={26} />
-                <View style={styles.numbers}>
-                  {cartCount !== 0 ? (
-                    <Text style={styles.number}>{cartCount}</Text>
-                  ) : (
-                    <Text style={styles.number}>0</Text>
-                  )}
-                </View>
-              </TouchableOpacity>
             </View>
           </View>
-
           <View style={styles.lowerheader}>
-            <Text style={styles.heading}>My WishList</Text>
-
             {wishCount !== 0 ? (
-              <Text style={styles.statement}> Products I like ( {wishCount} )</Text>
+              <Text style={styles.statement}> Doctors I prefer ( {wishCount} )</Text>
             ) : (
-              <Text style={styles.statement}>Like more products</Text>
+              <Text style={styles.statement}>Like more doctors</Text>
             )}
           </View>
         </View>
-        <ScrollView>
+
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <FavouritesList wishlist={wishlist} />
         </ScrollView>
       </View>
@@ -94,14 +77,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    // backgroundColor: COLORS.black,
   },
   wrapper: {
     flex: 1,
     backgroundColor: COLORS.white,
-    flexDirection: "column",
   },
-
   upperRow: {
     width: SIZES.width - 20,
     marginHorizontal: SIZES.xSmall,
@@ -113,7 +93,8 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.large,
     top: SIZES.xxSmall,
     zIndex: 999,
-    minHeight: 120,
+    minHeight: 70,
+    paddingBottom: 20,
   },
   upperButtons: {
     width: SIZES.width - 20,
@@ -121,7 +102,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginHorizontal: SIZES.xSmall,
     top: SIZES.xxSmall,
   },
   backBtn: {
@@ -138,14 +118,10 @@ const styles = StyleSheet.create({
   lowerheader: {
     flexDirection: "column",
     justifyContent: "flex-start",
-    flex: 1,
-    paddingTop: 20,
-    paddingBottom: 20,
   },
   statement: {
     fontFamily: "regular",
     paddingLeft: 10,
-    paddingVertical: 15,
   },
   location: {
     paddingVertical: 15,
@@ -196,5 +172,9 @@ const styles = StyleSheet.create({
   },
   number: {
     color: COLORS.white,
+  },
+  scrollViewContent: {
+    marginTop: 140,
+    paddingHorizontal: SIZES.xSmall,
   },
 });

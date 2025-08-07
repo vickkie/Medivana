@@ -1,138 +1,141 @@
-import { FlatList, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
-import React, { useContext, useState, useEffect } from "react";
+import React from "react";
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet } from "react-native";
+import Icon from "../../constants/icons";
 import { COLORS, SIZES } from "../../constants";
-import styles from "./favourtiteslist.style";
-import FavouritesCardVIew from "./FavouritesCardVIew";
-import { AuthContext } from "../auth/AuthContext";
-import { useNavigation } from "@react-navigation/native";
-import useFetch from "../../hook/useFetch";
-import { useCart } from "../../contexts/CartContext";
 import { useWish } from "../../contexts/WishContext";
-import LottieView from "lottie-react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { Heart } from "lucide-react-native";
 
-const FavouritesList = ({ wishlist = [] }) => {
-  const { userData, userLogin } = useContext(AuthContext);
+const FavouritesList = ({ wishlist }) => {
+  const { removeFromWishlist } = useWish();
   const navigation = useNavigation();
-  const { cart, cartCount, addToCart, removeFromCart, clearCart } = useCart();
-  const { wishCount, addToWishlist, removeFromWishlist, clearWishlist } = useWish();
 
-  const [userId, setUserId] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totals, setTotals] = useState({ subtotal: 0 });
-  const [additionalFees, setAdditionalFees] = useState(0);
-
-  useEffect(() => {
-    if (!userLogin) {
-      setUserId(1);
-    } else if (userData && userData._id) {
-      setUserId(userData._id);
-    }
-  }, [userLogin, userData]);
-
-  const calculateTotals = (wishlist) => {
-    if (!Array.isArray(wishlist)) return;
-
-    const initialTotals = wishlist.reduce((acc, item) => {
-      if (item.price) {
-        const parsedPrice =
-          typeof price === "number"
-            ? item.price
-            : item.price != null
-            ? parseFloat(String(item.price).replace(/[^0-9.-]+/g, ""))
-            : 0;
-
-        const totalPrice = parsedPrice * (item.quantity || 1);
-        acc[item.id] = totalPrice;
-      }
-      return acc;
-    }, {});
-
-    const initialSubtotal = Object.values(initialTotals).reduce((acc, price) => acc + price, 0);
-    setTotals((prevTotals) => ({ ...prevTotals, ...initialTotals, subtotal: initialSubtotal }));
-  };
-
-  useEffect(() => {
-    calculateTotals(wishlist);
-  }, [wishlist]);
-
-  const estimatedAmount = (totals.subtotal || 0) + (additionalFees || 0);
-
-  const handleRefetch = async () => {
-    try {
-      const storedWish = await AsyncStorage.getItem("wishlist");
-      const parsedWish = storedWish ? JSON.parse(storedWish) : [];
-      calculateTotals(parsedWish);
-    } catch (error) {
-      console.error("Error refreshing wishlist:", error);
-    }
-  };
-
-  const updateTotalAmount = (adjustment) => {
-    setTotals((prevTotals) => ({
-      ...prevTotals,
-      subtotal: prevTotals.subtotal + adjustment,
-    }));
-  };
-
-  if (isLoading) {
-    return (
-      <View style={styles.containerx}>
-        <View style={styles.containLottie}>
-          <View style={styles.animationWrapper}>
-            <LottieView source={require("../../assets/data/loading.json")} autoPlay loop style={styles.animation} />
-          </View>
-        </View>
+  const renderItem = ({ item: doctor }) => (
+    <TouchableOpacity
+      style={styles.doctorCard}
+      onPress={() => navigation.navigate("DoctorDetails", { doctor: doctor })}
+    >
+      <Image source={{ uri: doctor.profilePicture }} style={styles.doctorImage} />
+      <View style={styles.doctorInfo}>
+        <Text style={styles.doctorName}>{doctor.fullName}</Text>
+        <Text style={styles.doctorSpecialization}>{doctor.specialization?.name}</Text>
+        <Text style={styles.doctorLocation}>{doctor.location}</Text>
+        <Text style={styles.doctorFee}>Kshs {doctor.consultationFee}</Text>
       </View>
-    );
-  }
+      <TouchableOpacity style={styles.removeButton} onPress={() => removeFromWishlist(doctor)}>
+        <Icon name="delete" size={24} color={COLORS.red} />
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
 
-  if (!wishlist || wishlist.length === 0) {
+  if (wishlist.length === 0) {
     return (
-      <View style={styles.containerx}>
-        <View style={styles.containLottie}>
-          <View style={styles.animationWrapper}>
-            <LottieView source={require("../../assets/data/nodata.json")} autoPlay loop style={styles.animation} />
-          </View>
-          <View style={{ marginTop: 0, paddingBottom: 10 }}>
-            <Text style={{ fontFamily: "GtAlpine", fontSize: SIZES.medium }}>Empty, Find and save items you like!</Text>
-          </View>
-        </View>
+      <View style={styles.emptyListContainer}>
+        <Heart name="heart-outline" size={30} color={COLORS.gray} />
+        <Text style={styles.emptyListText}>Your Favourites is empty.</Text>
+        <Text style={styles.emptyListSubText}>Start adding doctors you like!</Text>
+        <TouchableOpacity style={styles.browseButton} onPress={() => navigation.navigate("Categories")}>
+          <Text style={styles.browseButtonText}>Browse Doctors</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View>
-      <View style={styles.container}>
-        <FlatList
-          keyExtractor={(product) => (product.id ? product.id.toString() : Math.random().toString())}
-          contentContainerStyle={[{ columnGap: SIZES.medium }, wishlist.length > 0 ? styles.wrapper : styles.none]}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          numColumns={1}
-          scrollEnabled={false}
-          data={wishlist}
-          renderItem={({ item }) => (
-            <FavouritesCardVIew item={item} handleRefetch={handleRefetch} onUpdateTotal={updateTotalAmount} />
-          )}
-        />
-      </View>
-      <View style={styles.subtotalWrapper}>
-        <View style={styles.topSubtotal}>
-          <Text style={styles.additionalHeader}>Subtotal amount</Text>
-          <Text style={styles.amounts}>KES {totals.subtotal.toFixed(2)}</Text>
-        </View>
-        <View style={styles.centerSubtotal}>
-          <Text style={styles.additionalHeader}>Additional fees</Text>
-          <Text style={styles.amounts}>KES {additionalFees.toFixed(2)}</Text>
-        </View>
-        <View style={styles.centerSubtotal}>
-          <Text style={styles.subtotalHeader}>Estimated Amount</Text>
-          <Text style={[styles.amounts, styles.totalAmount]}>KES {estimatedAmount.toFixed(2)}</Text>
-        </View>
-      </View>
-    </View>
+    <FlatList
+      data={wishlist}
+      renderItem={renderItem}
+      keyExtractor={(item) => item._id}
+      contentContainerStyle={styles.listContentContainer}
+      showsVerticalScrollIndicator={false}
+    />
   );
 };
+
+const styles = StyleSheet.create({
+  listContentContainer: {
+    paddingHorizontal: SIZES.small,
+    paddingBottom: SIZES.xxLarge * 2,
+  },
+  doctorCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.white,
+    borderRadius: SIZES.medium,
+    padding: SIZES.small,
+    marginBottom: SIZES.small,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  doctorImage: {
+    width: 80,
+    height: 80,
+    borderRadius: SIZES.small,
+    marginRight: SIZES.small,
+    resizeMode: "contain",
+  },
+  doctorInfo: {
+    flex: 1,
+  },
+  doctorName: {
+    fontFamily: "bold",
+    fontSize: SIZES.medium,
+    color: COLORS.themeb,
+  },
+  doctorSpecialization: {
+    fontFamily: "regular",
+    fontSize: SIZES.small + 4,
+    color: COLORS.gray,
+  },
+  doctorLocation: {
+    fontFamily: "regular",
+    fontSize: SIZES.small + 3,
+    color: COLORS.gray,
+  },
+  doctorFee: {
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+    color: COLORS.primary,
+    marginTop: SIZES.xSmall,
+  },
+  removeButton: {
+    padding: SIZES.xSmall,
+  },
+  emptyListContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingTop: SIZES.xxLarge * 2,
+    paddingHorizontal: SIZES.medium,
+  },
+  emptyListText: {
+    fontFamily: "bold",
+    fontSize: SIZES.large,
+    color: COLORS.themeb,
+    marginTop: SIZES.medium,
+  },
+  emptyListSubText: {
+    fontFamily: "regular",
+    fontSize: SIZES.medium,
+    color: COLORS.gray,
+    textAlign: "center",
+    marginTop: SIZES.xSmall,
+  },
+  browseButton: {
+    backgroundColor: COLORS.primary, // Use a suitable color from your constants
+    paddingVertical: SIZES.small,
+    paddingHorizontal: SIZES.medium,
+    borderRadius: SIZES.medium,
+    marginTop: SIZES.large,
+  },
+  browseButtonText: {
+    color: COLORS.white,
+    fontFamily: "semibold",
+    fontSize: SIZES.medium,
+  },
+});
 
 export default FavouritesList;
