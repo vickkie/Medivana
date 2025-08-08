@@ -30,6 +30,8 @@ import {
   MessageCircleMoreIcon,
   HeartPulseIcon,
   ChevronsRight,
+  ShieldAlertIcon,
+  ShieldAlert,
 } from "lucide-react-native";
 
 const Profile = () => {
@@ -251,7 +253,7 @@ const Profile = () => {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={() => navigation.navigate("ChatListScreen")} style={styles.buttonWrap1}>
-                <Icon size={26} name="bellfilled" />
+                <Icon size={26} name="discuss" />
               </TouchableOpacity>
             </View>
           </View>
@@ -381,15 +383,15 @@ const Profile = () => {
                 <>
                   <TouchableOpacity
                     onPress={() => {
-                      handleDeleteAccount();
+                      navigation.navigate("PrivacyPolicy");
                     }}
                   >
                     <View style={styles.menuItem(0.5)}>
                       <View style={styles.menuItemInner}>
                         <TouchableOpacity style={styles.menuItemIcon}>
-                          <UserMinus name="person-remove" size={24} color={COLORS.primary} />
+                          <ShieldAlert name="person-remove" size={24} color={COLORS.primary} />
                         </TouchableOpacity>
-                        <Text style={styles.menuText}>Delete Account</Text>
+                        <Text style={styles.menuText}>Privacy policy</Text>
                       </View>
                       <TouchableOpacity style={styles.flexCenter}>
                         <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
