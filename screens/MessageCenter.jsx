@@ -42,7 +42,7 @@ const MessageCenter = ({ navigation }) => {
           <View style={styles.lowerRow}>
             <TouchableOpacity
               onPress={() => {
-                if (userId) {
+                if (userData) {
                   navigation.navigate("ChatListScreen");
                 }
               }}
@@ -59,7 +59,7 @@ const MessageCenter = ({ navigation }) => {
             {!userData?.position && (
               <TouchableOpacity
                 onPress={() => {
-                  if (userId) {
+                  if (userData) {
                     navigation.navigate("Help");
                   }
                 }}

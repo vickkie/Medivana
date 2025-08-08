@@ -38,7 +38,7 @@
       "releaseDate": "2025-08-09",
       "version": "1.0.0",
       "whatsNew": ["Forgot password reset",
-      "Favourites available","Security updates","Message center revamped"],
+      "Favourites available","Security updates","Message center revamped","Notifications added"],
       "fixed": ["Booking id visibility on appointment details"]
     }
   ]

@@ -62,7 +62,7 @@ const Home = () => {
         <View style={styles.appBarWrapper}>
           <View style={styles.appBar}>
             <View style={{ flexDirection: "row" }}>
-              <TouchableOpacity onPress={() => navigation.navigate("UserDetails")} style={styles.buttonWrap2}>
+              <TouchableOpacity onPress={openMenu} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
               <View
@@ -77,7 +77,7 @@ const Home = () => {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.buttonWrap} onPress={openMenu}>
+            <TouchableOpacity style={styles.buttonWrap} onPress={() => navigation.navigate("Message")}>
               <Icon name="bellfilled" size={24} />
             </TouchableOpacity>
           </View>

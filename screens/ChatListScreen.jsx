@@ -12,15 +12,26 @@ import { ref, onValue } from "firebase/database";
 import axios from "axios";
 
 import { BACKEND_PORT } from "@env";
+import { CommonActions } from "@react-navigation/native";
 
 const ChatListScreen = () => {
   const BACKEND_URL = BACKEND_PORT;
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { userData } = useContext(AuthContext);
+  const { userData, userLogin } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState("");
   const [unreadCounts, setUnreadCounts] = useState({});
   const navigation = useNavigation();
+
+  if (!userData || !userLogin) {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: "Login" }],
+      })
+    );
+    return;
+  }
 
   useEffect(() => {
     fetchUsers();
@@ -87,7 +98,7 @@ const ChatListScreen = () => {
     return () => {
       listeners.forEach((unsubscribe) => unsubscribe());
     };
-  }, [users, userData._id]);
+  }, [users, userData?._id]);
 
   const startChat = async (user) => {
     try {

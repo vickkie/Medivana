@@ -125,7 +125,7 @@ const HomeMenu = forwardRef((props, ref) => {
                 <Text style={styles.menuText}>About</Text>
               </View>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleNavigation("UserDetails")}>
+            <TouchableOpacity onPress={() => handleNavigation("Profile")}>
               <View style={styles.menuItem(0.5)}>
                 <Icon name="settings" size={26} color={COLORS.primary} />
                 <Text style={styles.menuText}>Settings</Text>

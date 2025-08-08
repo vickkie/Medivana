@@ -378,26 +378,25 @@ const Profile = () => {
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
-              {/* {userData && !deleting && ( */}
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("PrivacyPolicy");
+                }}
+              >
+                <View style={styles.menuItem(0.5)}>
+                  <View style={styles.menuItemInner}>
+                    <TouchableOpacity style={styles.menuItemIcon}>
+                      <ShieldAlert name="person-remove" size={24} color={COLORS.primary} />
+                    </TouchableOpacity>
+                    <Text style={styles.menuText}>Privacy policy</Text>
+                  </View>
+                  <TouchableOpacity style={styles.flexCenter}>
+                    <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
               {userLogin ? (
                 <>
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate("PrivacyPolicy");
-                    }}
-                  >
-                    <View style={styles.menuItem(0.5)}>
-                      <View style={styles.menuItemInner}>
-                        <TouchableOpacity style={styles.menuItemIcon}>
-                          <ShieldAlert name="person-remove" size={24} color={COLORS.primary} />
-                        </TouchableOpacity>
-                        <Text style={styles.menuText}>Privacy policy</Text>
-                      </View>
-                      <TouchableOpacity style={styles.flexCenter}>
-                        <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
-                      </TouchableOpacity>
-                    </View>
-                  </TouchableOpacity>
                   <TouchableOpacity onPress={logout}>
                     <View style={styles.menuItem(0.5)}>
                       <View style={styles.menuItemInner}>

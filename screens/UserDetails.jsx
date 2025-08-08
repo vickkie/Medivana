@@ -236,7 +236,7 @@ const UserDetails = () => {
             </TouchableOpacity>
           )}
           <View style={styles.lowerheader}>
-            <Text style={[styles.heading, { alignSelf: "center" }]}>Profile settings</Text>
+            <Text style={[styles.heading, { alignSelf: "center" }]}>User settings</Text>
 
             <View>
               {isComplete && completionPercentage === 100 && (
@@ -304,7 +304,13 @@ const UserDetails = () => {
                   )}
                 </TouchableOpacity>
               ) : (
-                <Text style={styles.email}>{userData?.email}</Text>
+                <TouchableOpacity
+                  onPress={() => {
+                    !userData ? navigation.navigate("Login") : "";
+                  }}
+                >
+                  <Text style={styles.email}>{userData?.email ?? "Please login"}</Text>
+                </TouchableOpacity>
               )}
             </View>
           </View>
@@ -412,7 +418,9 @@ const UserDetails = () => {
               </View>
             </View>
           ) : (
-            <Text style={styles.pleaseLogin}>Please login to edit your profile.</Text>
+            <Text style={styles.pleaseLogin}>
+              Start your <Text style={{ color: COLORS.themey, fontFamily: "italic" }}>Health Journey</Text> today.
+            </Text>
           )}
         </View>
       </ScrollView>
@@ -646,10 +654,10 @@ const styles = StyleSheet.create({
     fontFamily: "medium",
   },
   pleaseLogin: {
-    fontFamily: "regular",
+    fontFamily: "bold",
     textAlign: "center",
     marginVertical: SIZES.xxLarge,
-    fontSize: SIZES.medium,
+    fontSize: SIZES.medium + 4,
   },
   outWrap: {
     backgroundColor: COLORS.themey,

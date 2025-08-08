@@ -5,7 +5,7 @@ import { BlurView } from "expo-blur";
 import Animated, { FadeIn, FadeOut, Layout } from "react-native-reanimated";
 import { Home, Search, Profile, Categories, Products, Orders } from "../screens";
 import { COLORS } from "../constants";
-import { LucideHome as HomeIcon, List, Calendar, User, Circle } from "lucide-react-native";
+import { LucideHome as HomeIcon, List, User, Circle, CalendarDays } from "lucide-react-native";
 
 const Tab = createBottomTabNavigator();
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -14,7 +14,7 @@ const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 const iconMap = {
   Home: HomeIcon,
   Categories: List,
-  Orders: Calendar,
+  Orders: CalendarDays,
   Profile: User,
   Default: Circle,
 };
@@ -32,7 +32,7 @@ const TabItem = React.memo(({ routeName, label, isFocused, onPress }) => {
       <Icon
         size={24}
         color={isFocused ? COLORS.themey : COLORS.themew}
-        fill={isFocused ? COLORS.themey : "transparent"}
+        stroke={isFocused ? COLORS.themey : COLORS.themew}
       />
       {isFocused && (
         <Animated.Text entering={FadeIn.duration(200)} exiting={FadeOut.duration(200)} style={styles.label}>
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 8,
     fontWeight: "500",
-    color: COLORS.themeb,
+    fontFamily: "lufgaBold",
+    color: COLORS.themey,
   },
 });

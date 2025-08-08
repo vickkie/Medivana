@@ -105,7 +105,11 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
       }
     };
 
-    fetchAppointments();
+    if (userData || userLogin) {
+      fetchAppointments();
+    } else {
+      setLoading(false);
+    }
   }, [refreshing]);
   const getAppointmentStatus = (appt) => {
     if (appt.isCancelled) return "Cancelled";

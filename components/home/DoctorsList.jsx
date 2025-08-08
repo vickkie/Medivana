@@ -5,6 +5,8 @@ import { COLORS } from "../../constants";
 import useFetch from "../../hook/useFetch";
 import DoctorCard from "./DoctorCard";
 import styles from "./styles/doctorsList.js";
+import LottieView from "lottie-react-native";
+import { RefreshCcw, RefreshCcwDot } from "lucide-react-native";
 
 const CACHE_KEY = "cached_doctors";
 
@@ -97,8 +99,17 @@ const DoctorsList = ({
       ) : doctors.length === 0 ? (
         <View style={styles.messageContainer}>
           <Text style={styles.messageText}>No doctors available</Text>
+          <View style={styles.animationWrapper}>
+            <LottieView
+              source={require("../../assets/data/doc-quiz.json")}
+              autoPlay
+              loop={true}
+              style={styles.animation}
+            />
+          </View>
           <TouchableOpacity onPress={refetch} style={styles.retryButton}>
             <Text style={styles.retryButtonText}>Retry</Text>
+            <RefreshCcw color={COLORS.themew} size={20} />
           </TouchableOpacity>
         </View>
       ) : (
