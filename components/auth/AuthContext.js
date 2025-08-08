@@ -4,7 +4,7 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 import { Buffer } from "buffer";
-import { startPermissionCheck } from "./registerPushNotification";
+// import { startPermissionCheck } from "./registerPushNotification";
 
 //prefill
 global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
@@ -23,7 +23,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (userData?._id) {
       console.log("started notification for", userData?._id);
-      startPermissionCheck(userData?._id);
+      // startPermissionCheck(userData?._id);
     }
   }, [userData]);
 

@@ -17,32 +17,10 @@ export async function registerForPushNotificationsAsync(userId) {
 
   let { status } = await Notifications.getPermissionsAsync();
 
-  if (Platform.OS === "android" && Platform.Version >= 33) {
-    const { status: androidStatus } = await Notifications.requestPermissionsAsync();
-    status = androidStatus;
-  } else if (status !== "granted") {
+  // Request permissions if not granted. Expo's API handles platform specifics.
+  if (status !== "granted") {
     const { status: newStatus } = await Notifications.requestPermissionsAsync();
     status = newStatus;
-  }
-
-  const lastToken = await AsyncStorage.getItem("lastExpoPushToken");
-  const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? EAS_PROJECT_ID;
-
-  console.log(lastToken, projectId, "last push token");
-
-  let token = null;
-
-  try {
-    const response = await Notifications.getExpoPushTokenAsync({ projectId });
-
-    if (response?.data) {
-      token = response.data;
-      console.log(" Expo Push Token:", token);
-    } else {
-      console.warn("⚠️ No token returned from getExpoPushTokenAsync. Response:", response);
-    }
-  } catch (err) {
-    console.error(" Error while fetching Expo Push Token:", err);
   }
 
   if (status !== "granted") {
@@ -50,9 +28,26 @@ export async function registerForPushNotificationsAsync(userId) {
     return;
   }
 
+  const lastToken = await AsyncStorage.getItem("lastExpoPushToken");
+  const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? EAS_PROJECT_ID;
+
   if (!projectId) {
     console.error("Missing EAS Project ID! Push notifications may fail.");
     return;
+  }
+
+  let token = null;
+  try {
+    const response = await Notifications.getExpoPushTokenAsync({ projectId });
+    if (response?.data) {
+      token = response.data;
+      console.log("Expo Push Token:", token);
+    } else {
+      console.warn("⚠️ No token returned from getExpoPushTokenAsync. Response:", response);
+    }
+  } catch (err) {
+    console.error("Error while fetching Expo Push Token:", err);
+    return; // Exit if token fetching fails
   }
 
   if (token === lastToken) {
@@ -65,7 +60,6 @@ export async function registerForPushNotificationsAsync(userId) {
       userId,
       expoPushToken: token,
     });
-
     await AsyncStorage.setItem("lastExpoPushToken", token);
     console.log("Push token updated successfully", response.data);
   } catch (err) {
@@ -73,22 +67,8 @@ export async function registerForPushNotificationsAsync(userId) {
   }
 }
 
-export function startPermissionCheck(userId) {
-  const interval = setInterval(async () => {
-    console.log("Checking notification permission...");
-
-    const { status } = await Notifications.getPermissionsAsync();
-    console.log(status);
-
-    registerForPushNotificationsAsync(userId);
-
-    if (status === "granted") {
-      console.log("Permission granted, stopping checks.");
-      clearInterval(interval);
-    } else if (status === "denied") {
-      console.log("Permission denied. User needs to enable manually.");
-    } else if (!status) {
-      console.log("Permission status is unknown or not determined yet.");
-    }
-  }, 3000);
-}
+//! Removed startPermissionCheck:
+// Continuous polling for permissions is generally not recommended.
+// Instead, consider prompting the user for permissions at a relevant time
+// (e.g., on app launch or when a feature requiring notifications is used).
+// If permission is denied, guide the user to enable it manually via UI.

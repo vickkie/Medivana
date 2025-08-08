@@ -240,8 +240,8 @@ const Profile = () => {
 
   return (
     <ScrollView>
+      <StatusBar backgroundColor={COLORS.themey} />
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor={COLORS.themey} />
         <View style={styles.mediTop}>
           <View style={styles.upperRow}>
             <Text style={styles.heading}>Profile</Text>
