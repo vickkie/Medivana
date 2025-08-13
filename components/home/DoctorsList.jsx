@@ -98,7 +98,7 @@ const DoctorsList = ({
         <ActivityIndicator size="large" color={COLORS.primary} />
       ) : doctors.length === 0 ? (
         <View style={styles.messageContainer}>
-          <Text style={styles.messageText}>No doctors available</Text>
+          <Text style={styles.messageText}>No medics available</Text>
           <View style={styles.animationWrapper}>
             <LottieView
               source={require("../../assets/data/doc-quiz.json")}

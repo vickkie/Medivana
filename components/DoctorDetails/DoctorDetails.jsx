@@ -189,7 +189,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonWrap}>
             <Icon size={26} name="backbutton" />
           </TouchableOpacity>
-          <Text style={styles.heading}>Doctor Details</Text>
+          <Text style={styles.heading}>Medic Details</Text>
           <View style={styles.lovebuy}>
             <TouchableOpacity style={styles.buttonWrap1}>
               <Heart color={COLORS.themeg} />
@@ -221,7 +221,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.buttonWrap}>
             <Icon size={26} name="backbutton" />
           </TouchableOpacity>
-          <Text style={styles.heading}>Doctor Details</Text>
+          <Text style={styles.heading}>Medic Details</Text>
           <View style={styles.lovebuy}>
             <TouchableOpacity
               onPress={() => {

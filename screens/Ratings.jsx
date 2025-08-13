@@ -1,32 +1,19 @@
-import React, { useContext, useState, useEffect, useCallback, useMemo } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
+"use client";
+
+import { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { AuthContext } from "../components/auth/AuthContext";
-import LottieView from "lottie-react-native";
-import { BACKEND_PORT } from "@env";
+import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import * as Clipboard from "expo-clipboard";
-import Toast from "react-native-toast-message";
-import AppointmentPage from "./AppointmentList";
-import { FilterIcon, SearchIcon } from "lucide-react-native";
+import RatingsList from "../components/ratings/RatingList";
+import { Box, FilterIcon, ListTree, SearchIcon } from "lucide-react-native";
 
-const Appointments = () => {
+const Ratings = () => {
   const navigation = useNavigation();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(true);
 
   return (
     <SafeAreaView style={styles.containerx}>
@@ -38,7 +25,7 @@ const Appointments = () => {
           </TouchableOpacity>
           <View style={styles.upperRow}>
             <View style={styles.upperButtons}>
-              <Text style={styles.heading}>My Appointments</Text>
+              <Text style={styles.heading}>My Ratings</Text>
             </View>
             <TouchableOpacity
               onPress={() => {
@@ -46,11 +33,7 @@ const Appointments = () => {
               }}
               style={styles.outWrap}
             >
-              {isSearching ? (
-                <FilterIcon size={23} color={COLORS.themey} />
-              ) : (
-                <SearchIcon size={23} color={COLORS.themey} />
-              )}
+              {isSearching ? <Box size={23} color={COLORS.themey} /> : <SearchIcon size={23} color={COLORS.themey} />}
             </TouchableOpacity>
           </View>
         </View>
@@ -66,13 +49,13 @@ const Appointments = () => {
                   onChangeText={setSearchQuery}
                 />
                 <TouchableOpacity style={styles.searchButton}>
-                  <Icon name="search" size={26} />
+                  <SearchIcon name="search" size={26} color={COLORS.themey} />
                 </TouchableOpacity>
               </View>
             )}
 
             <View style={styles.detailsWrapper}>
-              <AppointmentPage filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
+              <RatingsList filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
             </View>
           </View>
         </ScrollView>
@@ -81,7 +64,7 @@ const Appointments = () => {
   );
 };
 
-export default Appointments;
+export default Ratings;
 
 const styles = StyleSheet.create({
   container: {
@@ -185,7 +168,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "column",
     padding: 15,
-    // overflow: "hidden",
   },
   image: {
     position: "absolute",
@@ -211,9 +193,6 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     minHeight: SIZES.height / 3,
     marginBottom: 60,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "green",
   },
   searchBarContainer: {
     flexDirection: "row",
@@ -236,7 +215,6 @@ const styles = StyleSheet.create({
   filterContainer: {
     paddingVertical: 8,
     paddingHorizontal: 15,
-    // backgroundColor: "red",
     height: 50,
   },
   filterButton: {
@@ -267,7 +245,6 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
     marginBottom: 5,
   },
-
   searchResultStatus: {
     marginTop: 5,
     color: COLORS.gray,

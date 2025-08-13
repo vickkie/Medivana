@@ -26,7 +26,7 @@ const Categories = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={23} />
           </TouchableOpacity>
-          <Text style={styles.heading}>Doctor categories</Text>
+          <Text style={styles.heading}>Medic categories</Text>
           <TouchableOpacity
             style={styles.buttonWrap}
             // onPress={() => {

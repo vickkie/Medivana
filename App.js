@@ -65,6 +65,7 @@ import {
   MedicalDetails,
   NotificationSettings,
   PrivacyPolicy,
+  Ratings,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -124,6 +125,7 @@ const screens = [
   { name: "MedicalDetails", component: MedicalDetails, options: { headerShown: false } },
   { name: "NotificationSettings", component: NotificationSettings, options: { headerShown: false } },
   { name: "PrivacyPolicy", component: PrivacyPolicy, options: { headerShown: false } },
+  { name: "Ratings", component: Ratings, options: { headerShown: false } },
 ];
 
 export default function App() {

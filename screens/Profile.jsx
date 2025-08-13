@@ -32,6 +32,7 @@ import {
   ChevronsRight,
   ShieldAlertIcon,
   ShieldAlert,
+  AwardIcon,
 } from "lucide-react-native";
 
 const Profile = () => {
@@ -313,7 +314,7 @@ const Profile = () => {
                       <TouchableOpacity style={styles.menuItemIcon}>
                         <HeartPulseIcon name="heart-circle" size={24} color={COLORS.primary} />
                       </TouchableOpacity>
-                      <Text style={styles.menuText}>Favourites</Text>
+                      <Text style={styles.menuText}>Favourite Medics</Text>
                     </View>
                     <TouchableOpacity style={styles.flexCenter}>
                       <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
@@ -328,6 +329,19 @@ const Profile = () => {
                         <CalendarDays name="calendar-number" size={26} color={COLORS.primary} />
                       </TouchableOpacity>
                       <Text style={styles.menuText}>Appointments</Text>
+                    </View>
+                    <TouchableOpacity style={styles.flexCenter}>
+                      <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => controlledNavigation("Ratings")}>
+                  <View style={styles.menuItem(0.5)}>
+                    <View style={styles.menuItemInner}>
+                      <TouchableOpacity style={styles.menuItemIcon}>
+                        <AwardIcon name="calendar-number" size={26} color={COLORS.primary} />
+                      </TouchableOpacity>
+                      <Text style={styles.menuText}>My Ratings</Text>
                     </View>
                     <TouchableOpacity style={styles.flexCenter}>
                       <ChevronsRight name="doubleforward" size={26} color={COLORS.primary} />
