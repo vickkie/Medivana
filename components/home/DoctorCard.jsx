@@ -45,14 +45,16 @@ const DoctorCard = ({ doctor, showBook }) => {
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.name}>Dr {name}</Text>
+        <Text style={styles.name}>
+          {doctor?.title} {name}
+        </Text>
         <Text style={styles.speciality}>{doctor?.specialization?.name || "doctor"}</Text>
 
         <Text style={styles.fee}>Ksh {fee}</Text>
         <View style={styles.ratingContainer}>
-          {/* {console.log(doctor?.ratings)} */}
+          {console.log(doctor?.title)}
           {renderStars(doctor?.averageRating || 0)}
-          {/* <Text style={styles.ratingText}>{rating !== "—" ? rating : ""}</Text> */}
+          <Text style={styles.ratingText}>{rating !== "—" ? rating : ""}</Text>
         </View>
 
         {showBook ? (

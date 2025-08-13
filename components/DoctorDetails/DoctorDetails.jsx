@@ -8,7 +8,7 @@ import { BACKEND_PORT } from "@env";
 import styles from "./styles/doctorDetails";
 import Icon from "../../constants/icons";
 import { BlurView } from "expo-blur";
-import { COLORS } from "../../constants";
+import { COLORS, SIZES } from "../../constants";
 import {
   ChevronLeft,
   ChevronRightIcon,
@@ -94,7 +94,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     updateAvailableHours(todayName);
   }, []);
 
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(true);
 
   const fetchDoctorDetails = async () => {
     try {
@@ -270,34 +270,42 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
 
             {/* Statistics */}
             <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
-                <TouchableOpacity style={styles.statsb}>
-                  <UsersIcon name="people-outline" size={20} color={COLORS.themeb} />
-                </TouchableOpacity>
+              {!isUpdating ? (
+                <>
+                  <View style={styles.statItem}>
+                    <TouchableOpacity style={styles.statsb}>
+                      <UsersIcon name="people-outline" size={20} color={COLORS.themeb} />
+                    </TouchableOpacity>
 
-                <View style={styles.numberHolder}>
-                  <Text style={styles.statNumber}>{doctorData?.visitCount || "0"}</Text>
-                  <Text style={styles.statLabel}>Visits</Text>
+                    <View style={styles.numberHolder}>
+                      <Text style={styles.statNumber}>{doctor?.visitCount || "0"}</Text>
+                      <Text style={styles.statLabel}>Visits</Text>
+                    </View>
+                  </View>
+                  <View style={styles.statItem}>
+                    <TouchableOpacity style={styles.statsb}>
+                      <Star name="star-outline" size={20} color={COLORS.themeb} />
+                    </TouchableOpacity>
+                    <View style={styles.numberHolder}>
+                      <Text style={styles.statNumber}>{doctorData ? `${doctorData?.averageRating}.0` : "0.0"}</Text>
+                      <Text style={styles.statLabel}>Rating</Text>
+                    </View>
+                  </View>
+                  <View style={styles.statItem}>
+                    <TouchableOpacity style={styles.statsb}>
+                      <Clock10Icon name="time-outline" size={20} color={COLORS.themeb} />
+                    </TouchableOpacity>
+                    <View style={styles.numberHolder}>
+                      <Text style={styles.statNumber}>{`${doctorData?.yearsOfExperience} Yr+` || "6 Yr+"}</Text>
+                      <Text style={styles.statLabel}>Exp</Text>
+                    </View>
+                  </View>
+                </>
+              ) : (
+                <View style={styles.flexCenter}>
+                  <ActivityIndicator color={COLORS.themey} size={22} />
                 </View>
-              </View>
-              <View style={styles.statItem}>
-                <TouchableOpacity style={styles.statsb}>
-                  <Star name="star-outline" size={20} color={COLORS.themeb} />
-                </TouchableOpacity>
-                <View style={styles.numberHolder}>
-                  <Text style={styles.statNumber}>{`${doctorData?.averageRating}.0` || "0.0"}</Text>
-                  <Text style={styles.statLabel}>Rating</Text>
-                </View>
-              </View>
-              <View style={styles.statItem}>
-                <TouchableOpacity style={styles.statsb}>
-                  <Clock10Icon name="time-outline" size={20} color={COLORS.themeb} />
-                </TouchableOpacity>
-                <View style={styles.numberHolder}>
-                  <Text style={styles.statNumber}>{doctorData?.experience || "6 Yr+"}</Text>
-                  <Text style={styles.statLabel}>Exp</Text>
-                </View>
-              </View>
+              )}
             </View>
           </View>
 

@@ -13,6 +13,7 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  flexCenter: { justifyContent: "center", width: SIZES.width - 30 },
   errorContainer: {
     flex: 1,
     justifyContent: "center",
