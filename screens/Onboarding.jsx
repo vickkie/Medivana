@@ -107,6 +107,7 @@ const Onboarding = () => {
                 shadowOpacity: 0.3,
                 shadowOffset: { width: 2, height: 2 },
                 shadowRadius: 6,
+                overflow: "hidden",
               }}
             >
               <Image source={item.image} style={{ width: 260, height: 260, resizeMode: "contain" }} />
@@ -134,6 +135,8 @@ const Onboarding = () => {
               flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
+              position: "absolute",
+              top: SIZES.height - 140,
             }}
           >
             <Text style={{ fontSize: 16, color: COLORS.themew, fontWeight: "600", marginRight: 8 }}>Start today</Text>
@@ -157,6 +160,7 @@ const Onboarding = () => {
             justifyContent: "center",
             alignItems: "center",
             elevation: 3,
+            overflow: "hidden",
           }}
         >
           <Image source={item.image} style={{ height: "100%", width: "80%", resizeMode: "contain" }} />
@@ -200,6 +204,7 @@ const Onboarding = () => {
               justifyContent: "center",
               alignItems: "center",
               marginRight: 16,
+              overflow: "hidden",
             }}
           >
             <ChevronsRight name="arrow-forward" size={24} color={COLORS.themew} />

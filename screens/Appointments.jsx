@@ -29,55 +29,56 @@ const Appointments = () => {
   const [isSearching, setIsSearching] = useState(false);
 
   return (
-    <SafeAreaView style={styles.containerx}>
-      <StatusBar backgroundColor={COLORS.themey} />
-      <View style={{ marginTop: 0 }}>
-        <View style={styles.wrapper}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-            <Icon name="backbutton" size={26} />
-          </TouchableOpacity>
-          <View style={styles.upperRow}>
-            <View style={styles.upperButtons}>
-              <Text style={styles.heading}>My Appointments</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                setIsSearching(!isSearching);
-              }}
-              style={styles.outWrap}
-            >
-              {isSearching ? (
-                <FilterIcon size={23} color={COLORS.themey} />
-              ) : (
-                <SearchIcon size={23} color={COLORS.themey} />
-              )}
+    <>
+      <SafeAreaView style={styles.containerx}>
+        <>
+          <View style={styles.wrapper}>
+            <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
+              <Icon name="backbutton" size={26} />
             </TouchableOpacity>
-          </View>
-        </View>
-
-        <ScrollView>
-          <View style={{ marginTop: 78 }}>
-            {isSearching && (
-              <View style={styles.searchBarContainer}>
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Search Appointments"
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                />
-                <TouchableOpacity style={styles.searchButton}>
-                  <Icon name="search" size={26} />
-                </TouchableOpacity>
+            <View style={styles.upperRow}>
+              <View style={styles.upperButtons}>
+                <Text style={styles.heading}>My Appointments</Text>
               </View>
-            )}
-
-            <View style={styles.detailsWrapper}>
-              <AppointmentPage filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
+              <TouchableOpacity
+                onPress={() => {
+                  setIsSearching(!isSearching);
+                }}
+                style={styles.outWrap}
+              >
+                {isSearching ? (
+                  <FilterIcon size={23} color={COLORS.themey} />
+                ) : (
+                  <SearchIcon size={23} color={COLORS.themey} />
+                )}
+              </TouchableOpacity>
             </View>
           </View>
-        </ScrollView>
-      </View>
-    </SafeAreaView>
+
+          <ScrollView>
+            <View style={{ marginTop: 78 }}>
+              {isSearching && (
+                <View style={styles.searchBarContainer}>
+                  <TextInput
+                    style={styles.searchInput}
+                    placeholder="Search Appointments"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                  />
+                  <TouchableOpacity style={styles.searchButton}>
+                    <Icon name="search" size={26} />
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              <View style={styles.detailsWrapper}>
+                <AppointmentPage filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
+              </View>
+            </View>
+          </ScrollView>
+        </>
+      </SafeAreaView>
+    </>
   );
 };
 
@@ -185,7 +186,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "column",
     padding: 15,
-    // overflow: "hidden",
   },
   image: {
     position: "absolute",
@@ -211,9 +211,6 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     minHeight: SIZES.height / 3,
     marginBottom: 60,
-    // alignItems: "center",
-    // justifyContent: "center",
-    // backgroundColor: "green",
   },
   searchBarContainer: {
     flexDirection: "row",
@@ -267,7 +264,6 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
     marginBottom: 5,
   },
-
   searchResultStatus: {
     marginTop: 5,
     color: COLORS.gray,
@@ -297,6 +293,6 @@ const styles = StyleSheet.create({
   },
   containerx: {
     flex: 1,
-    paddingTop: 26,
+    // paddingTop: 26,
   },
 });

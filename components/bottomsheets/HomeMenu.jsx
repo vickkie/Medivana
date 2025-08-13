@@ -33,7 +33,7 @@ const HomeMenu = forwardRef((props, ref) => {
 
   const handleNavigation = (screen) => {
     navigation.navigate(screen);
-    bottomSheetRef.current?.dismiss(); // Dismiss the bottom sheet
+    bottomSheetRef.current?.dismiss?.();
   };
 
   const showToast = (type, text1, text2) => {

@@ -243,7 +243,7 @@ const Profile = () => {
 
   return (
     <ScrollView>
-      <StatusBar backgroundColor={COLORS.themey} />
+      {/* <StatusBar backgroundColor={COLORS.themey} /> */}
       <SafeAreaView style={styles.container}>
         <View style={styles.mediTop}>
           <View style={styles.upperRow}>
