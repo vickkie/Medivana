@@ -210,7 +210,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.themey} />
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.containerb}>
         {/* Header */}
         <View style={styles.upperRow}>
           {isUpdating && (
@@ -276,7 +276,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                 </TouchableOpacity>
 
                 <View style={styles.numberHolder}>
-                  <Text style={styles.statNumber}>{doctorData?.visits || "8.7K"}</Text>
+                  <Text style={styles.statNumber}>{doctorData?.visitCount || "0"}</Text>
                   <Text style={styles.statLabel}>Visits</Text>
                 </View>
               </View>
@@ -285,7 +285,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                   <Star name="star-outline" size={20} color={COLORS.themeb} />
                 </TouchableOpacity>
                 <View style={styles.numberHolder}>
-                  <Text style={styles.statNumber}>{doctorData?.rating || "5.0"}</Text>
+                  <Text style={styles.statNumber}>{`${doctorData?.averageRating}.0` || "0.0"}</Text>
                   <Text style={styles.statLabel}>Rating</Text>
                 </View>
               </View>

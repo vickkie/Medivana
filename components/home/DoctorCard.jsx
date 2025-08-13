@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { COLORS, SIZES, FONTS } from "../../constants";
+import { COLORS } from "../../constants";
 import { MessageCircle, Phone, Star } from "lucide-react-native";
 import styles from "./styles/doctorCard.js";
 import { useNavigation } from "@react-navigation/native";
@@ -10,9 +10,8 @@ const DoctorCard = ({ doctor, showBook }) => {
   const name = doctor?.fullName || `${doctor?.firstname} ${doctor?.lastname}` || doctor?.email?.split("@")[0];
   const fee = doctor?.consultationFee;
 
-  const rating = doctor?.ratings?.length
-    ? (doctor?.ratings?.reduce((a, b) => a + b, 0) / doctor?.ratings?.length).toFixed(1)
-    : "—";
+  // Use backend-provided averageRating directly
+  const rating = doctor?.averageRating ? doctor.averageRating.toFixed(1) : "—";
 
   const FALLBACK_AVATAR = require("../../assets/images/doctor1.png");
 
@@ -28,32 +27,32 @@ const DoctorCard = ({ doctor, showBook }) => {
     );
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (value) => {
     return Array.from({ length: 5 }, (_, index) => (
       <Star
         key={index}
         size={14}
         color={COLORS.themey}
-        fill={index < Math.floor(rating) ? COLORS.themey : "transparent"}
+        fill={index < Math.floor(value) ? COLORS.themey : "transparent"}
       />
     ));
   };
 
   return (
     <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("DoctorDetails", { doctor })}>
-      {/* <TouchableOpacity onPress={() => navigation.navigate("DoctorDetails", { doctor })}> */}
       <View style={styles.avatar}>
         <DoctorAvatar uri={doctor?.profilePicture} />
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.name}> {name}</Text>
+        <Text style={styles.name}>Dr {name}</Text>
         <Text style={styles.speciality}>{doctor?.specialization?.name || "doctor"}</Text>
 
         <Text style={styles.fee}>Ksh {fee}</Text>
         <View style={styles.ratingContainer}>
-          {renderStars(doctor?.ratings?.length ? rating : 3)}
-          <Text style={styles.ratingText}>{doctor?.ratings?.length ? rating : ""}</Text>
+          {/* {console.log(doctor?.ratings)} */}
+          {renderStars(doctor?.averageRating || 0)}
+          {/* <Text style={styles.ratingText}>{rating !== "—" ? rating : ""}</Text> */}
         </View>
 
         {showBook ? (
@@ -73,7 +72,6 @@ const DoctorCard = ({ doctor, showBook }) => {
           </View>
         )}
       </View>
-      {/* </TouchableOpacity> */}
     </TouchableOpacity>
   );
 };

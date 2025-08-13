@@ -42,7 +42,7 @@ export default StyleSheet.create({
   },
   name: {
     ...FONTS.h3,
-    fontFamily: "bold",
+    fontFamily: "semibold",
     textTransform: "capitalize",
     color: COLORS.text,
   },

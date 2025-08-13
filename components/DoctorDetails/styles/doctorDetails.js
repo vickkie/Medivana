@@ -3,9 +3,9 @@ import { StyleSheet } from "react-native";
 import { COLORS, SIZES, FONTS } from "../../../constants";
 
 export default StyleSheet.create({
-  container: {
+  containerb: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 10,
     backgroundColor: COLORS.background,
   },
   loadingContainer: {
@@ -48,7 +48,7 @@ export default StyleSheet.create({
     fontWeight: "600",
   },
   scrollContainer: {
-    marginTop: 55,
+    marginTop: 65,
     background: COLORS.red,
     flex: 1,
     paddingHorizontal: 10,
@@ -236,9 +236,8 @@ export default StyleSheet.create({
     position: "absolute",
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.large,
-    top: SIZES.large,
     marginStart: 10,
-    minHeight: 70,
+    minHeight: 40,
     zIndex: 999,
   },
 

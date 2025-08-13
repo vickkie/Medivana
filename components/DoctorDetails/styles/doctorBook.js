@@ -5,7 +5,7 @@ import { COLORS, SIZES, FONTS } from "../../../constants";
 export default StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 10,
     backgroundColor: COLORS.background,
   },
   loadingContainer: {
@@ -230,9 +230,8 @@ export default StyleSheet.create({
     position: "absolute",
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.large,
-    top: SIZES.small,
     marginStart: 10,
-    minHeight: 70,
+    minHeight: 40,
     zIndex: 999,
   },
 

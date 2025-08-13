@@ -196,7 +196,7 @@ const Profile = () => {
   };
 
   const controlledNavigation = (route) => {
-    if (!userData || !userLogin) {
+    if (!userLogin) {
       navigation.reset({
         index: 0,
         routes: [{ name: "Bottom Navigation", params: { screen: "Profile" } }],
@@ -335,7 +335,7 @@ const Profile = () => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity onPress={() => () => controlledNavigation("Message")}>
+                <TouchableOpacity onPress={() => controlledNavigation("Message")}>
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
                       <TouchableOpacity style={styles.menuItemIcon}>
