@@ -119,7 +119,6 @@ const DoctorsList = ({
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator
-          scrollEnabled={false}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
           onEndReachedThreshold={0.5}
           onEndReached={() => {
