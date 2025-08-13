@@ -50,7 +50,7 @@ const AboutUs = () => {
             <Text style={styles.devHeader}>About</Text>
 
             <View style={styles.profileContainer}>
-              <TouchableOpacity style={styles.buttonWrap2} onPress={() => handlePress("https://promokings.co.ke")}>
+              <TouchableOpacity style={styles.buttonWrap2} onPress={() => handlePress(companyInfo?.website)}>
                 <Image source={require("../assets/icons/medivana-adaptive.png")} style={styles.profile} />
               </TouchableOpacity>
 
