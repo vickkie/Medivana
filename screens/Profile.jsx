@@ -59,9 +59,6 @@ const Profile = () => {
       clearWishlist();
       clearCart();
 
-      // Clear AsyncStorage
-      await AsyncStorage.clear();
-
       // Clear FileSystem cache
       const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);
       await Promise.all(files.map((file) => FileSystem.deleteAsync(FileSystem.documentDirectory + file)));

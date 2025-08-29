@@ -5,7 +5,7 @@
   "scripts": {
     "eas-build-pre-install": "node scripts/unpack-google-services.js",
     "start": "npx expo start --dev-client",
-    "start-offline": "expo start --offline",
+    "start-offline": "npx expo start --dev-client --offline",
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
