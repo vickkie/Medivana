@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet, StatusBar } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import Toast from "react-native-toast-message";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
+import { setItem, getItem, removeItem } from "../utils/storage";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
@@ -17,12 +18,21 @@ const validationSchema = Yup.object().shape({
 });
 
 const VerificationCode = ({ navigation }) => {
+  const [storedMail, setStoredMail] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const email = await getItem("reset-email");
+      if (email) setStoredMail(email?.email);
+    })();
+  }, []);
+
   const [loader, setLoader] = useState(false);
   const inputs = useRef([]);
   const route = useRoute();
   const params = route.params;
-  const email = params || "";
-  // console.log(params);
+  const email = params || storedMail || "";
+  // console.log(email?.email);
 
   const focusNext = (index, text) => {
     if (text && index < 4) inputs.current[index + 1]?.focus();

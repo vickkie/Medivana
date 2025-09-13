@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import Toast from "react-native-toast-message";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
+import { setItem, getItem, removeItem } from "../utils/storage";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
@@ -39,6 +40,7 @@ const RequestCode = ({ navigation }) => {
     setLoader(true);
     try {
       const email = values.email;
+      await setItem("reset-email", { email: values?.email });
       // console.log(userUpdateData);
 
       const endpoint = `${BACKEND_PORT}/auth/send-reset-code`;

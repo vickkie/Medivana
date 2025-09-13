@@ -2,7 +2,7 @@
   "expo": {
     "name": "Medivana",
     "slug": "medivana",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icons/medivana-light.png",
     "userInterfaceStyle": "light",
@@ -10,16 +10,14 @@
       "image": "./assets/icons/medivana-splash-light.png",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "UIStatusBarHidden": false,
         "UIStatusBarStyle": "UIStatusBarStyleDefault"
       },
- 
+
       "bundleIdentifier": "com.uzitrake.medivana"
     },
     "android": {
@@ -28,9 +26,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/medivana-adaptive.png",
         "backgroundColor": "#ffffff"
-
       },
-      "permissions":["NOTIFICATIONS"],
+      "permissions": ["NOTIFICATIONS"],
       "package": "com.uzitrake.medivana"
     },
     "web": {
