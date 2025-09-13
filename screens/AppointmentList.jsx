@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
   dayButtonActive: { backgroundColor: "#E0F7FA" },
   dayText: { fontSize: 14, color: "#888" },
   dayTextActive: { color: "#00796B", fontWeight: "bold" },
-  monthHeader: { fontSize: SIZES.large, textAlign: "center", fontFamily: "lufgaBold", marginTop: -10 },
+  monthHeader: { fontSize: SIZES.large, textAlign: "center", fontFamily: "", color: COLORS.themey, marginTop: -10 },
   card: {
     flexDirection: "row",
     alignItems: "center",

@@ -149,7 +149,7 @@ export default StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 15,
+    marginBottom: 10,
   },
   sectionTitle: {
     color: COLORS.themey,
@@ -335,8 +335,9 @@ export default StyleSheet.create({
     color: COLORS.gray,
   },
   bioText: {
-    fontFamily: "semibold",
+    fontFamily: "",
     fontSize: SIZES.medium,
+    marginTop: 3,
     color: COLORS.gray,
     lineHeight: 20,
   },

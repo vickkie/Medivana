@@ -44,7 +44,7 @@ const Ratings = () => {
               <View style={styles.searchBarContainer}>
                 <TextInput
                   style={styles.searchInput}
-                  placeholder="Search Appointments"
+                  placeholder="Search Appointments to rate"
                   value={searchQuery}
                   onChangeText={setSearchQuery}
                 />
