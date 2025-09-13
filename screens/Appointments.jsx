@@ -13,12 +13,7 @@ import {
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { AuthContext } from "../components/auth/AuthContext";
-import LottieView from "lottie-react-native";
-import { BACKEND_PORT } from "@env";
-import { StatusBar } from "expo-status-bar";
-import * as Clipboard from "expo-clipboard";
-import Toast from "react-native-toast-message";
+
 import AppointmentPage from "./AppointmentList";
 import { FilterIcon, SearchIcon } from "lucide-react-native";
 

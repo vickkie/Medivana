@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useMemo, useContext, useRef } from "react";
-import { Animated, Easing, StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
+import {
+  Animated,
+  Easing,
+  StyleSheet,
+  View,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  Text,
+  Modal,
+} from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
@@ -9,14 +19,61 @@ import * as ImagePicker from "expo-image-picker";
 import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
 import { BACKEND_PORT } from "@env";
+import { Dimensions } from "react-native";
 
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
+import Toast from "react-native-toast-message";
+
+const { width } = Dimensions.get("window");
+
+const showToast = (type, text1, text2 = "") => {
+  Toast.show({
+    type,
+    text1,
+    text2,
+    position: "top",
+    visibilityTime: 3000,
+    autoHide: true,
+    topOffset: 20,
+  });
+};
+
+const renderMessageImage = (props) => {
+  const { currentMessage } = props;
+
+  return (
+    <View style={{ borderRadius: 12, overflow: "hidden", padding: 12 }}>
+      <Image
+        source={{ uri: currentMessage.image }}
+        style={{
+          width: width * 0.5, // 60% of screen width
+          height: 200,
+          borderRadius: 12,
+          resizeMode: "cover", // keeps aspect ratio
+        }}
+      />
+    </View>
+  );
+};
 
 const ChatScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { userData } = useContext(AuthContext);
+
+  const [viewerVisible, setViewerVisible] = useState(false);
+  const [viewerImage, setViewerImage] = useState(null);
+
+  const openImageViewer = (uri) => {
+    setViewerImage(uri);
+    setViewerVisible(true);
+  };
+
+  const closeImageViewer = () => {
+    setViewerVisible(false);
+    setViewerImage(null);
+  };
 
   // chatWith is the chosen user (from ChatListScreen)
   const chatWith = route.params?.chatWith;
@@ -229,7 +286,9 @@ const ChatScreen = () => {
 
       {isPreviewVisible && (
         <View style={styles.previewBox}>
-          <Text style={{ paddingStart: 2, fontWeight: "600", marginBottom: -10 }}>Picked image</Text>
+          <Text style={{ paddingStart: 2, fontWeight: "600", marginBottom: -16, color: COLORS.themew }}>
+            Picked image
+          </Text>
           <TouchableOpacity
             onPress={() => {
               setSelectedImage(null);
@@ -262,6 +321,15 @@ const ChatScreen = () => {
             name: userData.username,
             avatar: userData.profilePicture,
           }}
+          // renderMessageImage={renderMessageImage}
+          renderMessageImage={(props) => (
+            <TouchableOpacity onPress={() => openImageViewer(props.currentMessage.image)}>
+              <Image
+                source={{ uri: props.currentMessage.image }}
+                style={{ width: 150, height: 100, borderRadius: 13, margin: 3, resizeMode: "cover" }}
+              />
+            </TouchableOpacity>
+          )}
           shouldUpdateMessage={(prevProps, nextProps) => prevProps.currentMessage._id !== nextProps.currentMessage._id}
           renderInputToolbar={(props) => <InputToolbar {...props} containerStyle={styles.inputBox} />}
           renderActions={(props) => (
@@ -282,6 +350,9 @@ const ChatScreen = () => {
                 onPress={() => {
                   if (text.trim().length > 0) {
                     onSend([{ text: text.trim(), user: { _id: userData._id } }], true);
+                  } else {
+                    showToast("error", "Type something to send.", "");
+                    return;
                   }
                 }}
               >
@@ -296,6 +367,15 @@ const ChatScreen = () => {
             );
           }}
         />
+        <Modal visible={viewerVisible} transparent={true} onRequestClose={closeImageViewer}>
+          <View style={{ flex: 1, backgroundColor: "black", justifyContent: "center" }}>
+            {viewerImage && (
+              <TouchableOpacity onPress={closeImageViewer} style={{ flex: 1 }}>
+                <Image source={{ uri: viewerImage }} style={{ flex: 1, resizeMode: "contain" }} />
+              </TouchableOpacity>
+            )}
+          </View>
+        </Modal>
       </ImageBackground>
     </View>
   );
