@@ -3,49 +3,78 @@
     {
       "releaseDate": "2025-07-03",
       "version": "0.0.1",
-      "whatsNew": ["Login page added","Signup page added",
-      "Home page added"],
+      "whatsNew": ["Login page added", "Signup page added", "Home page added"],
       "fixed": ["Manifest values fixed"]
-    },{
+    },
+    {
       "releaseDate": "2025-07-30",
       "version": "0.0.2",
-      "whatsNew": ["Doctors list added ",
-      "About page added","Profile page added"],
+      "whatsNew": ["Doctors list added ", "About page added", "Profile page added"],
       "fixed": ["Delete account fix."]
-    }
-    ,{
+    },
+    {
       "releaseDate": "2025-08-02",
       "version": "0.0.5",
-      "whatsNew": ["Doctor categories added ",
-      "Doctor details view","Booking added","Appointment tracking and view","Better customer profile UI"],
+      "whatsNew": [
+        "Doctor categories added ",
+        "Doctor details view",
+        "Booking added",
+        "Appointment tracking and view",
+        "Better customer profile UI"
+      ],
       "fixed": ["Breaking changes on appointment tracking"]
-    }
-    ,{
+    },
+    {
       "releaseDate": "2025-08-05",
       "version": "0.1.0",
-      "whatsNew": ["Payment tracking added",
-      "Bottom navigation added","Welcome page added","Appointment filtering revamped","Messaging support started"],
+      "whatsNew": [
+        "Payment tracking added",
+        "Bottom navigation added",
+        "Welcome page added",
+        "Appointment filtering revamped",
+        "Messaging support started"
+      ],
       "fixed": [""]
-    }
-    ,{
+    },
+    {
       "releaseDate": "2025-08-06",
       "version": "0.1.1",
-      "whatsNew": ["User Details update",
-      "Notifications management","Security updates","Privacy policy added","Medical details update"],
+      "whatsNew": [
+        "User Details update",
+        "Notifications management",
+        "Security updates",
+        "Privacy policy added",
+        "Medical details update"
+      ],
       "fixed": ["User details failure to update"]
-    }
-    ,{
+    },
+    {
       "releaseDate": "2025-08-09",
       "version": "1.0.0",
-      "whatsNew": ["Forgot password reset",
-      "Favourites available","Security updates","Message center revamped","Notifications added"],
+      "whatsNew": [
+        "Forgot password reset",
+        "Favourites available",
+        "Security updates",
+        "Message center revamped",
+        "Notifications added"
+      ],
       "fixed": ["Booking id visibility on appointment details"]
-    }
-    ,{
+    },
+    {
       "releaseDate": "2025-08-13",
       "version": "1.1.0",
-      "whatsNew": ["Appointment Rating added","Security updates","Doctor ratings updated"],
+      "whatsNew": ["Appointment Rating added", "Security updates", "Doctor ratings updated"],
       "fixed": ["profession title fix"]
+    },
+    {
+      "releaseDate": "2025-09-13",
+      "version": "1.2.0",
+      "whatsNew": ["Chat images preview", "Font fix", "Reset password when having code already"],
+      "fixed": [
+        "Chat image send bug when no text available",
+        "About Instagram linking",
+        "Availability Month date select fix"
+      ]
     }
   ]
 }

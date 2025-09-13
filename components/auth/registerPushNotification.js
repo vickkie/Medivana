@@ -6,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_PORT, EAS_PROJECT_ID } from "@env";
 import axios from "axios";
 import axiosRetry from "axios-retry";
+import { EraserIcon } from "lucide-react-native";
 
 axiosRetry(axios, { retries: 3 });
 
@@ -37,8 +38,13 @@ export async function registerForPushNotificationsAsync(userId) {
   }
 
   let token = null;
+  console.log("starting...", projectId);
+
   try {
     const response = await Notifications.getExpoPushTokenAsync({ projectId });
+
+    console.log(response, "response");
+
     if (response?.data) {
       token = response.data;
       console.log("Expo Push Token:", token);
