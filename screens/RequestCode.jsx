@@ -6,12 +6,12 @@ import * as Yup from "yup";
 import Toast from "react-native-toast-message";
 import { BACKEND_PORT } from "@env";
 import axios from "axios";
-import { setItem, getItem, removeItem } from "../utils/storage";
+import { setItem } from "../utils/storage";
 
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 import { COLORS, SIZES } from "../constants";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 
 const emailSchema = Yup.object().shape({
   email: Yup.string().email("Enter a valid email").required("Required"),

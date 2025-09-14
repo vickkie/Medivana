@@ -343,6 +343,7 @@ export default StyleSheet.create({
     marginBottom: 10,
     marginstart: 10,
     paddingLeft: 10,
+    overflow: "hidden",
   },
   pickerLabel: {
     marginBottom: 5,
@@ -351,13 +352,14 @@ export default StyleSheet.create({
     color: COLORS.themey,
   },
   picker: {
-    height: 40,
-    overflow: "hidden",
     borderColor: "gray",
     borderWidth: 1,
-    color: COLORS.black,
+    color: COLORS.themeb,
     backgroundColor: COLORS.themeg,
-    borderRadius: 50,
+  },
+  pickerwrapp: {
+    borderRadius: 20,
+    overflow: "hidden",
   },
   heading: {
     fontFamily: "bold",
@@ -389,7 +391,6 @@ export default StyleSheet.create({
     borderRadius: SIZES.large,
     marginBottom: 10,
     width: SIZES.width - 30,
-    marginStart: 10,
   },
   timeslotsH: {
     padding: 10,

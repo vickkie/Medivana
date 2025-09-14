@@ -241,16 +241,18 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
               </View>
               <View style={styles.pickerWrapper}>
                 <Text style={styles.pickerLabel}>Patient Gender</Text>
-                <Picker
-                  selectedValue={gender}
-                  onValueChange={(itemValue) => setGender(itemValue)}
-                  style={styles.picker}
-                >
-                  <Picker.Item label="Select gender" value={""} />
-                  {genders.map((g) => (
-                    <Picker.Item key={g.id} label={g.name} value={g.name} />
-                  ))}
-                </Picker>
+                <View style={styles.pickerwrapp}>
+                  <Picker
+                    selectedValue={gender}
+                    onValueChange={(itemValue) => setGender(itemValue)}
+                    style={styles.picker}
+                  >
+                    <Picker.Item label="Select gender" value={""} />
+                    {genders.map((g) => (
+                      <Picker.Item key={g.id} label={g.name} value={g.name} />
+                    ))}
+                  </Picker>
+                </View>
               </View>
 
               <View style={[styles.pickerWrapper, { marginTop: 10 }]}>
