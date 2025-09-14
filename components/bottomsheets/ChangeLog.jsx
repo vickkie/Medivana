@@ -55,6 +55,16 @@ const ChangeLogMenu = forwardRef((props, ref) => {
           ))}
         </View>
       )}
+      {item?.issues && item.issues.length > 0 && (
+        <View>
+          <Text style={styles.subheading}>Issues</Text>
+          {item.issues.map((issueItem, index) => (
+            <Text key={index} style={styles.itemText}>
+              - {issueItem}
+            </Text>
+          ))}
+        </View>
+      )}
     </View>
   );
 

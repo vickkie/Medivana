@@ -69,11 +69,16 @@
     {
       "releaseDate": "2025-09-13",
       "version": "1.2.0",
-      "whatsNew": ["Chat images preview", "Font fix", "Reset password when having code already"],
+      "whatsNew": ["Images in chat preview", "Reset password when having code already"],
       "fixed": [
         "Chat image send bug when no text available",
         "About Instagram linking",
-        "Availability Month date select fix"
+        "Availability Month date select fix",
+        "Reset code sent redirect",
+        "Font visibility fix"
+      ],
+      "issues":[
+        "Messages notification not received"
       ]
     }
   ]
