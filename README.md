@@ -2,7 +2,16 @@
 
 ### Overview
 
-The **Medivana App** is a React Native application designed to deliver a seamless experience in appointement with medical practicioners.
+**Medivana App** is application designed to deliver a seamless experience in appointement with medical practicioners.
+
+### Getting Started for users
+
+- Download the most recent apk version under releases in current repository.
+- Enjoy the seamless experience
+
+### Getting Started for doctors
+
+- Download the recent apk release version for doctors under another repository medivana-doctor or visit our website to download and start practicing today.
 
 ### Getting Started for developers
 
@@ -70,29 +79,32 @@ npm start
 4. more Requirements
 
 - requires a backend
-- dm to get access to full code
+- Dm my contacts under profile to get access to full code
 
 5. building to apk or aab file
-
-preview version apk
+   preview version apk
 
 - create an eas account
 - login in to eas in terminal
 
-```
+  ```
   eas build -p android --profile preview
 
-```
+  ```
 
-or
+  or
 
-custom profile
+  custom profile
 
-```
-eas build -p android --profile <your profile>
+  ```
+  eas build -p android --profile <your profile>
 
-```
+  ```
 
 ### Contributing
 
-If you'd like to contribute to this project, please follow the guidelines outlined in MIT license
+If you'd like to contribute to this project, please follow the guidelines outlined in MIT license or Dm to notify.
+
+## License
+
+- refer under licences
