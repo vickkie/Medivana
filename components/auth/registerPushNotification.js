@@ -6,7 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_PORT, EAS_PROJECT_ID } from "@env";
 import axios from "axios";
 import axiosRetry from "axios-retry";
-import { EraserIcon } from "lucide-react-native";
+
 
 axiosRetry(axios, { retries: 3 });
 

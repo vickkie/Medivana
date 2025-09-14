@@ -153,7 +153,7 @@ const VerificationCode = ({ navigation }) => {
 
               <View style={styles.registration}>
                 <Text style={styles.registrationText}>Try again?</Text>
-                <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                <TouchableOpacity onPress={() => navigation.navigate("RequestCode")}>
                   <Text style={styles.registrationText2}> Resend Code</Text>
                 </TouchableOpacity>
               </View>
