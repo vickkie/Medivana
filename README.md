@@ -1,4 +1,4 @@
-## Medivana App
+## Medivana Health App
 
 ### Overview
 
