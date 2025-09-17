@@ -2,7 +2,9 @@
 
 ### Overview
 
-**Medivana App** is application designed to deliver a seamless experience in appointement with medical practicioners.
+ App** is application designed to deliver a seamless experience in appointement with medical practicioners.
+
+**Medivana![splashscreen](https://github.com/user-attachments/assets/6794400b-1aa6-4d29-9f0a-79b93a59c1c9)
 
 ### Getting Started for users
 
