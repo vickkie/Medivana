@@ -21,7 +21,7 @@
       "bundleIdentifier": "com.uzitrake.medivana"
     },
     "android": {
-      "versionCode": 7,
+      "versionCode": 8,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/icons/medivana-adaptive.png",
