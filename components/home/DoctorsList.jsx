@@ -6,7 +6,7 @@ import useFetch from "../../hook/useFetch";
 import DoctorCard from "./DoctorCard";
 import styles from "./styles/doctorsList.js";
 import LottieView from "lottie-react-native";
-import { RefreshCcw, RefreshCcwDot } from "lucide-react-native";
+import { RefreshCcw } from "lucide-react-native";
 
 const CACHE_KEY = "cached_doctors";
 
@@ -18,59 +18,62 @@ const DoctorsList = ({
   speciality = "",
   setDoctorCount,
   searchQuery = "",
+  scrollEnabled = true,
+  externalLoadMore,
 }) => {
   const [offset, setOffset] = useState(0);
   const [endReached, setEndReached] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [doctors, setDoctors] = useState([]);
 
-  // Build URL with current params
   const url = `${field}?limit=${limit}&specialization=${speciality}&search=${searchQuery}&offset=${offset}`;
-
-  // Our fetch hook will re-run whenever `url` changes
   const { data, isLoading, error, refetch, statusCode } = useFetch(url);
+  // console.log(url);
 
-  // 1️⃣ When data arrives: append or replace
+  // 🔹 Handle new data from API
   useEffect(() => {
     if (statusCode === 200 && Array.isArray(data?.doctors)) {
+      const fetched = data.doctors;
+      console.log(`Fetched ${fetched.length} doctors at offset ${offset}`);
+
+      setDoctors((prev) => {
+        if (offset === 0) return fetched; // fresh load
+
+        // merge without duplicates
+        const combined = [...prev, ...fetched];
+        return Array.from(new Map(combined.map((d) => [d._id, d])).values());
+      });
+
+      setDoctorCount?.(data.totalCount || 0);
+
+      // cache only the first batch
       if (offset === 0) {
-        setDoctors(data.doctors);
-      } else {
-        setDoctors((prev) => [...prev, ...data.doctors]);
+        AsyncStorage.setItem(CACHE_KEY, JSON.stringify(fetched)).catch(console.error);
       }
 
-      setDoctorCount(data.totalCount);
-
-      // cache first page only
-      if (offset === 0) {
-        AsyncStorage.setItem(CACHE_KEY, JSON.stringify(data.doctors)).catch(console.error);
-      }
-      // detect end of list
-      if (data.doctors.length < limit) {
-        setEndReached(true);
-      }
+      // if fetched < limit, we reached the end
+      if (fetched.length < limit) setEndReached(true);
+      else setEndReached(false);
     }
   }, [data, statusCode, offset, limit, setDoctorCount]);
 
-  // 2️⃣ Reset when filters/search change (but don't call refetch here — URL change will auto-fetch)
+  // 🔹 Reset when filters/search change
   useEffect(() => {
     setOffset(0);
     setEndReached(false);
-    // clear current list so UI shows loading state
     setDoctors([]);
   }, [field, limit, speciality, searchQuery]);
 
-  // 3️⃣ Pull-to-refresh handler
+  // 🔹 Refresh
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setOffset(0);
     setEndReached(false);
-    // refetch uses latest URL (offset=0)
     refetch();
     setRefreshing(false);
   }, [refetch]);
 
-  // 4️⃣ If first-page fetch fails, load cache
+  // 🔹 Load cached data if fetch fails
   useEffect(() => {
     if (offset === 0 && (error || !data?.doctors?.length)) {
       AsyncStorage.getItem(CACHE_KEY)
@@ -81,7 +84,7 @@ const DoctorsList = ({
     }
   }, [error, data, offset]);
 
-  // 5️⃣ External refresh trigger
+  // 🔹 External refresh trigger
   useEffect(() => {
     if (refreshList) {
       onRefresh();
@@ -89,8 +92,37 @@ const DoctorsList = ({
     }
   }, [refreshList, onRefresh, setRefreshList]);
 
+  // 🔹 Load more (scroll)
+  const handleEndReached = useCallback(() => {
+    if (!isLoading && !endReached) {
+      setOffset((prev) => prev + limit);
+    }
+  }, [isLoading, endReached, limit]);
+
+  // 🔹 Allow parent to manually load more if scroll disabled
+  useEffect(() => {
+    if (!scrollEnabled && typeof externalLoadMore === "function") {
+      externalLoadMore(() => {
+        if (!isLoading && !endReached) {
+          setOffset((prev) => prev + limit);
+        }
+      });
+    }
+  }, [externalLoadMore, scrollEnabled, isLoading, endReached, limit]);
+
+  // 🔹 Render doctor item
   const renderItem = useCallback(({ item }) => <DoctorCard doctor={item} showBook />, []);
-  const keyExtractor = useCallback((item) => item._id, []);
+  const keyExtractor = useCallback((item, index) => item?._id ?? `key-${index}`, []);
+
+  // 🔹 Render loading footer (for last 8 + 2 scenario)
+  const renderFooter = () => {
+    if (!isLoading) return null;
+    return (
+      <View style={{ paddingVertical: 20 }}>
+        <ActivityIndicator size="small" color={COLORS.primary} />
+      </View>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -100,12 +132,7 @@ const DoctorsList = ({
         <View style={styles.messageContainer}>
           <Text style={styles.messageText}>No medics available</Text>
           <View style={styles.animationWrapper}>
-            <LottieView
-              source={require("../../assets/data/doc-quiz.json")}
-              autoPlay
-              loop={true}
-              style={styles.animation}
-            />
+            <LottieView source={require("../../assets/data/doc-quiz.json")} autoPlay loop style={styles.animation} />
           </View>
           <TouchableOpacity onPress={refetch} style={styles.retryButton}>
             <Text style={styles.retryButtonText}>Retry</Text>
@@ -117,15 +144,13 @@ const DoctorsList = ({
           data={doctors}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
+          scrollEnabled={scrollEnabled}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
           onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (!endReached && !isLoading) {
-              setOffset((prev) => prev + limit);
-            }
-          }}
+          onEndReached={scrollEnabled ? handleEndReached : null}
+          ListFooterComponent={renderFooter}
         />
       )}
     </SafeAreaView>

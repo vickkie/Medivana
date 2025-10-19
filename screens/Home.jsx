@@ -3,29 +3,27 @@ import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet 
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Welcome } from "../components/home";
-
 import Headings from "../components/home/Headings";
 import Icon from "../constants/icons";
 import { AuthContext } from "../components/auth/AuthContext";
-
 import HomeMenu from "../components/bottomsheets/HomeMenu";
 import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
-
 import { COLORS, SIZES } from "../constants";
 import { RefreshControl } from "react-native-gesture-handler";
-
-import companyInfo from "../assets/data/companyData.json";
 import DoctorsList from "../components/home/DoctorsList";
 
 const Home = () => {
-  const { userData, userLogin, hasRole } = useContext(AuthContext);
+  const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
+  const route = useRoute();
+
   const [refreshList, setRefreshList] = useState(false);
   const [selectedCat, setSelectedCat] = useState("");
   const [doctorCount, setDoctorCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const route = useRoute();
-  // console.log("navige", route.key);
+
+  // Ref to manually trigger pagination in DoctorsList
+  const loadMoreRef = useRef(null);
 
   useEffect(() => {
     if (route.name !== "Bottom Navigation") {
@@ -45,17 +43,11 @@ const Home = () => {
   };
 
   const BottomSheetRef = useRef(null);
-
-  const openMenu = () => {
-    if (BottomSheetRef.current) {
-      BottomSheetRef.current.present();
-    }
-  };
+  const openMenu = () => BottomSheetRef.current?.present();
 
   return (
     <SafeAreaView style={styles.topSafeview}>
       <HomeMenu ref={BottomSheetRef} />
-
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.themey} />
 
       <View style={styles.topWelcomeWrapper}>
@@ -65,15 +57,9 @@ const Home = () => {
               <TouchableOpacity onPress={openMenu} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
-              <View
-                style={{
-                  alignItems: "flex-start",
-                  marginLeft: 7,
-                  justifyContent: "center",
-                }}
-              >
+              <View style={{ marginLeft: 7, justifyContent: "center" }}>
                 <Text style={styles.welcomeText2}>Hello, {userData ? userData.username : "There"}</Text>
-                <Text style={styles.welcomeText}> {userData ? "Welcome Back" : "Start journey today"}</Text>
+                <Text style={styles.welcomeText}>{userData ? "Welcome Back" : "Start journey today"}</Text>
               </View>
             </View>
 
@@ -81,6 +67,7 @@ const Home = () => {
               <Icon name="bellfilled" size={24} />
             </TouchableOpacity>
           </View>
+
           <View style={{ padding: 7 }}>
             <Welcome setSearchQuery={setSearchQuery} searchQuery={searchQuery} />
           </View>
@@ -89,15 +76,19 @@ const Home = () => {
 
       <View style={{ flex: 1, borderRadius: 45, marginBottom: 30 }}>
         <ScrollView
-          refreshControl={
-            <RefreshControl
-              onRefresh={() => {
-                // console.log("dragged");
-                setRefreshList(true);
-              }}
-              refreshing={refreshList}
-            />
-          }
+          onScroll={({ nativeEvent }) => {
+            const paddingToBottom = 20;
+            const isEnd =
+              nativeEvent.layoutMeasurement.height + nativeEvent.contentOffset.y >=
+              nativeEvent.contentSize.height - paddingToBottom;
+
+            if (isEnd && loadMoreRef.current) {
+              console.log("🔹 Parent scroll hit bottom → loading more");
+              loadMoreRef.current(); // 🔥 call DoctorList’s load more
+            }
+          }}
+          scrollEventThrottle={16}
+          refreshControl={<RefreshControl onRefresh={() => setRefreshList(true)} refreshing={refreshList} />}
         >
           <View style={styles.lowerWelcomeWrapper}>
             <View style={styles.lowerWelcome}>
@@ -108,7 +99,10 @@ const Home = () => {
                 backColor={COLORS.themeg}
                 setSelectedCat={setSelectedCat}
               />
+
               <Headings heading={selectedCat || "Popular Doctors"} />
+
+              {/* 👇 We pass the callback setter down */}
               <DoctorsList
                 refreshList={refreshList}
                 setRefreshList={setRefreshList}
@@ -117,6 +111,8 @@ const Home = () => {
                 speciality={selectedCat}
                 setDoctorCount={setDoctorCount}
                 searchQuery={searchQuery}
+                scrollEnabled={false}
+                externalLoadMore={(cb) => (loadMoreRef.current = cb)}
               />
             </View>
           </View>
