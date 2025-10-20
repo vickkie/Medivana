@@ -343,7 +343,7 @@ const AppointmentDetails = () => {
 
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate("AppointmentInvoice", {
+                  navigation.navigate("ReceiptScreen", {
                     appointment: appointment,
                   });
                 }}

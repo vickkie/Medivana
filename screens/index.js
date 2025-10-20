@@ -2,10 +2,10 @@
 import Search from "./Search";
 import Profile from "./Profile";
 import Home from "./Home";
-import Cart from "./Cart";
-import ProductDetails from "../components/products/ProductDetails";
-import Products from "./Products";
-import ProductList from "../components/products/ProductList";
+// import Cart from "./Cart";
+// import ProductDetails from "../components/products/ProductDetails";
+// import Products from "./Products";
+// import ProductList from "../components/products/ProductList";
 import LoginPage from "./LoginPage";
 import Orders from "./Appointments";
 import Favourites from "./Favourites";
@@ -44,8 +44,10 @@ import MedicalDetails from "../components/Profile/MedicalDetails";
 import NotificationSettings from "../components/Profile/NotificationSettings";
 import PrivacyPolicy from "../components/Profile/PrivacyPolicy";
 import Ratings from "./Ratings";
+import ReceiptScreen from "./ReceiptScreen";
 // Export only user screens
 export {
+  ReceiptScreen,
   Ratings,
   PrivacyPolicy,
   NotificationSettings,
@@ -59,10 +61,10 @@ export {
   Search,
   OrderSuccess,
   Profile,
-  Cart,
-  ProductDetails,
-  Products,
-  ProductList,
+  // Cart,
+  // ProductDetails,
+  // Products,
+  // ProductList,
   LoginPage,
   Favourites,
   Orders,

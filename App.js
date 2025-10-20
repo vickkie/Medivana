@@ -29,10 +29,10 @@ const MyTheme = {
 
 // Screens from ./screens
 import {
-  Cart,
+  // Cart,
   OrderDetails,
-  ProductDetails,
-  Products,
+  // ProductDetails,
+  // Products,
   OrderSuccess,
   LoginPage,
   Favourites,
@@ -66,6 +66,7 @@ import {
   NotificationSettings,
   PrivacyPolicy,
   Ratings,
+  ReceiptScreen,
 } from "./screens";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
@@ -89,11 +90,11 @@ const screens = [
     options: { headerShown: false, contentStyle: { backgroundColor: "red" } },
   },
   { name: "Login", component: LoginPage, options: { headerShown: false } },
-  { name: "ProductDetails", component: ProductDetails, options: { headerShown: false } },
-  { name: "ProductList", component: Products, options: { headerShown: false } },
+  // { name: "ProductDetails", component: ProductDetails, options: { headerShown: false } },
+  // { name: "ProductList", component: Products, options: { headerShown: false } },
   { name: "Favourites", component: Favourites, options: { headerShown: false } },
   { name: "Categories", component: Categories, options: { headerShown: true } },
-  { name: "Cart", component: Cart, options: { headerShown: false } },
+  // { name: "Cart", component: Cart, options: { headerShown: false } },
   { name: "Checkout", component: Checkout, options: { headerShown: false } },
   { name: "Orders", component: Orders, options: { headerShown: false } },
   { name: "Register", component: Register, options: { headerShown: false } },
@@ -126,6 +127,7 @@ const screens = [
   { name: "NotificationSettings", component: NotificationSettings, options: { headerShown: false } },
   { name: "PrivacyPolicy", component: PrivacyPolicy, options: { headerShown: false } },
   { name: "Ratings", component: Ratings, options: { headerShown: false } },
+  { name: "ReceiptScreen", component: ReceiptScreen, options: { headerShown: false } },
 ];
 
 export default function App() {
