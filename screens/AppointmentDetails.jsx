@@ -19,7 +19,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
-import { Calendar, CalendarCogIcon, Clock2Icon, Mail, MailX, PhoneCall, UserCheckIcon } from "lucide-react-native";
+import {
+  Calendar,
+  CalendarCogIcon,
+  CircleUser,
+  Clock2Icon,
+  Mail,
+  MailX,
+  PhoneCall,
+  UserCheckIcon,
+} from "lucide-react-native";
 import LottieView from "lottie-react-native";
 
 const AppointmentDetails = () => {
@@ -151,39 +160,30 @@ const AppointmentDetails = () => {
   const DoctorInfoComponent = ({ doctor }) => (
     <View style={styles.doctorInfoContainer}>
       <View style={styles.doctorHeader}>
-        <Image source={{ uri: doctor.profilePicture }} style={styles.doctorImage} />
+        <TouchableOpacity onPress={() => navigation.navigate("DoctorDetails", { doctor: doctor })}>
+          <Image source={{ uri: doctor.profilePicture }} style={styles.doctorImage} />
+        </TouchableOpacity>
+
         <View style={styles.doctorDetails}>
           <Text style={styles.doctorName}>Dr. {doctor.fullName}</Text>
           <Text style={styles.doctorSpecialization}>{doctor.specialization?.name || "General Practice"}</Text>
           <Text style={styles.doctorLocation}>{doctor.location}</Text>
-          <Text style={styles.doctorExperience}>{doctor.yearsOfExperience} years experience</Text>
-        </View>
-      </View>
-
-      <View style={styles.doctorBio}>
-        <Text style={styles.bioTitle}>About Doctor</Text>
-        <Text style={styles.bioText}>{doctor.bio}</Text>
-      </View>
-
-      <View style={styles.doctorQualifications}>
-        <Text style={styles.qualificationTitle}>Qualifications</Text>
-        <View style={styles.qualificationList}>
-          {doctor.qualifications.map((qual, index) => (
-            <Text key={index} style={styles.qualificationItem}>
-              • {qual}
-            </Text>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.doctorLanguages}>
-        <Text style={styles.languageTitle}>Languages Spoken</Text>
-        <View style={styles.languageList}>
-          {doctor.languagesSpoken.map((lang, index) => (
-            <View key={index} style={styles.languageTag}>
-              <Text style={styles.languageText}>{lang}</Text>
+          {doctor.isVerified && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                marginTop: 3,
+              }}
+            >
+              <Image
+                source={require("../assets/images/verified.png")}
+                style={{ width: 23, height: 23, marginRight: 1 }}
+                resizeMode="contain"
+              />
+              <Text style={{ color: COLORS.success, fontSize: 13, fontWeight: "600" }}>Verified </Text>
             </View>
-          ))}
+          )}
         </View>
       </View>
 
@@ -208,12 +208,12 @@ const AppointmentDetails = () => {
 
       <View style={styles.inputWrapper}>
         <Clock2Icon name="clock" size={26} style={styles.iconStyle} color={COLORS.themey} />
-        <Text style={styles.appointmentText}>{formatTime(appointment.appointmentTime)}</Text>
+        <Text style={styles.appointmentText}>{appointment?.appointmentTime}</Text>
       </View>
 
       <View style={styles.inputWrapper}>
-        <UserCheckIcon name="user" size={26} style={styles.iconStyle} color={COLORS.themey} />
-        <Text style={styles.appointmentText}>{appointment.user?.fullName || appointment.user?.username}</Text>
+        <CircleUser name="user" size={26} style={styles.iconStyle} color={COLORS.themey} />
+        <Text style={styles.appointmentText}>{appointment.user?.fullname || appointment.user?.username}</Text>
       </View>
 
       <View style={styles.inputWrapper}>
@@ -228,9 +228,57 @@ const AppointmentDetails = () => {
         </View>
       )}
       {appointment?.doctorNotes && (
-        <View style={styles.notesContainer}>
+        <View
+          style={[
+            styles.notesContainer,
+            {
+              backgroundColor: "",
+              borderRadius: 8,
+              borderLeftWidth: 4,
+              borderLeftColor: COLORS.themey,
+            },
+          ]}
+        >
           <Text style={styles.notesTitle}>Doctor Notes</Text>
           <Text style={styles.notesText}>{appointment?.doctorNotes}</Text>
+        </View>
+      )}
+
+      {/* {console.log(appointment)} */}
+      {appointment?.rejectionReason && (
+        <View
+          style={[
+            styles.notesContainer,
+            {
+              backgroundColor: "#fbf4f4",
+              borderRadius: 8,
+              borderLeftWidth: 4,
+              borderLeftColor: "#991b1b",
+              borderColor: "#991b1b",
+            },
+          ]}
+        >
+          <Text style={styles.notesTitle}>Cancellation Details</Text>
+          <Text style={styles.notesText}>{appointment?.rejectionReason}</Text>
+        </View>
+      )}
+
+      {Array.isArray(appointment.doctorReportPdf) && appointment.doctorReportPdf.length > 0 && (
+        <View style={styles.notesContainer}>
+          <Text style={styles.notesTitle}>Doctor PDF Reports</Text>
+          {appointment.doctorReportPdf.map((pdfUrl, idx) => (
+            <TouchableOpacity
+              key={idx}
+              style={styles.pdfLinkContainer}
+              onPress={() => {
+                if (pdfUrl) {
+                  Linking.openURL(pdfUrl);
+                }
+              }}
+            >
+              <Text style={styles.pdfLinkText}>Download Report {idx + 1}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
       )}
     </View>
@@ -730,5 +778,12 @@ const styles = StyleSheet.create({
   containerx: {
     flex: 1,
     paddingTop: 26,
+  },
+  pdfLinkText: {
+    fontSize: SIZES.medium,
+    color: COLORS.link,
+    textDecorationLine: "underline",
+    fontFamily: "medium",
+    marginVertical: 4,
   },
 });

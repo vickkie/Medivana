@@ -15,13 +15,13 @@ import Icon from "../constants/icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 import AppointmentPage from "./AppointmentList";
-import { FilterIcon, SearchIcon } from "lucide-react-native";
+import { CalendarClock, CalendarDays, SearchIcon } from "lucide-react-native";
 
 const Appointments = () => {
   const navigation = useNavigation();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(true);
 
   return (
     <>
@@ -33,7 +33,7 @@ const Appointments = () => {
             </TouchableOpacity>
             <View style={styles.upperRow}>
               <View style={styles.upperButtons}>
-                <Text style={styles.heading}>My Appointments</Text>
+                <Text style={styles.heading}> Appointments</Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
@@ -42,7 +42,7 @@ const Appointments = () => {
                 style={styles.outWrap}
               >
                 {isSearching ? (
-                  <FilterIcon size={23} color={COLORS.themey} />
+                  <CalendarDays size={25} color={COLORS.themey} />
                 ) : (
                   <SearchIcon size={23} color={COLORS.themey} />
                 )}
