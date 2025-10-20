@@ -252,7 +252,7 @@ const ProfileDetails = () => {
                         onBlur={() => setFieldTouched("username", "")}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        style={{ flex: 1 }}
+                        style={[styles.colorDeep, { flex: 1 }]}
                         value={values.username}
                         onChangeText={handleChange("username")}
                         editable={editing}
@@ -270,7 +270,7 @@ const ProfileDetails = () => {
                         onBlur={() => setFieldTouched("email", "")}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        style={{ flex: 1 }}
+                        style={[styles.colorDeep, { flex: 1 }]}
                         value={values.email}
                         editable={false}
                       />
@@ -285,7 +285,7 @@ const ProfileDetails = () => {
                         onBlur={() => setFieldTouched("phoneNumber", "")}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        style={{ flex: 1 }}
+                        style={[styles.colorDeep, { flex: 1 }]}
                         value={values.phoneNumber}
                         onChangeText={handleChange("phoneNumber")}
                         editable={editing}
@@ -306,7 +306,7 @@ const ProfileDetails = () => {
                         onBlur={() => setFieldTouched("location", "")}
                         autoCapitalize="none"
                         autoCorrect={false}
-                        style={{ flex: 1 }}
+                        style={[styles.colorDeep, { flex: 1 }]}
                         value={values.location}
                         onChangeText={handleChange("location")}
                         editable={editing}
@@ -540,6 +540,9 @@ const styles = StyleSheet.create({
   },
   inputDisabled: {
     backgroundColor: COLORS.gray2 + "20",
+    color: COLORS.gray,
+  },
+  colorDeep: {
     color: COLORS.gray,
   },
 

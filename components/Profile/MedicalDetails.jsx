@@ -236,7 +236,7 @@ const MedicalDetails = () => {
                         placeholder="YYYY-MM-DD"
                         onFocus={() => setFieldTouched("dateOfBirth")}
                         onBlur={() => setFieldTouched("dateOfBirth", "")}
-                        style={{ flex: 1 }}
+                        style={[styles.colorDeep, { flex: 1 }]}
                         value={values.dateOfBirth}
                         onChangeText={(text) => handleDateChange(text, setFieldValue)}
                         editable={editing}
@@ -448,6 +448,7 @@ const styles = StyleSheet.create({
     minHeight: 80,
   },
   textArea: {
+    color: COLORS.gray,
     flex: 1,
     padding: 12,
     fontSize: SIZES.small + 3,
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
     borderColor: COLORS.themey,
   },
   bloodTypeButtonDisabled: {
-    backgroundColor: COLORS.gray2 + "20",
+    backgroundColor: COLORS.gray + "20",
     opacity: 0.6,
   },
   bloodTypeButtonText: {
@@ -515,5 +516,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     right: 10,
+  },
+  colorDeep: {
+    color: COLORS.gray,
   },
 });

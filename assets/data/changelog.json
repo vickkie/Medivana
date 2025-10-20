@@ -77,9 +77,20 @@
         "Reset code sent redirect",
         "Font visibility fix"
       ],
-      "issues":[
-        "Messages notification not received"
-      ]
+      "issues": ["Messages notification not received"]
+    },
+    {
+      "releaseDate": "2025-10-20",
+      "version": "1.3.0",
+      "whatsNew": ["Doctor Notes view", "Post appointment medical files", "UI improvements"],
+      "fixed": [
+        "Doctor Listing home fixed",
+        "Text color visibility improved",
+        "Success screen details fix ",
+        "Appointment details minimized",
+        "Paypal payment fixed"
+      ],
+      "issues": ["Messages notification not received"]
     }
   ]
 }

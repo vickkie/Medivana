@@ -192,10 +192,18 @@ const ChatListScreen = () => {
                       ) : (
                         <Image source={require("../assets/images/userDefault.webp")} style={styles.profilePicture} />
                       )}
-
+                      {/* {console.log(item)} */}
                       <View style={{ flex: 1, flexDirection: "row", justifyContent: "space-between" }}>
                         <Text style={styles.username}>
-                          {capitalize(item?.fullName || item?.username)} ({capitalize(item?.role || "user")})
+                          {capitalize(
+                            item?.username
+                              ? item.username
+                              : [item?.title || "", item?.firstname || "", item?.lastname || ""]
+                                  .filter(Boolean)
+                                  .join(" ")
+                                  .trim() || "Unknown"
+                          )}{" "}
+                          ({capitalize(item?.role || "user")})
                         </Text>
                         {unreadCount > 0 && (
                           <View style={styles.unreadBadge}>

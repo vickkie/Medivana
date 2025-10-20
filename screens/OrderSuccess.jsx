@@ -34,7 +34,7 @@ const OrderSuccess = () => {
 
   const handleCopy = async () => {
     await Clipboard.setStringAsync(orderId);
-    alert("Order ID copied to clipboard!");
+    alert("Appointment ID copied to clipboard!");
   };
 
   return (
@@ -48,7 +48,7 @@ const OrderSuccess = () => {
       <View style={styles.content}>
         <SafeAreaView style={styles.contentContainer}>
           <View style={styles.headerWrapper}>
-            <Text style={styles.header}>Order Status</Text>
+            <Text style={styles.header}>Appointment Status</Text>
           </View>
 
           <View style={styles.animationWrapper}>
@@ -61,9 +61,9 @@ const OrderSuccess = () => {
           </View>
 
           <View style={styles.detailsWrapper}>
-            <Text style={styles.successText}>Order Successful</Text>
+            <Text style={styles.successText}>Appointment Successful</Text>
             <View style={styles.orderDetails}>
-              <Text style={styles.orderDetail}>Order No:</Text>
+              <Text style={styles.orderDetail}>Appointment No:</Text>
               <View style={styles.copyContainer}>
                 <TouchableOpacity style={styles.orderNumber}>
                   <Text style={{ fontFamily: "light" }}>{orderId}</Text>
@@ -82,7 +82,7 @@ const OrderSuccess = () => {
                     navigation.navigate("Orders");
                   }}
                 >
-                  Track Order
+                  Track Now
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -94,7 +94,7 @@ const OrderSuccess = () => {
                   })
                 }
               >
-                <Text style={styles.buttonText}>Back to Home</Text>
+                <Text style={styles.buttonText}>Back Home</Text>
               </TouchableOpacity>
             </View>
           </View>
