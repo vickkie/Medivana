@@ -26,65 +26,86 @@ const DoctorsList = ({
   const [refreshing, setRefreshing] = useState(false);
   const [doctors, setDoctors] = useState([]);
 
-  const url = `${field}?limit=${limit}&specialization=${speciality}&search=${searchQuery}&offset=${offset}`;
+  // 🧩 Cache-busting param to always fetch fresh on refresh
+  const url = `${field}?limit=${limit}&specialization=${speciality}&search=${searchQuery}&offset=${offset}${
+    refreshing ? `&_t=${Date.now()}` : ""
+  }`;
+
   const { data, isLoading, error, refetch, statusCode } = useFetch(url);
-  // console.log(url);
 
-  // 🔹 Handle new data from API
+  // 🧠 Merge new data and cache properly
   useEffect(() => {
-    if (statusCode === 200 && Array.isArray(data?.doctors)) {
-      const fetched = data.doctors;
-      // console.log(`Fetched ${fetched.length} doctors at offset ${offset}`);
+    const updateDoctors = async () => {
+      if (statusCode === 200 && Array.isArray(data?.doctors)) {
+        const fetched = data.doctors;
 
-      setDoctors((prev) => {
-        if (offset === 0) return fetched; // fresh load
+        setDoctors((prev) => {
+          if (offset === 0) return fetched; // full refresh
+          const merged = [...prev, ...fetched];
+          return Array.from(new Map(merged.map((d) => [d._id, d])).values());
+        });
 
-        // merge without duplicates
-        const combined = [...prev, ...fetched];
-        return Array.from(new Map(combined.map((d) => [d._id, d])).values());
-      });
+        setDoctorCount?.(data.totalCount || 0);
+        setEndReached(fetched.length < limit);
 
-      setDoctorCount?.(data.totalCount || 0);
-
-      // cache only the first batch
-      if (offset === 0) {
-        AsyncStorage.setItem(CACHE_KEY, JSON.stringify(fetched)).catch(console.error);
+        // 🧠 Always overwrite cache on first page load (fresh data)
+        if (offset === 0) {
+          try {
+            await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(fetched));
+          } catch (err) {
+            console.error("Cache write error:", err);
+          }
+        }
       }
+    };
 
-      // if fetched < limit, we reached the end
-      if (fetched.length < limit) setEndReached(true);
-      else setEndReached(false);
-    }
+    updateDoctors();
   }, [data, statusCode, offset, limit, setDoctorCount]);
 
-  // 🔹 Reset when filters/search change
+  // 🧹 Reset list when filters/search change
   useEffect(() => {
     setOffset(0);
     setEndReached(false);
     setDoctors([]);
   }, [field, limit, speciality, searchQuery]);
 
-  // 🔹 Refresh
-  const onRefresh = useCallback(() => {
+  // 🔄 Pull-to-refresh logic (force network, no cache)
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
     setOffset(0);
     setEndReached(false);
-    refetch();
-    setRefreshing(false);
+
+    try {
+      // If your useFetch hook supports options, pass force:true
+      await refetch({ force: true });
+    } catch (err) {
+      console.error("Refresh failed:", err);
+    } finally {
+      setRefreshing(false);
+    }
   }, [refetch]);
 
-  // 🔹 Load cached data if fetch fails
+  // 🧰 Load cached data ONLY when API fails completely
   useEffect(() => {
-    if (offset === 0 && (error || !data?.doctors?.length)) {
-      AsyncStorage.getItem(CACHE_KEY)
-        .then((json) => {
-          if (json) setDoctors(JSON.parse(json));
-        })
-        .catch(console.error);
-    }
-  }, [error, data, offset]);
+    const loadCache = async () => {
+      if (offset === 0 && error) {
+        try {
+          const json = await AsyncStorage.getItem(CACHE_KEY);
+          if (json) {
+            const cached = JSON.parse(json);
+            setDoctors(cached);
+            console.log("Loaded cached doctors (fallback).");
+          }
+        } catch (err) {
+          console.error("Cache load error:", err);
+        }
+      }
+    };
 
-  // 🔹 External refresh trigger
+    loadCache();
+  }, [error, offset]);
+
+  // 🌐 External refresh trigger from parent
   useEffect(() => {
     if (refreshList) {
       onRefresh();
@@ -92,14 +113,14 @@ const DoctorsList = ({
     }
   }, [refreshList, onRefresh, setRefreshList]);
 
-  // 🔹 Load more (scroll)
+  // 📜 Pagination handler
   const handleEndReached = useCallback(() => {
     if (!isLoading && !endReached) {
       setOffset((prev) => prev + limit);
     }
   }, [isLoading, endReached, limit]);
 
-  // 🔹 Allow parent to manually load more if scroll disabled
+  // 🧩 Allow parent manual load-more when scrolling disabled
   useEffect(() => {
     if (!scrollEnabled && typeof externalLoadMore === "function") {
       externalLoadMore(() => {
@@ -110,20 +131,19 @@ const DoctorsList = ({
     }
   }, [externalLoadMore, scrollEnabled, isLoading, endReached, limit]);
 
-  // 🔹 Render doctor item
+  // 🧱 Render doctor item
   const renderItem = useCallback(({ item }) => <DoctorCard doctor={item} showBook />, []);
   const keyExtractor = useCallback((item, index) => item?._id ?? `key-${index}`, []);
 
-  // 🔹 Render loading footer (for last 8 + 2 scenario)
-  const renderFooter = () => {
-    if (!isLoading) return null;
-    return (
+  // 🌀 Footer loader
+  const renderFooter = () =>
+    isLoading && doctors.length > 0 ? (
       <View style={{ paddingVertical: 20 }}>
         <ActivityIndicator size="small" color={COLORS.primary} />
       </View>
-    );
-  };
+    ) : null;
 
+  // 💬 UI Rendering
   return (
     <SafeAreaView style={styles.container}>
       {isLoading && doctors.length === 0 ? (
@@ -134,7 +154,7 @@ const DoctorsList = ({
           <View style={styles.animationWrapper}>
             <LottieView source={require("../../assets/data/doc-quiz.json")} autoPlay loop style={styles.animation} />
           </View>
-          <TouchableOpacity onPress={refetch} style={styles.retryButton}>
+          <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
             <Text style={styles.retryButtonText}>Retry</Text>
             <RefreshCcw color={COLORS.themew} size={20} />
           </TouchableOpacity>
