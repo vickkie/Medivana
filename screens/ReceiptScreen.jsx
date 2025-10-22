@@ -18,7 +18,7 @@ const ReceiptScreen = () => {
   const navigation = useNavigation();
   const transaction = route.params?.appointment;
 
-  if (!transaction) {
+  if (!transaction || !transaction?.doctor) {
     return <Text>No appointment details</Text>;
   }
 
@@ -160,8 +160,8 @@ const ReceiptScreen = () => {
               <div class="sectionTitle">Patient</div>
               <div class="customerCard">
                 <h3>${userFull}</h3>
-                <div class="small">Username: ${tx.user?.username || "-"}</div>
-                <div class="small">${(tx.userNotes && tx.userNotes.replace(/\n/g, "<br/>")) || ""}</div>
+                <div class="small">Codename: ${tx.user?.username || "-"}</div>
+              
                 <img src="${qrUrl}" class="qr" />
               </div>
             </div>

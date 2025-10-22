@@ -156,18 +156,22 @@ const AppointmentDetails = () => {
       setIsLoading(false);
     }
   };
+  console.log(appointment?.doctorSnapshot);
 
   const DoctorInfoComponent = ({ doctor }) => (
     <View style={styles.doctorInfoContainer}>
       <View style={styles.doctorHeader}>
         <TouchableOpacity onPress={() => navigation.navigate("DoctorDetails", { doctor: doctor })}>
-          <Image source={{ uri: doctor?.profilePicture }} style={styles.doctorImage} />
+          <Image
+            source={{ uri: doctor?.profilePicture || appointment?.doctorSnapshot?.profilePicture }}
+            style={styles.doctorImage}
+          />
         </TouchableOpacity>
 
         <View style={styles.doctorDetails}>
-          <Text style={styles.doctorName}>Dr. {doctor?.fullName}</Text>
+          <Text style={styles.doctorName}>Dr. {doctor?.fullName || appointment?.doctorSnapshot?.fullName}</Text>
           <Text style={styles.doctorSpecialization}>{doctor?.specialization?.name || "General Practice"}</Text>
-          <Text style={styles.doctorLocation}>{doctor?.location}</Text>
+          <Text style={styles.doctorLocation}>{doctor?.location || appointment?.doctorSnapshot?.email}</Text>
           {doctor?.isVerified && (
             <View
               style={{
@@ -377,16 +381,18 @@ const AppointmentDetails = () => {
                 <View style={styles.contactContainer}>
                   <TouchableOpacity
                     style={styles.contactButton}
-                    onPress={() => handleEmailPress(appointment?.doctor?.email)}
+                    onPress={() => handleEmailPress(appointment?.doctor?.email || appointment?.doctorSnapshot?.email)}
                   >
                     <Mail name="email" size={20} color={COLORS.white} />
                     <Text style={styles.contactButtonText}>Email Doctor</Text>
                   </TouchableOpacity>
 
-                  {appointment?.doctor?.phoneNumber && (
+                  {appointment && (
                     <TouchableOpacity
                       style={styles.contactButton}
-                      onPress={() => handleCallPress(appointment?.doctor?.phoneNumber)}
+                      onPress={() =>
+                        handleCallPress(appointment?.doctor?.phoneNumber || appointment?.doctorSnapshot?.phoneNumber)
+                      }
                     >
                       <PhoneCall name="call" size={20} color={COLORS.white} />
                       <Text style={styles.contactButtonText}>Call Doctor</Text>
@@ -504,7 +510,7 @@ const styles = StyleSheet.create({
     marginTop: 160,
   },
   lowerRow: {
-    backgroundColor: COLORS.themew,
+    // backgroundColor: COLORS.themew,
     width: SIZES.width - 20,
     marginStart: 0,
     borderRadius: SIZES.medium,
@@ -513,7 +519,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     backgroundColor: COLORS.themew,
     width: SIZES.width - 20,
-    marginStart: 10,
+    marginStart: 5,
     borderRadius: SIZES.medium,
     paddingHorizontal: 3,
     marginTop: 10,
