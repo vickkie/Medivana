@@ -11,18 +11,15 @@ import {
   FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import Slider from "@react-native-community/slider";
 
 import { useRoute, useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { Picker } from "@react-native-picker/picker";
-import { BACKEND_PORT } from "@env";
+// import { BACKEND_PORT } from "@env";
 import styles from "./styles/doctorBook";
 import Icon from "../../constants/icons";
 import { COLORS } from "../../constants";
 import DoctorCard from "../home/DoctorCard";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import * as Yup from "yup";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "../auth/AuthContext";
 import { ChevronLeft, ChevronRightIcon } from "lucide-react-native";
@@ -31,12 +28,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const route = useRoute();
   const navigation = useNavigation();
   const params = route.params || routeParams;
-  const {
-    doctor,
-    selectedDate: passedDate,
-    selectedDay: passedDay,
-    // selectedDateObj
-  } = params;
+  const { doctor } = params;
 
   const genders = [
     { id: 1, name: "Male" },
@@ -50,16 +42,11 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // const [selectedDate, setSelectedDate] = useState(passedDate || null);
-  // const [selectedDay, setSelectedDay] = useState(passedDay || "");
-
-  // const [availableHours, setAvailableHours] = useState([]);
-  // const [weekOffset, setWeekOffset] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   const [firstName, setFirstName] = useState(userData?.firstname || "");
   const [lastName, setLastName] = useState(userData?.lastname || "");
   const [gender, setGender] = useState(userData?.gender || "");
-  const [age, setAge] = useState(1);
+  const [age, setAge] = useState(18);
 
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");

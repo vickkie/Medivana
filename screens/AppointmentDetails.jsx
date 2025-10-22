@@ -161,14 +161,14 @@ const AppointmentDetails = () => {
     <View style={styles.doctorInfoContainer}>
       <View style={styles.doctorHeader}>
         <TouchableOpacity onPress={() => navigation.navigate("DoctorDetails", { doctor: doctor })}>
-          <Image source={{ uri: doctor.profilePicture }} style={styles.doctorImage} />
+          <Image source={{ uri: doctor?.profilePicture }} style={styles.doctorImage} />
         </TouchableOpacity>
 
         <View style={styles.doctorDetails}>
-          <Text style={styles.doctorName}>Dr. {doctor.fullName}</Text>
-          <Text style={styles.doctorSpecialization}>{doctor.specialization?.name || "General Practice"}</Text>
-          <Text style={styles.doctorLocation}>{doctor.location}</Text>
-          {doctor.isVerified && (
+          <Text style={styles.doctorName}>Dr. {doctor?.fullName}</Text>
+          <Text style={styles.doctorSpecialization}>{doctor?.specialization?.name || "General Practice"}</Text>
+          <Text style={styles.doctorLocation}>{doctor?.location}</Text>
+          {doctor?.isVerified && (
             <View
               style={{
                 flexDirection: "row",
@@ -193,7 +193,7 @@ const AppointmentDetails = () => {
           {new Intl.NumberFormat("en-KE", {
             style: "currency",
             currency: "KES",
-          }).format(doctor.consultationFee)}
+          }).format(doctor?.consultationFee)}
         </Text>
       </View>
     </View>
@@ -377,16 +377,16 @@ const AppointmentDetails = () => {
                 <View style={styles.contactContainer}>
                   <TouchableOpacity
                     style={styles.contactButton}
-                    onPress={() => handleEmailPress(appointment.doctor.email)}
+                    onPress={() => handleEmailPress(appointment?.doctor?.email)}
                   >
                     <Mail name="email" size={20} color={COLORS.white} />
                     <Text style={styles.contactButtonText}>Email Doctor</Text>
                   </TouchableOpacity>
 
-                  {appointment.doctor.phoneNumber && (
+                  {appointment?.doctor?.phoneNumber && (
                     <TouchableOpacity
                       style={styles.contactButton}
-                      onPress={() => handleCallPress(appointment.doctor.phoneNumber)}
+                      onPress={() => handleCallPress(appointment?.doctor?.phoneNumber)}
                     >
                       <PhoneCall name="call" size={20} color={COLORS.white} />
                       <Text style={styles.contactButtonText}>Call Doctor</Text>

@@ -20,7 +20,7 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
       .required("Select a payment method")
       .test("hasValidPaymentDetails", "Please fill all required fields for selected payment method", function (value) {
         const { parent } = this;
-        console.log("parent", parent.selectedPaymentMethod);
+        // console.log("parent", parent.selectedPaymentMethod);
 
         switch (value) {
           case "MasterCard":
@@ -69,9 +69,14 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
     validationSchema: paymentValidationSchema,
 
     onSubmit: (values) => {
-      handleSubmitOrder(values);
-      console.log("sub", values);
-      validatePayment(values);
+      // validate form
+      formik.validateForm().then((errors) => {
+        if (Object.keys(errors).length === 0) {
+          handleSubmitOrder(values); // ✅ only one call
+        } else {
+          console.log("Form errors", errors);
+        }
+      });
     },
     validateOnMount: true,
   });
@@ -82,8 +87,8 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
   const validatePayment = async (values) => {
     let formErrors = await formik.validateForm();
 
-    console.log("errors", formErrors);
-    console.log("form valid", formik.isValid);
+    // console.log("errors", formErrors);
+    // console.log("form valid", formik.isValid);
     if (formik.isValid) {
       handleSubmitOrder(values);
     }
@@ -96,7 +101,7 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
     setSelectedPaymentMethod(method);
     formik.setFieldValue("selectedPaymentMethod", method);
     setTimeout(() => {
-      console.log(formik.isValid);
+      // console.log(formik.isValid);
     }, 2000);
   };
 

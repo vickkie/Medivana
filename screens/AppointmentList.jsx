@@ -200,7 +200,7 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
         >
           <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
           <View style={styles.info}>
-            <Text style={styles.name}>Dr. {item?.doctor.fullName}</Text>
+            <Text style={styles.name}>Dr. {item?.doctor?.fullName}</Text>
             {/* {isSearching && ( */}
             <View style={styles.row}>
               <Calendar1 size={14} color={COLORS.themey} />

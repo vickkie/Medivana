@@ -42,14 +42,6 @@
       }
     },
     "owner": "killoy",
-    "plugins": [
-      [
-        "onesignal-expo-plugin",
-        {
-          "mode": "development"
-        }
-      ],
-      "expo-font"
-    ]
+    "plugins": ["expo-font"]
   }
 }

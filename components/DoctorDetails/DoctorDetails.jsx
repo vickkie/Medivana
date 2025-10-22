@@ -168,9 +168,6 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
     userLogin
       ? navigation.navigate("DoctorBook", {
           doctor: doctorData,
-          selectedDate,
-          selectedDay,
-          selectedDateObj: selectedDateObj,
         })
       : handleShowLogin();
   };

@@ -36,7 +36,6 @@ const Checkout = () => {
   const navigation = useNavigation();
   const { estimatedAmount = 0, bookingData, additionalFees } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
-  const { clearCart } = useCart();
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorState, setErrorState] = useState(false);
@@ -99,7 +98,7 @@ const Checkout = () => {
   }, [phoneNumber]);
 
   const handleNext = () => {
-    console.log(phoneError, finalPhoneNumber);
+    // console.log(phoneError, finalPhoneNumber);
     switch (step) {
       case 1:
         // Example usage in handleNext
@@ -185,16 +184,12 @@ const Checkout = () => {
       paymentResponse: {},
     };
 
-    console.log("orderDATA", orderData);
-
-    handleNext(); // This moves to the next step in the UI
-
-    //return
+    handleNext();
 
     try {
       setIsLoading(true);
       setErrorState(false);
-      console.log(BACKEND_PORT);
+      // console.log(BACKEND_PORT, orderData);
 
       const response = await axios.post(`${BACKEND_PORT}/api/v1/appointment`, orderData);
 
@@ -202,9 +197,7 @@ const Checkout = () => {
       setSuccess(true);
 
       // Only proceed with next steps if the order creation was successful
-      if (response.data.success) {
-        clearCart();
-
+      if (response.data.success && response.status === 201) {
         navigation.navigate("OrderSuccess", { orderId: response.data?.bookingId });
       } else {
         setErrorMessage(response.data.message || "Unknown error occurred");
@@ -411,7 +404,7 @@ const Checkout = () => {
                       style={styles.animation}
                     />
                     <Text style={styles.errorMessage}>{"Sorry request failed \n Please try again later"}</Text>
-                    {console.log(errorMessage)}
+                    {/* {console.log(errorMessage)} */}
                   </View>
                   <TouchableOpacity
                     style={styles.buttonHome}
