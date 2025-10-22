@@ -83,19 +83,23 @@
       "releaseDate": "2025-10-20",
       "version": "1.3.0",
       "whatsNew": [
+        "Doctor Verification view",
+        "Easy booking flow",
         "Doctor Notes view",
         "Post appointment medical files",
         "UI improvements",
         "Payment receipt generation"
       ],
       "fixed": [
-        "Doctor Listing home fixed",
+        "Doctor Listing home fixed to enable lazy scroll loading",
         "Text color visibility improved",
         "Success screen details fix ",
         "Appointment details minimized",
-        "Paypal payment fixed"
+        "Paypal payment fixed",
+        "Dublicate appointments",
+        "Crash on missing doctor in appointment details"
       ],
-      "issues": ["Messages notification not received"]
+      "issues": ["Messages notification not received still"]
     }
   ]
 }

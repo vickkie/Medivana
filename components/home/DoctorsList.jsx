@@ -34,7 +34,7 @@ const DoctorsList = ({
   useEffect(() => {
     if (statusCode === 200 && Array.isArray(data?.doctors)) {
       const fetched = data.doctors;
-      console.log(`Fetched ${fetched.length} doctors at offset ${offset}`);
+      // console.log(`Fetched ${fetched.length} doctors at offset ${offset}`);
 
       setDoctors((prev) => {
         if (offset === 0) return fetched; // fresh load

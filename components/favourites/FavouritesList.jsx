@@ -34,7 +34,10 @@ const FavouritesList = ({ wishlist }) => {
         <Heart name="heart-outline" size={30} color={COLORS.gray} />
         <Text style={styles.emptyListText}>Your Favourites is empty.</Text>
         <Text style={styles.emptyListSubText}>Start adding doctors you like!</Text>
-        <TouchableOpacity style={styles.browseButton} onPress={() => navigation.navigate("Categories")}>
+        <TouchableOpacity
+          style={styles.browseButton}
+          onPress={() => navigation.navigate("Bottom Navigation", { screen: "Categories" })}
+        >
           <Text style={styles.browseButtonText}>Browse Doctors</Text>
         </TouchableOpacity>
       </View>
