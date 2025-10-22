@@ -7,6 +7,7 @@ import Icon from "../../constants/icons";
 import { COLORS, SIZES } from "../../constants";
 import privacyData from "../../assets/data/privacyPolicy.json";
 import { BACKEND_PORT } from "@env";
+import axios from "axios";
 
 const PrivacyPolicy = () => {
   const navigation = useNavigation();
@@ -19,18 +20,18 @@ const PrivacyPolicy = () => {
 
   const loadPrivacyPolicy = async () => {
     try {
-      // In real app, this would be an API call or file read
-      const response = await fetch(`${BACKEND_PORT}/api/privacy-policy`);
+      const response = axios.get(`${BACKEND_PORT}/api/privacy-policy`);
 
-      const data = await response.json();
+      const data = response.data;
+      // console.log(response?.data);
 
-      // Simulate loading delay
-      setTimeout(() => {
+      if (data) {
         setPolicyData(data);
-        setLoading(false);
-      }, 500);
+      }
     } catch (error) {
       console.error("Failed to load privacy policy:", error);
+      setLoading(false);
+    } finally {
       setLoading(false);
     }
   };

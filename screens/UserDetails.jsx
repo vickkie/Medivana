@@ -405,7 +405,7 @@ const UserDetails = () => {
                   </View>
                 </TouchableOpacity>
 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={logout}>
                   <View style={styles.menuItem(0.5)}>
                     <View style={styles.menuItemInner}>
                       <TouchableOpacity style={styles.menuItemIcon}>
