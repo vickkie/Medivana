@@ -17,6 +17,7 @@ import {
   HeartOff,
   HeartPlus,
   MessageCircleMore,
+  Sparkle,
   Star,
   UsersIcon,
 } from "lucide-react-native";
@@ -260,7 +261,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                 )}
                 <View style={styles.flexEnd}>
                   <TouchableOpacity style={styles.actionButton}>
-                    <MessageCircleMore name="chatbox" size={20} color={COLORS.white} />
+                    <Sparkle name="chatbox" size={20} color={COLORS.white} />
                   </TouchableOpacity>
                 </View>
 
@@ -335,6 +336,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                     setWeekOffset(newOffset);
                     const updatedDays = getWeekDays(newOffset);
                     setCalendarDays(updatedDays);
+                    updateMonthName(updatedDays);
                   }}
                 >
                   <ChevronRightIcon name="chevron-forward" size={16} color={COLORS.themeb} />

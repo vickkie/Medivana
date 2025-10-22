@@ -305,6 +305,7 @@ export default StyleSheet.create({
     marginBottom: 10,
     width: SIZES.width - 30,
     marginStart: 10,
+    overflow: "hidden",
   },
   descriptionInput: {
     flexDirection: "row",
@@ -373,7 +374,7 @@ export default StyleSheet.create({
     fontFamily: "bold",
     fontSize: SIZES.medium,
     color: COLORS.themey,
-    marginBottom: 5,
+    marginBottom: 10,
 
     paddingLeft: 10,
     textAlign: "left",

@@ -11,6 +11,7 @@ import {
   FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+// import Slider from "@react-native-community/slider";
 
 import { useRoute, useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -24,12 +25,18 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import * as Yup from "yup";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "../auth/AuthContext";
+import { ChevronLeft, ChevronRightIcon } from "lucide-react-native";
 
 const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const route = useRoute();
   const navigation = useNavigation();
   const params = route.params || routeParams;
-  const { doctor, selectedDate: passedDate, selectedDay: passedDay, selectedDateObj } = params;
+  const {
+    doctor,
+    selectedDate: passedDate,
+    selectedDay: passedDay,
+    // selectedDateObj
+  } = params;
 
   const genders = [
     { id: 1, name: "Male" },
@@ -43,16 +50,16 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [selectedDate, setSelectedDate] = useState(passedDate || null);
-  const [selectedDay, setSelectedDay] = useState(passedDay || "");
+  // const [selectedDate, setSelectedDate] = useState(passedDate || null);
+  // const [selectedDay, setSelectedDay] = useState(passedDay || "");
 
-  const [availableHours, setAvailableHours] = useState([]);
-  const [weekOffset, setWeekOffset] = useState(0);
+  // const [availableHours, setAvailableHours] = useState([]);
+  // const [weekOffset, setWeekOffset] = useState(0);
   const [isUpdating, setIsUpdating] = useState(false);
   const [firstName, setFirstName] = useState(userData?.firstname || "");
   const [lastName, setLastName] = useState(userData?.lastname || "");
   const [gender, setGender] = useState(userData?.gender || "");
-  const [age, setAge] = useState(selectedDateObj || new Date());
+  const [age, setAge] = useState(1);
 
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("date");
@@ -63,6 +70,66 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
 
   const isDayUnavailable = hourlySlots.length === 0;
   const isBookDisabled = isDayUnavailable;
+
+  const [calendarDays, setCalendarDays] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDateObj, setSelectedDateObj] = useState(null);
+  const [selectedDay, setSelectedDay] = useState("");
+  const [currentMonth, setCurrentMonth] = useState("");
+  const [availableHours, setAvailableHours] = useState([]);
+  const [weekOffset, setWeekOffset] = useState(0);
+
+  useEffect(() => {
+    const weekDays = getWeekDays();
+    setCalendarDays(weekDays);
+
+    const today = new Date();
+    const todayDay = today.getDate();
+    const todayName = today.toLocaleDateString("en-US", { weekday: "long" });
+
+    setSelectedDate(todayDay);
+    setSelectedDay(todayName);
+    setSelectedDateObj(today);
+    setCurrentMonth(today.toLocaleDateString("en-US", { month: "long" }));
+
+    updateAvailableHours(todayName);
+  }, []);
+
+  //test dates pickup
+  const getWeekDays = (offset = 0) => {
+    const now = new Date();
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - ((now.getDay() + 6) % 7) + offset * 7);
+
+    const calendarDays = [];
+    const options = { weekday: "short" };
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      calendarDays.push({
+        day: date.getDate(),
+        dateObj: date,
+        dayShort: date.toLocaleDateString("en-US", { weekday: "short" }),
+        dayName: date.toLocaleDateString("en-US", options).charAt(0),
+      });
+    }
+
+    return calendarDays;
+  };
+
+  const getFullDayName = (short) => {
+    const map = {
+      Sun: "Sunday",
+      Mon: "Monday",
+      Tue: "Tuesday",
+      Wed: "Wednesday",
+      Thu: "Thursday",
+      Fri: "Friday",
+      Sat: "Saturday",
+    };
+    return map[short] || short;
+  };
 
   const updateAvailableHours = (dayName) => {
     if (!dayName) return;
@@ -92,58 +159,16 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
     updateAvailableHours(selectedDay);
   }, [doctorData, selectedDay]);
 
-  const isEighteenPlus = (dob) => {
-    if (!dob) return false;
-
-    const birthDate = new Date(dob);
-    const today = new Date();
-
-    // Zero the time for accurate date-only comparison
-    birthDate.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0);
-
-    const eighteenYearsAgo = new Date(today);
-    eighteenYearsAgo.setFullYear(today.getFullYear() - 18);
-
-    return birthDate <= eighteenYearsAgo;
+  const updateMonthName = (days) => {
+    const middleDay = days[3]?.dateObj || new Date();
+    const month = middleDay.toLocaleDateString("en-US", { month: "long" });
+    setCurrentMonth(month);
   };
 
-  const calculateAge = (dob) => {
-    if (!dob) return null;
-
-    const birthDate = new Date(dob);
-    const today = new Date();
-
-    let age = today.getFullYear() - birthDate.getFullYear();
-
-    const hasBirthdayPassedThisYear =
-      today.getMonth() > birthDate.getMonth() ||
-      (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
-
-    if (!hasBirthdayPassedThisYear) {
-      age -= 1;
-    }
-
-    return age;
-  };
-
-  const onChange = (event, selectedDate) => {
-    setShow(false);
-    if (selectedDate) {
-      setAge(selectedDate);
-    }
-  };
-
-  useEffect(() => {
-    if (!isEighteenPlus(age)) {
-      setPastDate(true);
-    } else {
-      setPastDate(false);
-    }
-  }, [selectedDate, age]);
-
-  const showDatepicker = () => {
-    setShow(true);
+  const handleDateSelect = (item) => {
+    setSelectedDate(item.day);
+    setSelectedDateObj(item?.dateObj);
+    setSelectedDay(getFullDayName(item?.dayShort));
   };
 
   const handleContinueBook = () => {
@@ -157,10 +182,27 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
     }
     const doctorData = doctor?._id;
 
+    // Check if any required field is empty, null, or not selected
+    if (
+      !firstName ||
+      !lastName ||
+      !age ||
+      !gender ||
+      !selectedTime ||
+      !selectedDate ||
+      !selectedDateObj ||
+      !doctorData
+    ) {
+      Toast.show({
+        text1: "Please fill all the fields and select a timeslot.",
+        type: "error",
+      });
+      return;
+    }
     let bookingData = {
       firstName,
       lastName,
-      userAge: calculateAge(age),
+      userAge: age,
       gender,
       selectedTime,
       selectedDate,
@@ -171,6 +213,17 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
     const estimatedAmount = doctor?.consultationFee;
 
     navigation.navigate("Checkout", { bookingData, estimatedAmount });
+  };
+
+  const formatDate = (isoString) => {
+    if (!isoString) return "";
+    const date = new Date(isoString);
+    return date.toLocaleString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
   };
 
   if (error) {
@@ -228,30 +281,42 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                   />
                 </View>
               </View>
-
-              <View style={{ marginTop: 0 }}>
-                <Text style={styles.label}>Patient Date of birth</Text>
-                <TouchableOpacity style={[styles.dateBox, styles.input]} onPress={showDatepicker}>
-                  <Text>{age.toDateString()}</Text>
-                  <Icon name="calendar" size={15} />
-                </TouchableOpacity>
-                {show && (
-                  <DateTimePicker testID="dateTimePicker" value={age} mode={mode} is24Hour={true} onChange={onChange} />
-                )}
-              </View>
-              <View style={styles.pickerWrapper}>
-                <Text style={styles.pickerLabel}>Patient Gender</Text>
-                <View style={styles.pickerwrapp}>
-                  <Picker
-                    selectedValue={gender}
-                    onValueChange={(itemValue) => setGender(itemValue)}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="Select gender" value={""} />
-                    {genders.map((g) => (
-                      <Picker.Item key={g.id} label={g.name} value={g.name} />
-                    ))}
-                  </Picker>
+              <View style={styles.rowNames}>
+                <View style={{ marginTop: 0, width: "40%" }}>
+                  <Text style={styles.label}>Patient Age</Text>
+                  <View style={{ flexDirection: "column", alignItems: "center" }}>
+                    <TextInput
+                      style={[styles.inputH, { width: "100%", textAlign: "center" }]}
+                      value={String(age)}
+                      onChangeText={(value) => {
+                        // Only allow numbers
+                        let num = value.replace(/[^0-9]/g, "");
+                        // Convert to number and clamp between 1 and 100
+                        let number = parseInt(num);
+                        if (isNaN(number)) number = 1;
+                        if (number < 1) number = 1;
+                        if (number > 100) number = 100;
+                        setAge(number);
+                      }}
+                      keyboardType="numeric"
+                      maxLength={3}
+                    />
+                  </View>
+                </View>
+                <View style={[styles.pickerWrapper, { width: "50%" }]}>
+                  <Text style={styles.pickerLabel}>Patient Gender</Text>
+                  <View style={styles.pickerwrapp}>
+                    <Picker
+                      selectedValue={gender}
+                      onValueChange={(itemValue) => setGender(itemValue)}
+                      style={styles.picker}
+                    >
+                      <Picker.Item label="Select gender" value={""} />
+                      {genders.map((g) => (
+                        <Picker.Item key={g.id} label={g.name} value={g.name} />
+                      ))}
+                    </Picker>
+                  </View>
                 </View>
               </View>
 
@@ -260,10 +325,75 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 <TextInput
                   editable={false}
                   style={[styles.inputH, { color: COLORS.themeb }]}
-                  placeholder="selected Date"
-                >
-                  {selectedDay}
-                </TextInput>
+                  placeholder="Selected Date"
+                  value={formatDate(selectedDateObj)} // use the formatter here
+                />
+              </View>
+
+              {/* Availability Calendar */}
+              <View style={styles.availabilitySection}>
+                <View style={styles.availabilityHeader}>
+                  <Text style={styles.sectionTitle}>Availability</Text>
+
+                  <View style={styles.monthSelector}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        const newOffset = weekOffset - 1;
+                        setWeekOffset(newOffset);
+                        const updatedDays = getWeekDays(newOffset);
+                        setCalendarDays(updatedDays);
+                        updateMonthName(updatedDays);
+                      }}
+                    >
+                      <ChevronLeft name="chevron-back" size={16} color={COLORS.themeb} />
+                    </TouchableOpacity>
+
+                    <Text style={styles.monthText}>{currentMonth}</Text>
+
+                    <TouchableOpacity
+                      onPress={() => {
+                        const newOffset = weekOffset + 1;
+                        setWeekOffset(newOffset);
+                        const updatedDays = getWeekDays(newOffset);
+                        setCalendarDays(updatedDays);
+                        updateMonthName(updatedDays);
+                      }}
+                    >
+                      <ChevronRightIcon name="chevron-forward" size={16} color={COLORS.themeb} />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <View style={styles.calendar}>
+                  {calendarDays.map((item, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={[styles.calendarDay, selectedDate === item.day && styles.selectedDay]}
+                      onPress={() => handleDateSelect(item)}
+                    >
+                      <Text style={[styles.dayNumber, selectedDate === item.day && styles.selectedDayText]}>
+                        {item.day}
+                      </Text>
+                      <Text style={[styles.dayName, selectedDate === item.day && styles.selectedDayText]}>
+                        {item.dayName}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+                <View style={styles.slotsHolder}>
+                  {availableHours.map((slot, index) => (
+                    <TouchableOpacity style={styles.timeslots}>
+                      <Text key={index} style={styles.timeslot}>
+                        {slot.from} - {slot.to}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+
+                  {availableHours.length < 1 && (
+                    <Text style={[styles.timeslot, { fontFamily: "bold", color: COLORS.themey }]}>
+                      No allocated hours
+                    </Text>
+                  )}
+                </View>
               </View>
 
               <View style={styles.slotsHolderH}>
@@ -290,7 +420,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 ) : (
                   <View style={{ background: COLORS.themeg, paddingVertical: 10 }}>
                     <Text style={styles.timeslotH2}>No allocation hours</Text>
-                    <Text style={styles.timeslotH2}>Pick available day in previous screen</Text>
+                    <Text style={styles.timeslotH2}>Pick available day/month</Text>
                   </View>
                 )}
               </View>
