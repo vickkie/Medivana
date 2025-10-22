@@ -113,10 +113,9 @@ export default StyleSheet.create({
   },
 
   actionButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.white,
     width: 40,
     height: 40,
-
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",

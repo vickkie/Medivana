@@ -230,7 +230,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
               }}
               style={styles.buttonWrap1}
             >
-              {isFavorited ? <HeartPlus color={COLORS.themey} /> : <HeartOff color={COLORS.gray} />}
+              {isFavorited ? <Heart color={COLORS.themey} fill={COLORS.themey} /> : <Heart color={COLORS.gray} />}
             </TouchableOpacity>
           </View>
         </View>
@@ -261,7 +261,17 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                 )}
                 <View style={styles.flexEnd}>
                   <TouchableOpacity style={styles.actionButton}>
-                    <Sparkle name="chatbox" size={20} color={COLORS.white} />
+                    {doctor && (
+                      <Image
+                        source={
+                          doctor.isVerified
+                            ? require("../../assets/images/verified.png")
+                            : require("../../assets/images/unverified.png")
+                        }
+                        style={{ width: 26, height: 26, marginTop: 3 }}
+                        resizeMode="contain"
+                      />
+                    )}
                   </TouchableOpacity>
                 </View>
 

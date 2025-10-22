@@ -9,7 +9,7 @@ import { useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
 import { useCart } from "../contexts/CartContext";
 import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
-import { HeartHandshake } from "lucide-react-native";
+import { Cross } from "lucide-react-native";
 import Headings from "../components/home/Headings";
 import DoctorsList from "../components/home/DoctorsList";
 
@@ -40,7 +40,7 @@ const Categories = () => {
                 <Text style={styles.number}>0</Text>
               )}
             </View>
-            <HeartHandshake color={COLORS.themeb} size={23} />
+            <Cross color={COLORS.themeb} size={21} />
           </TouchableOpacity>
         </View>
         <View style={styles.docRow}>

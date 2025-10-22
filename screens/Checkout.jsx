@@ -240,7 +240,7 @@ const Checkout = () => {
 
   const onChangeText = ({ dialCode, unmaskedPhoneNumber, phoneNumber, isVerified }) => {
     setPhoneNumber(unmaskedPhoneNumber);
-    console.log("changing", unmaskedPhoneNumber.length, isVerified);
+    // console.log("changing", unmaskedPhoneNumber.length, isVerified);
 
     if (unmaskedPhoneNumber.length < 8) {
       setPhoneError(true);
@@ -350,10 +350,10 @@ const Checkout = () => {
                       </View>
 
                       <View style={styles.instructions}>
-                        <Text style={styles.label}>Additional Notes (issue)</Text>
+                        <Text style={styles.label}>Patient's Medical Note (issue)</Text>
                         <TextInput
                           style={styles.descriptionInput}
-                          placeholder="Patient details to note"
+                          placeholder="Appointment note"
                           value={moreDescription}
                           onChangeText={(text) => setmoreDescription(text)}
                           multiline
