@@ -2,7 +2,7 @@
 
 //@ts-nocheck
 import { useMemo, useCallback, useRef, forwardRef, useContext, useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Switch } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal } from "@gorhom/bottom-sheet";
 import { COLORS, SIZES } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
@@ -13,7 +13,7 @@ import axios from "axios";
 import { BACKEND_PORT } from "@env";
 
 const RatingBottomSheet = forwardRef((props, ref) => {
-  const snapPoints = useMemo(() => [400, 450], []);
+  const snapPoints = useMemo(() => [470, 500], []);
   const { appointment, onRatingSubmitted } = props;
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
@@ -25,6 +25,7 @@ const RatingBottomSheet = forwardRef((props, ref) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [anonymous, setAnonymous] = useState(false);
 
   useEffect(() => {
     if (!userLogin) {
@@ -70,7 +71,7 @@ const RatingBottomSheet = forwardRef((props, ref) => {
       return;
     }
 
-    console.log(rating, comment);
+    console.log({ rating, comment, anonymous });
 
     setIsSubmitting(true);
     try {
@@ -79,6 +80,7 @@ const RatingBottomSheet = forwardRef((props, ref) => {
         {
           rating,
           comment,
+          anonymous,
         },
         {
           headers: {
@@ -90,6 +92,7 @@ const RatingBottomSheet = forwardRef((props, ref) => {
       showToast("success", "Rating submitted", "Thank you for your feedback!");
       setRating(0);
       setComment("");
+      setAnonymous(false);
       onRatingSubmitted?.(data); // so parent can refresh list
     } catch (error) {
       console.error("Error submitting rating:", error);
@@ -103,6 +106,7 @@ const RatingBottomSheet = forwardRef((props, ref) => {
   const resetForm = () => {
     setRating(0);
     setComment("");
+    setAnonymous(false);
   };
 
   useEffect(() => {
@@ -162,6 +166,17 @@ const RatingBottomSheet = forwardRef((props, ref) => {
             numberOfLines={3}
             textAlignVertical="top"
           />
+        </View>
+
+        {/* Anonymous toggle section */}
+        <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 10 }}>
+          <Switch
+            value={anonymous}
+            onValueChange={setAnonymous}
+            trackColor={{ false: "#d1d1d6", true: COLORS.primary || "#42a5f5" }}
+            thumbColor={anonymous ? COLORS.primary || "#2196f3" : "#f4f3f4"}
+          />
+          <Text style={{ marginLeft: 10, fontSize: 14, color: COLORS.gray }}>Submit anonymously</Text>
         </View>
 
         <View style={styles.buttonContainer}>

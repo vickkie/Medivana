@@ -64,6 +64,8 @@ export default StyleSheet.create({
   ratingText: {
     marginLeft: 4,
     color: COLORS.text,
+    fontWeight: "600",
+    ...FONTS.medium,
     ...FONTS.body5,
   },
   bookButton: {

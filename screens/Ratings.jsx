@@ -7,7 +7,7 @@ import Icon from "../constants/icons";
 import { useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import RatingsList from "../components/ratings/RatingList";
-import { Box, FilterIcon, ListTree, SearchIcon } from "lucide-react-native";
+import { Box, FilterIcon, List, ListTree, SearchIcon } from "lucide-react-native";
 
 const Ratings = () => {
   const navigation = useNavigation();
@@ -25,7 +25,7 @@ const Ratings = () => {
           </TouchableOpacity>
           <View style={styles.upperRow}>
             <View style={styles.upperButtons}>
-              <Text style={styles.heading}>My Ratings</Text>
+              <Text style={styles.heading}> Ratings</Text>
             </View>
             <TouchableOpacity
               onPress={() => {
@@ -33,7 +33,7 @@ const Ratings = () => {
               }}
               style={styles.outWrap}
             >
-              {isSearching ? <Box size={23} color={COLORS.themey} /> : <SearchIcon size={23} color={COLORS.themey} />}
+              {isSearching ? <List size={23} color={COLORS.themey} /> : <SearchIcon size={23} color={COLORS.themey} />}
             </TouchableOpacity>
           </View>
         </View>

@@ -272,7 +272,13 @@ const ChatScreen = () => {
         </TouchableOpacity>
         <View style={styles.upperRow}>
           <View style={styles.upperButtons}>
-            <Text style={styles.heading}>{chatWith?.fullName || "Chat"}</Text>
+            {console.log(chatWith?.role)}
+            <Text style={styles.heading}>
+              {[chatWith?.title || "", chatWith?.firstname || "", chatWith?.lastname || "", chatWith?.username || ""]
+                .filter(Boolean)
+                .join(" ")
+                .trim() || "Chat"}
+            </Text>
           </View>
           <TouchableOpacity onPress={() => {}} style={styles.buttonWrap2}>
             {chatWith?.profilePicture ? (
@@ -540,7 +546,7 @@ const styles = StyleSheet.create({
   heading: {
     fontFamily: "bold",
     textTransform: "capitalize",
-    fontSize: SIZES.xLarge + 3,
+    fontSize: SIZES.large,
     textAlign: "left",
     color: COLORS.themeb,
     marginStart: 20,

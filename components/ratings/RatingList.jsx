@@ -11,7 +11,7 @@ import {
   SafeAreaView,
   ActivityIndicator,
 } from "react-native";
-import { Calendar1, Clock, Star, RefreshCcw } from "lucide-react-native";
+import { Calendar1, Clock, Star, RefreshCcw, HatGlasses } from "lucide-react-native";
 import { COLORS, SIZES } from "../../constants";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
@@ -142,7 +142,7 @@ export default function RatingsList({ filterList, searchQuery1 = "", isSearching
 
       return (
         <TouchableOpacity
-          style={styles.card}
+          style={styles.cards}
           onPress={() => {
             if (ratingEnabled) {
               handleRatePress(item);
@@ -150,43 +150,61 @@ export default function RatingsList({ filterList, searchQuery1 = "", isSearching
           }}
           disabled={!ratingEnabled}
         >
-          <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
-          <View style={styles.info}>
-            <Text style={styles.name}>
-              {item?.doctor?.title} {item?.doctor?.firstname}
-              {item?.doctor?.lastname}
-            </Text>
-            <View style={styles.row}>
-              <Calendar1 size={14} color={COLORS.themey} />
-              <Text style={styles.time}>{new Date(item?.appointmentDate).toLocaleDateString()}</Text>
-            </View>
-            <View style={styles.row}>
-              <Clock size={14} color={COLORS.themey} />
-              <Text style={styles.time}>{item?.appointmentTime}</Text>
-            </View>
-            <View style={styles.row}>
-              <Text style={styles.type}>ID: {item?.bookingId}</Text>
-            </View>
-            {item.rated && item.rating && (
-              <View style={styles.ratingRow}>
-                <View style={styles.starsContainer}>{renderStars(item.rating)}</View>
-                <Text style={styles.ratingComment} numberOfLines={1}>
-                  {item.rating.comment}
+          <View style={styles.card}>
+            <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
+            <View style={styles.info}>
+              <View style={styles.anonyFlex}>
+                <Text style={styles.name}>
+                  {item?.doctor?.title} {item?.doctor?.firstname} {item?.doctor?.lastname}
+                </Text>
+                {console.log(item?.rating)}
+                {item?.rating?.anonymous && (
+                  <TouchableOpacity style={styles.anony}>
+                    <HatGlasses size={17} color={COLORS.themey} />
+                  </TouchableOpacity>
+                )}
+              </View>
+              <View style={styles.row}>
+                <Calendar1 size={14} color={COLORS.themey} />
+                <Text style={styles.time}>
+                  {new Date(item?.appointmentDate).toLocaleDateString()} ----- {item?.appointmentTime}
                 </Text>
               </View>
-            )}
-          </View>
-          <View style={styles.rightSection}>
-            <View style={[styles.badge, badgeStyle]}>
-              <Text style={styles.badgeText}>{status}</Text>
+
+              <View style={styles.row}>
+                <Text style={styles.type}>ID: {item?.bookingId}</Text>
+              </View>
+              <View style={styles.rightSection}>
+                {item.rated && item.rating && (
+                  <View style={styles.ratingRow}>
+                    <View style={styles.starsContainer}>{renderStars(item.rating)}</View>
+                  </View>
+                )}
+                <View style={[styles.badge, badgeStyle]}>
+                  <Text style={styles.badgeText}>{status}</Text>
+                </View>
+                {ratingEnabled && (
+                  <TouchableOpacity style={styles.rateButton} onPress={() => handleRatePress(item)}>
+                    <Star size={16} color={COLORS.themew} />
+                    <Text style={styles.rateButtonText}>Rate Now</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
-            {ratingEnabled && (
-              <TouchableOpacity style={styles.rateButton} onPress={() => handleRatePress(item)}>
-                <Star size={16} color={COLORS.themew} />
-                <Text style={styles.rateButtonText}>Rate Now</Text>
-              </TouchableOpacity>
-            )}
           </View>
+          {item?.rated && (
+            <>
+              <View style={styles.boxFixWrap}>
+                <View style={styles.boxFix}></View>
+                <View style={styles.boxFix}></View>
+              </View>
+              <View style={styles.ratingText}>
+                <Text style={styles.ratingComment} numberOfLines={5}>
+                  {item?.rating?.comment}
+                </Text>
+              </View>
+            </>
+          )}
         </TouchableOpacity>
       );
     },
@@ -285,6 +303,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.medium,
+    zIndex: 2,
   },
   avatar: {
     width: 90,
@@ -309,12 +328,14 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   ratingComment: {
-    fontSize: 12,
-    color: "#666",
+    fontSize: 14,
+    color: COLORS.themeb,
     fontStyle: "italic",
   },
   rightSection: {
-    alignItems: "flex-end",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 8,
   },
   badge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 12 },
@@ -380,5 +401,42 @@ const styles = StyleSheet.create({
   containerx: {
     flex: 1,
     paddingTop: 26,
+  },
+  ratingRows: {
+    backgroundColor: "red",
+  },
+  ratingText: {
+    // alignItems: "center",
+    padding: SIZES.xSmall,
+    marginBottom: 12,
+    backgroundColor: COLORS.themeg,
+    borderRadius: SIZES.medium - 3,
+  },
+  boxFixWrap: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    elevation: 2,
+    marginTop: -30,
+    zIndex: 1,
+  },
+
+  boxFix: {
+    height: 30,
+    width: 15,
+    backgroundColor: COLORS.themeg,
+  },
+  anony: {
+    width: 24,
+    height: 24,
+    padding: 4,
+    borderRadius: 30,
+    backgroundColor: COLORS.themew,
+  },
+  anonyFlex: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });
