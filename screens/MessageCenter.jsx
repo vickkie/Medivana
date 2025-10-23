@@ -78,7 +78,7 @@ const MessageCenter = ({ navigation }) => {
               <View style={styles.menuItem(0.5)}>
                 <View style={styles.itswrap}>
                   <BellElectricIcon name="bellfilled" size={24} color={COLORS.primary} />
-                  <Text style={styles.menuText}>My Notifications</Text>
+                  <Text style={styles.menuText}>System Notifications</Text>
                 </View>
                 <ChevronsRight name="forward" size={24} color={COLORS.primary} />
               </View>

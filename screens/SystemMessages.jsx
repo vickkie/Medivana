@@ -119,7 +119,7 @@ const SystemMessages = () => {
       >
         {messages && (
           <Image
-            source={require("../assets/icon-home.png")} // Path to your static avatar image
+            source={require("../assets/icons/medivana-splash-256.png")} // Path to your static avatar image
             style={styles.avatar}
           />
         )}
