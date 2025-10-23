@@ -78,6 +78,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   const [currentMonth, setCurrentMonth] = useState("");
   const [availableHours, setAvailableHours] = useState([]);
   const [weekOffset, setWeekOffset] = useState(0);
+  const [showAllReviews, setShowAllReviews] = useState(false);
 
   useEffect(() => {
     const weekDays = getWeekDays();
@@ -102,6 +103,8 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
       setIsUpdating(true);
       const response = await axios.get(`${BACKEND_PORT}/api/medic/${doctor?._id}`);
       const fetchedDoctor = response.data;
+      // console.log(fetchedDoctor);
+      // setDoctorData(fetchedDoctor);
 
       const isDifferent = JSON.stringify(fetchedDoctor) !== JSON.stringify(doctor);
 
@@ -171,6 +174,12 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
         })
       : handleShowLogin();
   };
+
+  useEffect(() => {
+    if (showAllReviews) {
+      setShowAllReviews(false);
+    }
+  }, []);
 
   const isFavorited = isItemInWishlist(doctorData);
 
@@ -318,101 +327,219 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
           </View>
 
           {/* Availability Calendar */}
-          <View style={styles.availabilitySection}>
-            <View style={styles.availabilityHeader}>
-              <Text style={styles.sectionTitle}>Availability</Text>
 
-              <View style={styles.monthSelector}>
-                <TouchableOpacity
-                  onPress={() => {
-                    const newOffset = weekOffset - 1;
-                    setWeekOffset(newOffset);
-                    const updatedDays = getWeekDays(newOffset);
-                    setCalendarDays(updatedDays);
-                    updateMonthName(updatedDays);
-                  }}
-                >
-                  <ChevronLeft name="chevron-back" size={16} color={COLORS.themeb} />
-                </TouchableOpacity>
+          {!showAllReviews && (
+            <View style={styles.availabilitySection}>
+              <View style={styles.availabilityHeader}>
+                <Text style={styles.sectionTitle}>Availability</Text>
 
-                <Text style={styles.monthText}>{currentMonth}</Text>
+                <View style={styles.monthSelector}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      const newOffset = weekOffset - 1;
+                      setWeekOffset(newOffset);
+                      const updatedDays = getWeekDays(newOffset);
+                      setCalendarDays(updatedDays);
+                      updateMonthName(updatedDays);
+                    }}
+                  >
+                    <ChevronLeft name="chevron-back" size={16} color={COLORS.themeb} />
+                  </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => {
-                    const newOffset = weekOffset + 1;
-                    setWeekOffset(newOffset);
-                    const updatedDays = getWeekDays(newOffset);
-                    setCalendarDays(updatedDays);
-                    updateMonthName(updatedDays);
-                  }}
-                >
-                  <ChevronRightIcon name="chevron-forward" size={16} color={COLORS.themeb} />
-                </TouchableOpacity>
+                  <Text style={styles.monthText}>{currentMonth}</Text>
+
+                  <TouchableOpacity
+                    onPress={() => {
+                      const newOffset = weekOffset + 1;
+                      setWeekOffset(newOffset);
+                      const updatedDays = getWeekDays(newOffset);
+                      setCalendarDays(updatedDays);
+                      updateMonthName(updatedDays);
+                    }}
+                  >
+                    <ChevronRightIcon name="chevron-forward" size={16} color={COLORS.themeb} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View style={styles.calendar}>
+                {calendarDays.map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.calendarDay, selectedDate === item.day && styles.selectedDay]}
+                    onPress={() => handleDateSelect(item)}
+                  >
+                    <Text style={[styles.dayNumber, selectedDate === item.day && styles.selectedDayText]}>
+                      {item.day}
+                    </Text>
+                    <Text style={[styles.dayName, selectedDate === item.day && styles.selectedDayText]}>
+                      {item.dayName}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              <View style={styles.slotsHolder}>
+                {availableHours.map((slot, index) => (
+                  <TouchableOpacity style={styles.timeslots}>
+                    <Text key={index} style={styles.timeslot}>
+                      {slot.from} - {slot.to}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+
+                {availableHours.length < 1 && (
+                  <Text style={[styles.timeslot, { fontFamily: "bold", color: COLORS.themey, marginLeft: 20 }]}>
+                    No allocated hours
+                  </Text>
+                )}
               </View>
             </View>
-            <View style={styles.calendar}>
-              {calendarDays.map((item, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[styles.calendarDay, selectedDate === item.day && styles.selectedDay]}
-                  onPress={() => handleDateSelect(item)}
-                >
-                  <Text style={[styles.dayNumber, selectedDate === item.day && styles.selectedDayText]}>
-                    {item.day}
-                  </Text>
-                  <Text style={[styles.dayName, selectedDate === item.day && styles.selectedDayText]}>
-                    {item.dayName}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={styles.slotsHolder}>
-              {availableHours.map((slot, index) => (
-                <TouchableOpacity style={styles.timeslots}>
-                  <Text key={index} style={styles.timeslot}>
-                    {slot.from} - {slot.to}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-
-              {availableHours.length < 1 && (
-                <Text style={[styles.timeslot, { fontFamily: "bold", color: COLORS.themey }]}>No allocated hours</Text>
-              )}
-            </View>
-          </View>
-
-          {/* About Section */}
+          )}
           <View style={styles.aboutSection}>
-            <Text style={styles.sectionTitle}>About Doctor</Text>
-            <View style={styles.doctorBio}>
-              <Text style={styles.bioText}>{doctorData?.bio}</Text>
-            </View>
+            {!showAllReviews && (
+              <>
+                <Text style={styles.sectionTitle}>About Doctor</Text>
+                <View style={styles.doctorBio}>
+                  <Text style={styles.bioText}>{doctorData?.bio}</Text>
+                </View>
 
-            <View style={styles.doctorQualifications}>
-              <Text style={styles.sectionTitle}>Qualifications</Text>
-              <View style={styles.qualificationList}>
-                {doctorData?.qualifications.map((qual, index) => (
-                  <Text key={index} style={styles.qualificationItem}>
-                    • {qual}
-                  </Text>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.doctorLanguages}>
-              <Text style={styles.languageTitle}>Languages Spoken</Text>
-              <View style={styles.languageList}>
-                {doctorData?.languagesSpoken.map((lang, index) => (
-                  <View key={index} style={styles.languageTag}>
-                    <Text style={styles.languageText}>{lang}</Text>
+                <View style={styles.doctorQualifications}>
+                  <Text style={styles.sectionTitle}>Qualifications</Text>
+                  <View style={styles.qualificationList}>
+                    {doctorData?.qualifications.map((qual, index) => (
+                      <Text key={index} style={styles.qualificationItem}>
+                        • {qual}
+                      </Text>
+                    ))}
                   </View>
-                ))}
+                </View>
+
+                <View style={styles.doctorLanguages}>
+                  <Text style={styles.languageTitle}>Languages Spoken</Text>
+                  <View style={styles.languageList}>
+                    {doctorData?.languagesSpoken.map((lang, index) => (
+                      <View key={index} style={styles.languageTag}>
+                        <Text style={styles.languageText}>{lang}</Text>
+                      </View>
+                    ))}
+                  </View>
+                </View>
+              </>
+            )}
+
+            {Array.isArray(doctorData?.ratings) && doctorData.ratings.length > 0 && (
+              <View style={[styles.latestReviewSection, { marginTop: 10, marginBottom: 10 }]}>
+                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
+                  <Text style={[styles.sectionTitle, { marginBottom: 3 }]}>Patient Reviews</Text>
+                  <TouchableOpacity
+                    onPress={() => setShowAllReviews(!showAllReviews)}
+                    style={{ paddingHorizontal: 10, paddingVertical: 2 }}
+                  >
+                    <Text style={{ color: COLORS.primary, fontFamily: "semibold", fontSize: 14 }}>
+                      {!showAllReviews ? "See all" : "See less"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                {showAllReviews
+                  ? [...doctorData.ratings]
+                      .sort((a, b) => {
+                        const aDate = new Date(a.date || a.createdAt);
+                        const bDate = new Date(b.date || b.createdAt);
+                        return bDate - aDate;
+                      })
+                      .map((review, idx) => {
+                        const displayName = review.anonymous ? "Anonymous" : review.userId?.username || "Patient";
+                        const reviewDate = review.date
+                          ? new Date(review.date).toLocaleDateString()
+                          : review.createdAt
+                          ? new Date(review.createdAt).toLocaleDateString()
+                          : "";
+                        return (
+                          <View
+                            key={idx}
+                            style={{
+                              backgroundColor: "#F2F5FA",
+                              borderRadius: 10,
+                              padding: 12,
+                              marginBottom: 9,
+                            }}
+                          >
+                            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                              <Text style={{ fontFamily: "semibold", fontSize: 15, color: "#242D3B", marginRight: 10 }}>
+                                {displayName}
+                              </Text>
+                              {review.rating && (
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                  {Array.from({ length: 5 }).map((_, i) => (
+                                    <Text
+                                      key={i}
+                                      style={{ color: i < review.rating ? "#FEA900" : "#CCC", fontSize: 14 }}
+                                    >
+                                      ★
+                                    </Text>
+                                  ))}
+                                </View>
+                              )}
+                              {reviewDate ? (
+                                <Text style={{ marginLeft: 12, fontSize: 12, color: "#8995A2" }}>{reviewDate}</Text>
+                              ) : null}
+                            </View>
+                            <Text style={{ color: "#3F485B", fontFamily: "medium", fontSize: 15 }}>
+                              {review.comment}
+                            </Text>
+                          </View>
+                        );
+                      })
+                  : (() => {
+                      const latestReview = [...doctor.ratings].sort((a, b) => {
+                        const aDate = new Date(a.date || a.createdAt);
+                        const bDate = new Date(b.date || b.createdAt);
+                        return bDate - aDate;
+                      })[0];
+
+                      if (!latestReview) return null;
+
+                      const displayName = latestReview.anonymous
+                        ? "Anonymous"
+                        : latestReview.userId?.username || latestReview?.userId?.fullName || "Patient";
+                      const reviewDate = latestReview.date
+                        ? new Date(latestReview.date).toLocaleDateString()
+                        : latestReview.createdAt
+                        ? new Date(latestReview.createdAt).toLocaleDateString()
+                        : "";
+
+                      return (
+                        <View style={{ backgroundColor: "#F2F5FA", borderRadius: 10, padding: 12 }}>
+                          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                            <Text style={{ fontFamily: "semibold", fontSize: 15, color: "#242D3B", marginRight: 10 }}>
+                              {displayName}
+                            </Text>
+                            {latestReview.rating && (
+                              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                {Array.from({ length: 5 }).map((_, i) => (
+                                  <Text
+                                    key={i}
+                                    style={{ color: i < latestReview.rating ? "#FEA900" : "#CCC", fontSize: 14 }}
+                                  >
+                                    ★
+                                  </Text>
+                                ))}
+                              </View>
+                            )}
+                            {reviewDate ? (
+                              <Text style={{ marginLeft: 12, fontSize: 12, color: "#8995A2" }}>{reviewDate}</Text>
+                            ) : null}
+                          </View>
+                          <Text style={{ color: "#3F485B", fontFamily: "medium", fontSize: 15 }}>
+                            {latestReview.comment}
+                          </Text>
+                        </View>
+                      );
+                    })()}
               </View>
-            </View>
+            )}
           </View>
         </ScrollView>
 
-        {/* Book Appointment Button */}
         <View style={styles.bookingContainer}>
           <TouchableOpacity style={styles.bookButton} onPress={handleBookAppointment}>
             <Text style={styles.bookButtonText}>Book Appointment </Text>

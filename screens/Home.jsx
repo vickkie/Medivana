@@ -83,7 +83,7 @@ const Home = () => {
               nativeEvent.contentSize.height - paddingToBottom;
 
             if (isEnd && loadMoreRef.current) {
-              console.log("🔹 Parent scroll hit bottom → loading more");
+              // console.log("🔹 Parent scroll hit bottom → loading more");
               loadMoreRef.current(); // 🔥 call DoctorList’s load more
             }
           }}

@@ -13,7 +13,7 @@ const DoctorCard = ({ doctor, showBook }) => {
   // Use backend-provided averageRating directly
   const rating = doctor?.averageRating ? doctor.averageRating.toFixed(1) : "—";
 
-  const FALLBACK_AVATAR = require("../../assets/images/doctor1.png");
+  const FALLBACK_AVATAR = require("../../assets/images/userDefault.png");
 
   const DoctorAvatar = ({ uri }) => {
     const [error, setError] = useState(false);
