@@ -239,7 +239,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
           </TouchableOpacity>
           <Text style={styles.heading}>Dr Schedule</Text>
           <View style={styles.lovebuy}>
-            <TouchableOpacity onPress={() => navigation.navigate("Cart")} style={styles.buttonWrap1}>
+            <TouchableOpacity onPress={() => {}} style={styles.buttonWrap1}>
               <Icon size={26} name="bellfilled" />
             </TouchableOpacity>
           </View>
@@ -269,7 +269,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 </View>
               </View>
               <View style={styles.rowNames}>
-                <View style={[styles.pickerWrapper, { width: "60%" }]}>
+                <View style={[styles.pickerWrapper, { width: "53%" }]}>
                   <Text style={styles.pickerLabel}>Patient Gender</Text>
                   <View style={styles.pickerwrapp}>
                     <Picker
@@ -284,7 +284,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                     </Picker>
                   </View>
                 </View>
-                <View style={{ marginTop: 0, width: "30%" }}>
+                <View style={{ marginTop: 0, width: "40%" }}>
                   <Text style={styles.label}>Patient Age</Text>
                   <View style={{ flexDirection: "column", alignItems: "center" }}>
                     <TextInput
