@@ -269,7 +269,22 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 </View>
               </View>
               <View style={styles.rowNames}>
-                <View style={{ marginTop: 0, width: "40%" }}>
+                <View style={[styles.pickerWrapper, { width: "60%" }]}>
+                  <Text style={styles.pickerLabel}>Patient Gender</Text>
+                  <View style={styles.pickerwrapp}>
+                    <Picker
+                      selectedValue={gender}
+                      onValueChange={(itemValue) => setGender(itemValue)}
+                      style={styles.picker}
+                    >
+                      <Picker.Item label="Select gender" value={""} />
+                      {genders.map((g) => (
+                        <Picker.Item key={g.id} label={g.name} value={g.name} />
+                      ))}
+                    </Picker>
+                  </View>
+                </View>
+                <View style={{ marginTop: 0, width: "30%" }}>
                   <Text style={styles.label}>Patient Age</Text>
                   <View style={{ flexDirection: "column", alignItems: "center" }}>
                     <TextInput
@@ -288,21 +303,6 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                       keyboardType="numeric"
                       maxLength={3}
                     />
-                  </View>
-                </View>
-                <View style={[styles.pickerWrapper, { width: "50%" }]}>
-                  <Text style={styles.pickerLabel}>Patient Gender</Text>
-                  <View style={styles.pickerwrapp}>
-                    <Picker
-                      selectedValue={gender}
-                      onValueChange={(itemValue) => setGender(itemValue)}
-                      style={styles.picker}
-                    >
-                      <Picker.Item label="Select gender" value={""} />
-                      {genders.map((g) => (
-                        <Picker.Item key={g.id} label={g.name} value={g.name} />
-                      ))}
-                    </Picker>
                   </View>
                 </View>
               </View>
