@@ -74,6 +74,7 @@ export default StyleSheet.create({
     paddingHorizontal: 10,
     justifyContent: "center",
     alignContent: "center",
+    marginLeft: -7,
     borderRadius: SIZES.medium,
   },
   doctorName: {
@@ -383,5 +384,9 @@ export default StyleSheet.create({
     fontFamily: "regular",
     fontSize: SIZES.medium - 2,
     color: COLORS.themeb,
+  },
+  latestReviewSection: {
+    marginTop: 10,
+    marginBottom: 10,
   },
 });

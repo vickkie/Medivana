@@ -429,14 +429,20 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
             )}
 
             {Array.isArray(doctorData?.ratings) && doctorData.ratings.length > 0 && (
-              <View style={[styles.latestReviewSection, { marginTop: 10, marginBottom: 10 }]}>
+              <View style={styles.latestReviewSection}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
                   <Text style={[styles.sectionTitle, { marginBottom: 3 }]}>Patient Reviews</Text>
                   <TouchableOpacity
                     onPress={() => setShowAllReviews(!showAllReviews)}
                     style={{ paddingHorizontal: 10, paddingVertical: 2 }}
                   >
-                    <Text style={{ color: COLORS.primary, fontFamily: "semibold", fontSize: 14 }}>
+                    <Text
+                      style={{
+                        color: COLORS.primary,
+                        fontFamily: "semibold",
+                        fontSize: 14,
+                      }}
+                    >
                       {!showAllReviews ? "See all" : "See less"}
                     </Text>
                   </TouchableOpacity>
