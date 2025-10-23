@@ -279,6 +279,7 @@ const ChatScreen = () => {
                 .join(" ")
                 .trim() || "Chat"}
             </Text>
+            <Text>{chatWith?.specialization?.name}</Text>
           </View>
           <TouchableOpacity onPress={() => {}} style={styles.buttonWrap2}>
             {chatWith?.profilePicture ? (
@@ -514,9 +515,10 @@ const styles = StyleSheet.create({
   },
   upperButtons: {
     width: SIZES.width - 20,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "left",
     marginTop: SIZES.medium,
   },
   topprofileheading: {

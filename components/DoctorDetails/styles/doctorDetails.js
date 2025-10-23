@@ -158,6 +158,13 @@ export default StyleSheet.create({
     fontWeight: "600",
     fontFamily: "semibold",
   },
+  reviewTitle: {
+    color: COLORS.themeb,
+    fontSize: SIZES.large - 2,
+    fontWeight: "600",
+    fontFamily: "semibold",
+    marginBottom: 5,
+  },
   monthSelector: {
     flexDirection: "row",
     alignItems: "center",

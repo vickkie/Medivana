@@ -9,20 +9,7 @@ import styles from "./styles/doctorDetails";
 import Icon from "../../constants/icons";
 import { BlurView } from "expo-blur";
 import { COLORS, SIZES } from "../../constants";
-import {
-  BriefcaseMedical,
-  ChevronLeft,
-  ChevronRightIcon,
-  Clock10Icon,
-  Heart,
-  HeartOff,
-  HeartPlus,
-  MessageCircleMore,
-  Sparkle,
-  Star,
-  UsersIcon,
-  UsersRound,
-} from "lucide-react-native";
+import { ChevronLeft, ChevronRightIcon, Heart, Medal, Star, UsersRound } from "lucide-react-native";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "../auth/AuthContext";
 import { useWish } from "../../contexts/WishContext";
@@ -312,7 +299,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                   </View>
                   <View style={styles.statItem}>
                     <TouchableOpacity style={styles.statsb}>
-                      <BriefcaseMedical name="time-outline" size={20} color={COLORS.themey} />
+                      <Medal name="time-outline" size={20} color={COLORS.themey} />
                     </TouchableOpacity>
                     <View style={styles.numberHolder}>
                       <Text style={styles.statNumber}>{`${doctorData?.yearsOfExperience} Yr` || "1 Yr"}</Text>
@@ -431,7 +418,9 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
             {Array.isArray(doctorData?.ratings) && doctorData.ratings.length > 0 && (
               <View style={styles.latestReviewSection}>
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
-                  <Text style={[styles.sectionTitle, { marginBottom: 3 }]}>Patient Reviews</Text>
+                  <Text style={[styles.reviewTitle, { marginBottom: 3 }]}>
+                    Patient Reviews ({doctorData.ratings.length})
+                  </Text>
                   <TouchableOpacity
                     onPress={() => setShowAllReviews(!showAllReviews)}
                     style={{ paddingHorizontal: 10, paddingVertical: 2 }}
@@ -498,7 +487,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                         );
                       })
                   : (() => {
-                      const latestReview = [...doctor.ratings].sort((a, b) => {
+                      const latestReview = [...doctorData.ratings].sort((a, b) => {
                         const aDate = new Date(a.date || a.createdAt);
                         const bDate = new Date(b.date || b.createdAt);
                         return bDate - aDate;
