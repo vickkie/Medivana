@@ -122,7 +122,7 @@ export default StyleSheet.create({
   },
   statsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     backgroundColor: COLORS.cardBackground,
     borderRadius: 12,
     marginBottom: 10,

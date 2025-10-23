@@ -10,6 +10,7 @@ import Icon from "../../constants/icons";
 import { BlurView } from "expo-blur";
 import { COLORS, SIZES } from "../../constants";
 import {
+  BriefcaseMedical,
   ChevronLeft,
   ChevronRightIcon,
   Clock10Icon,
@@ -20,6 +21,7 @@ import {
   Sparkle,
   Star,
   UsersIcon,
+  UsersRound,
 } from "lucide-react-native";
 import Toast from "react-native-toast-message";
 import { AuthContext } from "../auth/AuthContext";
@@ -291,7 +293,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                 <>
                   <View style={styles.statItem}>
                     <TouchableOpacity style={styles.statsb}>
-                      <UsersIcon name="people-outline" size={20} color={COLORS.themeb} />
+                      <UsersRound name="people-outline" size={20} color={COLORS.themey} />
                     </TouchableOpacity>
 
                     <View style={styles.numberHolder}>
@@ -301,7 +303,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                   </View>
                   <View style={styles.statItem}>
                     <TouchableOpacity style={styles.statsb}>
-                      <Star name="star-outline" size={20} color={COLORS.themeb} />
+                      <Star name="star-outline" size={20} color={COLORS.themey} />
                     </TouchableOpacity>
                     <View style={styles.numberHolder}>
                       <Text style={styles.statNumber}>{doctorData ? `${doctorData?.averageRating}` : "0.0"}</Text>
@@ -310,7 +312,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                   </View>
                   <View style={styles.statItem}>
                     <TouchableOpacity style={styles.statsb}>
-                      <Clock10Icon name="time-outline" size={20} color={COLORS.themeb} />
+                      <BriefcaseMedical name="time-outline" size={20} color={COLORS.themey} />
                     </TouchableOpacity>
                     <View style={styles.numberHolder}>
                       <Text style={styles.statNumber}>{`${doctorData?.yearsOfExperience} Yr` || "1 Yr"}</Text>
