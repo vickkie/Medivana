@@ -295,7 +295,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                       <Star name="star-outline" size={20} color={COLORS.themeb} />
                     </TouchableOpacity>
                     <View style={styles.numberHolder}>
-                      <Text style={styles.statNumber}>{doctorData ? `${doctorData?.averageRating}.0` : "0.0"}</Text>
+                      <Text style={styles.statNumber}>{doctorData ? `${doctorData?.averageRating}` : "0.0"}</Text>
                       <Text style={styles.statLabel}>Rating</Text>
                     </View>
                   </View>
@@ -304,7 +304,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                       <Clock10Icon name="time-outline" size={20} color={COLORS.themeb} />
                     </TouchableOpacity>
                     <View style={styles.numberHolder}>
-                      <Text style={styles.statNumber}>{`${doctorData?.yearsOfExperience} Yr+` || "6 Yr+"}</Text>
+                      <Text style={styles.statNumber}>{`${doctorData?.yearsOfExperience} Yr` || "1 Yr"}</Text>
                       <Text style={styles.statLabel}>Exp</Text>
                     </View>
                   </View>

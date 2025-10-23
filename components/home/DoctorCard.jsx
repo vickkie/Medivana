@@ -53,7 +53,10 @@ const DoctorCard = ({ doctor, showBook }) => {
         <Text style={styles.fee}>Ksh {fee}</Text>
         <View style={styles.ratingContainer}>
           {renderStars(doctor?.averageRating || 0)}
-          <Text style={styles.ratingText}>{rating !== "—" ? rating : ""}</Text>
+          <Text style={styles.ratingText}>
+            {rating !== "—" ? rating : ""}
+            {doctor?.ratings?.length ? ` (${doctor.ratings.length})` : ""}
+          </Text>
         </View>
 
         {showBook ? (

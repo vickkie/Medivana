@@ -174,7 +174,7 @@ export default StyleSheet.create({
     alignItems: "center",
     paddingVertical: 12,
     paddingHorizontal: 8,
-    borderRadius: 8,
+    borderRadius: 38,
     minWidth: 40,
   },
   selectedDay: {
