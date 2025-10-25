@@ -224,6 +224,7 @@ export default StyleSheet.create({
     borderRadius: SIZES.xLarge,
     width: SIZES.width - 40,
     marginStart: 5,
+    padding: 3,
   },
   input22: {
     backgroundColor: COLORS.themeg,
@@ -248,6 +249,7 @@ export default StyleSheet.create({
   error: { color: "red", marginBottom: 10, marginStart: 10, marginTop: 20 },
   errorb: {
     borderWidth: 0.54,
+
     borderColor: COLORS.red,
   },
   successb: {
@@ -354,7 +356,7 @@ export default StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginBottom: 10,
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: "#ddd",
   },
   selectedCard: {

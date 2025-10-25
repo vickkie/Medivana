@@ -41,11 +41,17 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const [doctorData, setDoctorData] = useState(doctor || null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // console.log(userData);
 
   const [isUpdating, setIsUpdating] = useState(false);
-  const [firstName, setFirstName] = useState(userData?.firstname || "");
-  const [lastName, setLastName] = useState(userData?.lastname || "");
-  const [gender, setGender] = useState(userData?.gender || "");
+  const [firstName, setFirstName] = useState(userData?.personalDetails?.firstname || "");
+  const [lastName, setLastName] = useState(userData?.personalDetails?.lastname || "");
+  const [gender, setGender] = useState(
+    userData?.personalDetails?.gender
+      ? userData.personalDetails.gender.charAt(0).toUpperCase() + userData.personalDetails.gender.slice(1)
+      : ""
+  );
+
   const [age, setAge] = useState(18);
 
   const [show, setShow] = useState(false);

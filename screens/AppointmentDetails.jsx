@@ -24,6 +24,7 @@ import {
   CalendarCogIcon,
   CircleUser,
   Clock2Icon,
+  Hospital,
   Mail,
   MailX,
   PhoneCall,
@@ -216,8 +217,16 @@ const AppointmentDetails = () => {
       </View>
 
       <View style={styles.inputWrapper}>
-        <CircleUser name="user" size={26} style={styles.iconStyle} color={COLORS.themey} />
-        <Text style={styles.appointmentText}>{appointment.user?.fullname || appointment.user?.username}</Text>
+        <Hospital name="Hospital" size={26} style={styles.iconStyle} color={COLORS.themey} />
+        <Text style={styles.appointmentText}>
+          {{
+            labtest: "Lab Test",
+            office: "In-person Visit",
+            remote: "Virtual Consultation",
+            follow: "Follow-up",
+            general: "General Consultation",
+          }[appointment?.consultationType] || "Other"}
+        </Text>
       </View>
 
       <View style={styles.inputWrapper}>

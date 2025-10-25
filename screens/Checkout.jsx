@@ -335,7 +335,10 @@ const Checkout = () => {
                     {/* Consultation Options */}
                     <View style={styles.deliveryOptions}>
                       <TouchableOpacity
-                        style={[styles.optionCard, consultationType === "office" && styles.selectedCard]}
+                        style={[
+                          styles.optionCard,
+                          consultationType === "office" && { borderColor: "#FF6A6B", backgroundColor: COLORS.themeg },
+                        ]}
                         onPress={() => setConsultationType("office")}
                       >
                         <View style={styles.flexme}>
@@ -350,7 +353,10 @@ const Checkout = () => {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        style={[styles.optionCard, consultationType === "remote" && styles.selectedCard]}
+                        style={[
+                          styles.optionCard,
+                          consultationType === "remote" && { borderColor: "#30B2FE", backgroundColor: COLORS.themeg },
+                        ]}
                         onPress={() => setConsultationType("remote")}
                       >
                         <View style={styles.flexme}>
@@ -365,7 +371,10 @@ const Checkout = () => {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        style={[styles.optionCard, consultationType === "labtest" && styles.selectedCard]}
+                        style={[
+                          styles.optionCard,
+                          consultationType === "labtest" && { borderColor: "#78D966", backgroundColor: COLORS.themeg },
+                        ]}
                         onPress={() => setConsultationType("labtest")}
                       >
                         <View style={styles.flexme}>
@@ -380,7 +389,10 @@ const Checkout = () => {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        style={[styles.optionCard, consultationType === "follow" && styles.selectedCard]}
+                        style={[
+                          styles.optionCard,
+                          consultationType === "follow" && { borderColor: "#f900ff", backgroundColor: COLORS.themeg },
+                        ]}
                         onPress={() => setConsultationType("follow")}
                       >
                         <View style={styles.flexme}>
