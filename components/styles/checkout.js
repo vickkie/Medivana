@@ -363,7 +363,8 @@ export default StyleSheet.create({
   },
   optionTitle: {
     fontSize: 16,
-    fontWeight: "bold",
+    // fontWeight: "bold",
+    fontFamily: "semibold",
   },
   optionPrice: {
     fontSize: 14,
@@ -372,6 +373,7 @@ export default StyleSheet.create({
   },
   optionDescription: {
     fontSize: 14,
+    fontFamily: "regular",
 
     marginTop: 5,
   },

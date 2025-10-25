@@ -29,7 +29,7 @@ import { BACKEND_PORT } from "@env";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import { ChevronRightIcon } from "lucide-react-native";
+import { ArrowBigLeftIcon, ArrowLeftIcon, ChevronLeft, ChevronRightIcon } from "lucide-react-native";
 
 const Checkout = () => {
   const route = useRoute();
@@ -42,6 +42,7 @@ const Checkout = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [success, setSuccess] = useState(null);
   const [bookingId, setBookingId] = useState(null);
+  const [consultationType, setConsultationType] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -100,7 +101,7 @@ const Checkout = () => {
   const handleNext = () => {
     // console.log(phoneError, finalPhoneNumber);
     switch (step) {
-      case 1:
+      case 2:
         // Example usage in handleNext
         if (phoneError) {
           showToast("error", "Please fill phone number", "");
@@ -110,7 +111,7 @@ const Checkout = () => {
         setStep(step + 1);
 
         break;
-      case 3:
+      case 4:
         setStep(step);
         break;
       default:
@@ -148,7 +149,7 @@ const Checkout = () => {
   };
 
   const handlePrevious = () => {
-    if (step > 3) {
+    if (step > 4) {
       setStep(step);
     } else if (step > 1) {
       setStep(step - 1);
@@ -160,6 +161,7 @@ const Checkout = () => {
       // For Appointment
       user: userData?._id,
       doctor: bookingData.doctorData,
+      consultationType: consultationType,
       appointmentDate: `${bookingData.selectedDateObj}`,
       appointmentTime: `${bookingData?.selectedTime}`,
       userNotes: `${bookingData.firstName} ${bookingData.lastName} | Gender: ${bookingData.gender} | Age: ${bookingData?.userAge}, ${moreDescription}`,
@@ -189,7 +191,9 @@ const Checkout = () => {
     try {
       setIsLoading(true);
       setErrorState(false);
-      // console.log(BACKEND_PORT, orderData);
+      console.log(BACKEND_PORT, orderData);
+
+      // return;
 
       const response = await axios.post(`${BACKEND_PORT}/api/v1/appointment`, orderData);
 
@@ -314,6 +318,7 @@ const Checkout = () => {
             <View style={styles.paginationContainer}>
               <View style={styles.dot(step === 1 ? COLORS.themey : COLORS.themeg)} />
               <View style={styles.dot(step === 2 ? COLORS.themey : COLORS.themeg)} />
+              <View style={styles.dot(step === 3 ? COLORS.themey : COLORS.themeg)} />
             </View>
             <View style={styles.stepsheader}>
               <Text style={styles.stepstext}>Just a couple of steps and you good to go</Text>
@@ -323,6 +328,86 @@ const Checkout = () => {
           <View style={styles.lowerRow}>
             <ScrollView>
               {step === 1 && (
+                <View style={styles.stepContainer}>
+                  <View style={styles.deliveryMethod}>
+                    <Text style={styles.deliveryHead}>Choose Consultation Type</Text>
+
+                    {/* Consultation Options */}
+                    <View style={styles.deliveryOptions}>
+                      <TouchableOpacity
+                        style={[styles.optionCard, consultationType === "office" && styles.selectedCard]}
+                        onPress={() => setConsultationType("office")}
+                      >
+                        <View style={styles.flexme}>
+                          <Icon name="isometric" size={21} />
+                          <Text style={[styles.optionTitle, consultationType === "office" && styles.selectedText]}>
+                            Office Visit
+                          </Text>
+                        </View>
+                        <Text style={[styles.optionDescription, consultationType === "office" && styles.selectedText]}>
+                          Meet a doctor in person at our facility for a face-to-face consultation.
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[styles.optionCard, consultationType === "remote" && styles.selectedCard]}
+                        onPress={() => setConsultationType("remote")}
+                      >
+                        <View style={styles.flexme}>
+                          <Icon name="isometric3" size={21} />
+                          <Text style={[styles.optionTitle, consultationType === "remote" && styles.selectedText]}>
+                            Remote Call
+                          </Text>
+                        </View>
+                        <Text style={[styles.optionDescription, consultationType === "remote" && styles.selectedText]}>
+                          Have a remote voice or video consultation with a doctor from anywhere.
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[styles.optionCard, consultationType === "labtest" && styles.selectedCard]}
+                        onPress={() => setConsultationType("labtest")}
+                      >
+                        <View style={styles.flexme}>
+                          <Icon name="isometric2" size={21} />
+                          <Text style={[styles.optionTitle, consultationType === "labtest" && styles.selectedText]}>
+                            Laboratory Test
+                          </Text>
+                        </View>
+                        <Text style={[styles.optionDescription, consultationType === "labtest" && styles.selectedText]}>
+                          Book laboratory tests or diagnostics at our partner facilities.
+                        </Text>
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={[styles.optionCard, consultationType === "follow" && styles.selectedCard]}
+                        onPress={() => setConsultationType("follow")}
+                      >
+                        <View style={styles.flexme}>
+                          <Icon name="isometric4" size={21} />
+                          <Text style={[styles.optionTitle, consultationType === "follow" && styles.selectedText]}>
+                            Follow up
+                          </Text>
+                        </View>
+                        <Text style={[styles.optionDescription, consultationType === "follow" && styles.selectedText]}>
+                          Request for a follow up for a previous consultation booking.
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    {/* Navigation Buttons */}
+                    <View style={styles.next2wrapper}>
+                      <TouchableOpacity onPress={handlePrevious} style={styles.previous}>
+                        <ChevronLeft name="backbutton" size={30} color={COLORS.themew} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleNext} style={styles.next2} disabled={!consultationType}>
+                        <Text style={styles.buttonText}>Next step</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+              )}
+              {step === 2 && (
                 <View style={styles.stepContainer}>
                   {phoneError && <Text style={styles.error}>{phoneError}</Text>}
 
@@ -379,7 +464,7 @@ const Checkout = () => {
                 </View>
               )}
 
-              {step === 2 && (
+              {step === 3 && (
                 <>
                   <View style={styles.stepContainer}>
                     <CheckoutStep3
@@ -394,7 +479,7 @@ const Checkout = () => {
                 </>
               )}
 
-              {step === 3 && !isLoading && errorState && (
+              {step === 4 && !isLoading && errorState && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView
@@ -419,7 +504,7 @@ const Checkout = () => {
                   </TouchableOpacity>
                 </View>
               )}
-              {step === 3 && !errorState && isLoading && (
+              {step === 4 && !errorState && isLoading && (
                 <View style={styles.containLottie}>
                   <View style={styles.animationWrapper}>
                     <LottieView
