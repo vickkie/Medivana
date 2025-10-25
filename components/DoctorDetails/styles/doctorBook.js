@@ -282,10 +282,11 @@ export default StyleSheet.create({
     backgroundColor: COLORS.themeg,
   },
   slotsHolder: {
-    marginVertical: 20,
+    marginTop: 10,
     display: "flex",
     flexDirection: "row",
     gap: 10,
+    // backgroundColor: "red",
   },
   timeslot: {
     fontFamily: "lufgaSemiBold",

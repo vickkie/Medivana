@@ -389,7 +389,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                 </View>
               </View>
 
-              <View style={styles.slotsHolderH}>
+              <View style={[styles.slotsHolderH, { marginTop: -10 }]}>
                 <Text style={styles.pickerLabel}>Select Time</Text>
                 {hourlySlots.length > 0 ? (
                   <FlatList
