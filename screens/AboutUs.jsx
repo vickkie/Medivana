@@ -34,11 +34,16 @@ const AboutUs = () => {
           <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
             <Icon name="backbutton" size={26} />
           </TouchableOpacity>
-          <View style={styles.upperRow}>
+          <View style={styles.upperRowx}>
             <View style={styles.upperButtons}>
               <Text style={styles.heading}>About</Text>
             </View>
-            <TouchableOpacity style={styles.outWrap}>
+            <TouchableOpacity
+              style={styles.outWrap}
+              onPress={() => {
+                navigation.navigate("Faqs");
+              }}
+            >
               <Icon name="question" size={26} />
             </TouchableOpacity>
           </View>
@@ -173,7 +178,7 @@ const styles = StyleSheet.create({
     top: 10,
     left: 10,
   },
-  upperRow: {
+  upperRowx: {
     width: SIZES.width - 12,
     marginHorizontal: 6,
     flexDirection: "column",
@@ -181,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.large,
-    top: SIZES.xxSmall,
+    top: 3,
     zIndex: 2,
     minHeight: 70,
     ...SHADOWS,

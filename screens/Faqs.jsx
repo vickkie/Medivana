@@ -45,14 +45,30 @@ const Faqs = ({ navigation }) => {
   if (error) {
     return (
       <SafeAreaView style={styles.container}>
-        <Text style={styles.errorText}>Error fetching FAQs: {error.message}</Text>
+        <View style={styles.upperRowx}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
+            <Icon name="backbutton" size={26} />
+          </TouchableOpacity>
+          <Text style={styles.heading}>Frequently asked</Text>
+          <TouchableOpacity
+            style={styles.buttonWrap}
+            onPress={() => {
+              navigation.navigate("Help");
+            }}
+          >
+            <Icon name="messagefilled" size={26} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.lowerRow}>
+          <Text style={styles.errorText}>Error fetching FAQs: {error.message}</Text>
+        </View>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.upperRow}>
+      <View style={styles.upperRowx}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
           <Icon name="backbutton" size={26} />
         </TouchableOpacity>
@@ -101,7 +117,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
-  upperRow: {
+  upperRowx: {
     width: SIZES.width - 14,
     marginHorizontal: SIZES.xSmall - 4,
     flexDirection: "row",
@@ -110,7 +126,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: COLORS.themeg,
     borderRadius: SIZES.large,
-    top: SIZES.xLarge + 10,
+    top: 4,
     zIndex: 999,
     height: 120,
   },
