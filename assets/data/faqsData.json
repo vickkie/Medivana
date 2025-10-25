@@ -1,0 +1,42 @@
+[
+  {
+    "question": "What is Medivana?",
+    "answer": "Medivana is a digital health platform that connects patients with qualified doctors for online and in-person consultations. You can book, manage, and attend appointments all in one place."
+  },
+  {
+    "question": "How do I book an appointment?",
+    "answer": "Simply create an account, browse through available doctors by specialty or name, select a consultation type (online or in-person), choose a time slot, and confirm your booking."
+  },
+  {
+    "question": "Can I consult a doctor online?",
+    "answer": "Yes! Medivana supports secure video, voice, or chat consultations. After booking, you’ll receive a link or in-app access to your scheduled session."
+  },
+  {
+    "question": "How do I pay for an appointment?",
+    "answer": "You can pay using mobile money (M-Pesa), PayPal, or card. All payments are securely processed, and receipts are automatically sent to your email."
+  },
+  {
+    "question": "What happens if I miss my appointment?",
+    "answer": "If you miss an appointment, you can reschedule through the app or contact support. However, missed appointments without prior notice may be non-refundable depending on the doctor’s policy."
+  },
+  {
+    "question": "Are my medical details safe?",
+    "answer": "Absolutely. Medivana uses encrypted storage and communication to ensure your data and medical history remain private and secure."
+  },
+  {
+    "question": "Can I cancel an appointment?",
+    "answer": "Yes, you can cancel an appointment up to 2 hours before the scheduled time. Refunds are processed based on the doctor’s cancellation policy."
+  },
+  {
+    "question": "Do I need a Medivana account to book?",
+    "answer": "Yes, creating an account helps you securely manage your bookings, payments, and medical history, and ensures your doctor has the right details for your consultation."
+  },
+  {
+    "question": "Can doctors join Medivana?",
+    "answer": "Yes! Licensed doctors can register to offer consultations on Medivana. After registration and verification, they can manage schedules, appointments, and earnings directly from their dashboard."
+  },
+  {
+    "question": "How can I contact support?",
+    "answer": "You can reach our support team through the in-app chat, or email us at support@medivana.health for help with bookings, payments, or technical issues."
+  }
+]

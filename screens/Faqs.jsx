@@ -9,6 +9,8 @@ import LottieView from "lottie-react-native";
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import faqsData from "../assets/data/faqsData.json";
+
 const Faqs = ({ navigation }) => {
   const [expandedIndex, setExpandedIndex] = useState(null);
   const { data, isLoading, error } = useFetch("faqs");
@@ -25,24 +27,23 @@ const Faqs = ({ navigation }) => {
 
       if (net.isConnected) {
         // We're online, use fresh data + save to cache
-        if (data && Array.isArray(data)) {
+        if (data && Array.isArray(data) && data.length > 1) {
+          console.log(net.isConnected, data);
           setFaqs(data);
           await AsyncStorage.setItem("cachedFaqs", JSON.stringify(data));
+        } else {
+          setFaqs(faqsData);
         }
       } else {
-        // Offline? Load from cache
-        const cached = await AsyncStorage.getItem("cachedFaqs");
-        if (cached) {
-          setFaqs(JSON.parse(cached));
-          console.log("📴 Offline: FAQs loaded from cache.");
-        }
+        setFaqs(faqsData);
       }
     };
 
     checkAndLoadFaqs();
   }, [data]);
+  console.log(faqData);
 
-  if (error) {
+  if (!data) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.upperRowx}>
