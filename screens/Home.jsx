@@ -56,10 +56,14 @@ const Home = () => {
     );
   };
 
+  const refetchData = useCallback(() => {
+    refetch();
+  }, []); // stable
+
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch])
+      refetchData();
+    }, [refetchData])
   );
 
   const NotificationBadge = ({ count = 0 }) => {
