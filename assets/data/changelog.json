@@ -100,6 +100,19 @@
         "Crash on missing doctor in appointment details"
       ],
       "issues": ["Messages notification not received still"]
+    },
+    {
+      "releaseDate": "2025-10-25",
+      "version": "2.0.0",
+      "whatsNew": [
+        "Notifications now Available",
+        "Improved Architecture compitability",
+        "Frequently asked questions added",
+        "Doctor booking form autofill",
+        "Type of appointment provided",
+        "Doctor rating and reviews available"
+      ],
+      "fixed": ["Notifications availabilty issue"]
     }
   ]
 }
