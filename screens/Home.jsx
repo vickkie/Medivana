@@ -97,13 +97,13 @@ const Home = () => {
           justifyContent: "center",
           alignItems: "center",
           borderWidth: 1,
-          borderColor: "orange",
+          borderColor: count > 0 ? "red" : COLORS.themey,
           transform: [{ scale }],
         }}
       >
         <Text
           style={{
-            color: "orange",
+            color: count > 0 ? "red" : COLORS.themey,
             fontWeight: "bold",
             fontSize: 12,
             textAlign: "center",
