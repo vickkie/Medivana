@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { Welcome } from "../components/home";
 import Headings from "../components/home/Headings";
 import Icon from "../constants/icons";
@@ -11,11 +11,13 @@ import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
 import { COLORS, SIZES } from "../constants";
 import { RefreshControl } from "react-native-gesture-handler";
 import DoctorsList from "../components/home/DoctorsList";
+import useFetch from "../hook/useFetch";
 
 const Home = () => {
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
+  const { data, refetch, statusCode, isLoading, errorMessage } = useFetch(`notification/user/unread/${userData?._id}`);
 
   const [refreshList, setRefreshList] = useState(false);
   const [selectedCat, setSelectedCat] = useState("");
@@ -45,6 +47,71 @@ const Home = () => {
   const BottomSheetRef = useRef(null);
   const openMenu = () => BottomSheetRef.current?.present();
 
+  const NotificationBell = ({ count }) => {
+    return (
+      <View style={{ borderRadius: 40 }}>
+        <Icon name="bellfilled" size={24} color="#fff" />
+        <NotificationBadge count={count} />
+      </View>
+    );
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
+  const NotificationBadge = ({ count = 0 }) => {
+    const animatedValue = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+      Animated.spring(animatedValue, {
+        toValue: 1,
+        useNativeDriver: true,
+        tension: 100,
+        friction: 8,
+      }).start();
+    }, [count]);
+
+    const scale = animatedValue.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.9, 1],
+    });
+
+    return (
+      <Animated.View
+        style={{
+          position: "absolute",
+          top: -6,
+          right: -6,
+          backgroundColor: "#fff",
+          borderRadius: 10,
+          paddingHorizontal: 5,
+          minWidth: 18,
+          height: 18,
+          justifyContent: "center",
+          alignItems: "center",
+          borderWidth: 1,
+          borderColor: "orange",
+          transform: [{ scale }],
+        }}
+      >
+        <Text
+          style={{
+            color: "orange",
+            fontWeight: "bold",
+            fontSize: 12,
+            textAlign: "center",
+          }}
+          numberOfLines={1}
+        >
+          {count > 99 ? "99+" : count}
+        </Text>
+      </Animated.View>
+    );
+  };
+
   return (
     <SafeAreaView style={styles.topSafeview}>
       <HomeMenu ref={BottomSheetRef} />
@@ -64,7 +131,7 @@ const Home = () => {
             </View>
 
             <TouchableOpacity style={styles.buttonWrap} onPress={() => navigation.navigate("Message")}>
-              <Icon name="bellfilled" size={24} />
+              <NotificationBell count={data?.unreadCount ?? 0} />
             </TouchableOpacity>
           </View>
 
