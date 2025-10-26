@@ -134,7 +134,7 @@ const Home = () => {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.buttonWrap} onPress={() => navigation.navigate("Message")}>
+            <TouchableOpacity style={styles.buttonWrap} onPress={() => navigation.navigate("SystemMessages")}>
               <NotificationBell count={data?.unreadCount ?? 0} />
             </TouchableOpacity>
           </View>
