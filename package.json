@@ -20,7 +20,8 @@
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
-    "axios": "^1.7.9",
+    "@stripe/stripe-react-native": "0.37.2",
+    "axios": "^1.13.2",
     "axios-retry": "^4.5.0",
     "expo": "^51.0.0",
     "expo-application": "~5.9.1",
@@ -65,7 +66,7 @@
     "react-native-toast-message": "^2.2.1",
     "react-native-uuid": "^2.0.3",
     "react-native-webview": "13.8.6",
-    "yup": "^1.6.1"
+    "yup": "^1.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
