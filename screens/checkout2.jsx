@@ -10,7 +10,6 @@ import {
   Image,
   Modal,
   FlatList,
-  Alert,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
@@ -20,6 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
 import * as Yup from "yup";
 import IntlPhoneInput from "react-native-intl-phone-input";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { parsePhoneNumberFromString } from "libphonenumber-js/min";
 import styles from "../components/styles/checkout";
 
@@ -30,12 +30,11 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { ArrowBigLeftIcon, ArrowLeftIcon, ChevronLeft, ChevronRightIcon } from "lucide-react-native";
-import { useStripe } from "@stripe/stripe-react-native";
 
 const Checkout = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { estimatedAmount = 0, bookingData, additionalFees } = route.params || {};
+  const { estimatedAmount = 0, bookingData, additionalFees } = route.params;
   const { userData, userLogin } = useContext(AuthContext);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -68,8 +67,6 @@ const Checkout = () => {
   const [moreDescription, setmoreDescription] = useState("");
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState(true);
-
-  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const showToast = (type, text1, text2 = "") => {
     Toast.show({
@@ -181,135 +178,23 @@ const Checkout = () => {
       paypalEmail: paymentInfo.email,
       cardInfo: {
         cardNumber: paymentInfo.cardNumber,
-        customer: paymentInfo.customer,
+        cvv: paymentInfo.cvv,
+        expiry: paymentInfo.expiryDate,
         nameOnCard: paymentInfo.nameOnCard,
       },
 
       paymentResponse: {},
     };
 
-    // Decide flow based on selected payment method
-    const selectedMethod = paymentInfo?.selectedPaymentMethod || orderData.paymentMethod || "Mpesa";
+    handleNext();
 
     try {
       setIsLoading(true);
       setErrorState(false);
+      console.log(BACKEND_PORT, orderData);
 
-      // console.log("Sending data", orderData);
-      // console.log(selectedMethod);
+      // return;
 
-      // If card is selected, run Stripe PaymentSheet flow
-      if (selectedMethod === "Visa" || selectedMethod === "MasterCard" || selectedMethod === "Card") {
-        // 1) create appointment first (so backend returns appointment id / bookingId)
-
-        // console.error(orderData);
-        const responseAppt = await axios.post(`${BACKEND_PORT}/api/v1/appointment`, orderData);
-
-        // console.log(responseAppt);
-
-        if (!responseAppt || !responseAppt.data) {
-          showToast("error", "Failed to create appointment");
-          setIsLoading(false);
-          return;
-        }
-        // console.log(responseAppt?.data);
-
-        const appointment = responseAppt.data.appointment;
-        const appointmentId = appointment?._id || "123";
-
-        // 2) create payment intent
-        const intentRes = await axios.post(`${BACKEND_PORT}/api/v6/payments/create-intent`, {
-          amount: estimatedAmount,
-          appointmentId,
-          userId: userData?._id,
-          paymentMethod: "Stripe",
-        });
-
-        if (!intentRes) {
-          showToast("error", "No new intent");
-        }
-        // console.log("intent", intentRes.data);
-
-        const clientSecret = intentRes?.data?.clientSecret;
-
-        if (!clientSecret) throw new Error("No client secret returned from server");
-        // console.log(userData);
-
-        // 3) init payment sheet
-        const initResult = await initPaymentSheet({
-          paymentIntentClientSecret: clientSecret,
-          merchantDisplayName: "Medivana",
-          defaultBillingDetails: {
-            name: userData?.username || "medivana tester",
-            email: paymentInfo?.email || email,
-            phone: paymentInfo?.phone || userData?.phoneNumber,
-            address: {
-              city: "Nairobi",
-              country: "KE",
-              line1: "123 Kenyatta Avenue",
-              line2: "Suite 5A",
-              postalCode: "00100",
-              state: "Nairobi",
-            },
-          },
-          allowsDelayedPaymentMethods: false,
-          appearance: {
-            colors: {
-              primary: "#4CAF50", // main accent color (your brand color)
-              background: "#121212", // background color
-              componentBackground: "#1E1E1E", // card / field background
-              componentBorder: "#333333", // border around input fields
-              componentDivider: "#2A2A2A", // divider color
-              text: "#FFFFFF", // text color
-              placeholderText: "#AAAAAA", // placeholder color
-              icon: "#FFFFFF", // icon tint
-              error: "#FF5252", // error red
-            },
-            shapes: {
-              borderRadius: 12, // round corners
-              borderWidth: 1,
-            },
-            primaryButton: {
-              colors: {
-                background: "#4CAF50",
-                text: "#FFFFFF",
-                border: "#4CAF50",
-              },
-              shapes: {
-                borderRadius: 10,
-              },
-            },
-            typography: {
-              fontFamily: "System", // or your custom font if configured
-              fontSizeBase: 16,
-            },
-            theme: "dark", // "light" | "dark" | "auto"
-          },
-        });
-
-        if (initResult.error) {
-          throw new Error(initResult.error.message || "Failed to initialize payment sheet");
-        }
-
-        // 4) present payment sheet
-        const presentResult = await presentPaymentSheet();
-
-        if (presentResult.error) {
-          // payment failed / cancelled
-          Alert.alert("Payment failed", presentResult.error.message || "Payment was not completed");
-          setIsLoading(false);
-          return;
-        }
-
-        // success — Stripe will hit webhook to finalize DB but we can navigate
-        setBookingId(responseAppt.data.bookingId || appointmentId);
-        showToast("success", "Payment successful", "");
-        navigation.navigate("OrderSuccess", { orderId: responseAppt.data.bookingId || appointmentId });
-        setIsLoading(false);
-        return;
-      }
-
-      // Otherwise fallback to original flow (Mpesa / PayPal)
       const response = await axios.post(`${BACKEND_PORT}/api/v1/appointment`, orderData);
 
       setBookingId(response.data?.bookingId);
@@ -325,9 +210,9 @@ const Checkout = () => {
         setErrorState(true);
       }
     } catch (error) {
-      setErrorMessage(error || "An error occurred");
-      showToast("error", error?.message || "Failed to create appointment");
+      setErrorMessage(error.message || "An error occurred");
       setErrorState(true);
+      // console.error("Error submitting order:", error);
     } finally {
       setIsLoading(false);
     }
@@ -593,7 +478,6 @@ const Checkout = () => {
 
               {step === 3 && (
                 <>
-                  {console.log("isloading passed", isLoading)}
                   <View style={styles.stepContainer}>
                     <CheckoutStep3
                       onPrevious={handlePrevious}
@@ -602,7 +486,6 @@ const Checkout = () => {
                       totalAmount={estimatedAmount}
                       handleSubmitOrder={handleSubmitOrder}
                       email={email}
-                      isLoading={isLoading}
                     />
                   </View>
                 </>

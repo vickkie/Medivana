@@ -18,6 +18,7 @@ import { CartProvider } from "./contexts/CartContext";
 import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionContext";
 import { WishProvider } from "./contexts/WishContext";
 import { chatScreenOptions, systemScreenOptions } from "./screens_options/AppHeaderOptions";
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 const MyTheme = {
   ...DefaultTheme,
@@ -167,33 +168,38 @@ export default function App() {
 
   return (
     <ErrorBoundary2>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <UpdateCheck />
-        <BottomSheetModalProvider>
-          <AuthProvider>
-            <ProfileCompletionProvider>
-              <CartProvider>
-                <WishProvider>
-                  <NavigationContainer theme={MyTheme}>
-                    <PushNotification />
-                    <Stack.Navigator initialRouteName={initialRoute}>
-                      {screens.map((screen, index) => (
-                        <Stack.Screen
-                          key={index}
-                          name={screen.name}
-                          component={screen.component}
-                          options={screen.options}
-                        />
-                      ))}
-                    </Stack.Navigator>
-                    <Toast config={toastConfig} />
-                  </NavigationContainer>
-                </WishProvider>
-              </CartProvider>
-            </ProfileCompletionProvider>
-          </AuthProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
+      <StripeProvider
+        publishableKey="pk_test_51SQ2C4CWOPGyISgQ3ioTAluJp0M1iQwYcMj7dTo1LpocHVsnZYZeJaoEUMRxVT0LcOZx7SnBYfp3ColnjLcHah7800esyqvoTm"
+        urlScheme="medivana"
+      >
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <UpdateCheck />
+          <BottomSheetModalProvider>
+            <AuthProvider>
+              <ProfileCompletionProvider>
+                <CartProvider>
+                  <WishProvider>
+                    <NavigationContainer theme={MyTheme}>
+                      <PushNotification />
+                      <Stack.Navigator initialRouteName={initialRoute}>
+                        {screens.map((screen, index) => (
+                          <Stack.Screen
+                            key={index}
+                            name={screen.name}
+                            component={screen.component}
+                            options={screen.options}
+                          />
+                        ))}
+                      </Stack.Navigator>
+                      <Toast config={toastConfig} />
+                    </NavigationContainer>
+                  </WishProvider>
+                </CartProvider>
+              </ProfileCompletionProvider>
+            </AuthProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </StripeProvider>
     </ErrorBoundary2>
   );
 }

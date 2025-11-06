@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from "react-native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { COLORS, SIZES } from "../constants";
@@ -12,97 +12,65 @@ const paymentMethods = {
   PayPal: { label: "PayPal", imagePath: require("../assets/images/logos/paypal.png") },
 };
 
-const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) => {
+const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isLoading = false }) => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("MasterCard");
 
+  // ✅ Validation Schema
   const paymentValidationSchema = Yup.object().shape({
-    selectedPaymentMethod: Yup.string()
-      .required("Select a payment method")
-      .test("hasValidPaymentDetails", "Please fill all required fields for selected payment method", function (value) {
-        const { parent } = this;
-        // console.log("parent", parent.selectedPaymentMethod);
+    selectedPaymentMethod: Yup.string().required("Select a payment method"),
 
-        switch (value) {
-          case "MasterCard":
-            return parent.cardNumber && parent.email && parent.cvv && parent.cardNumber && parent.expiryDate;
-          case "Visa":
-            return parent.cardNumber && parent.email && parent.cvv && parent.cardNumber && parent.expiryDate;
-          case "PayPal":
-            return parent.email;
-          case "Mpesa":
-            return parent.email && parent.phoneNumber;
-          default:
-            return false;
-        }
-      }),
-    email: Yup.string().email("Invalid email").required("Required"),
-    nameOnCard: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-      ["Visa", "MasterCard"].includes(selectedPaymentMethod) ? schema.required("Required") : schema.notRequired()
-    ),
-    cardNumber: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-      ["Visa", "MasterCard"].includes(selectedPaymentMethod)
-        ? schema.matches(/^\d{10,16}$/, "Card number must be 16 digits").required("Required")
-        : schema.notRequired()
-    ),
-    expiryDate: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-      ["Visa", "MasterCard"].includes(selectedPaymentMethod)
-        ? schema.matches(/^(0[1-9]|1[0-2])\/\d{2}$/, "Invalid expiry date").required("Required")
-        : schema.notRequired()
-    ),
-    cvv: Yup.string().when("selectedPaymentMethod", (selectedPaymentMethod, schema) =>
-      ["Visa", "MasterCard"].includes(selectedPaymentMethod)
-        ? schema.matches(/^\d{3,4}$/, "Invalid CVV").required("Required")
-        : schema.notRequired()
-    ),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+
+    nameOnCard: Yup.string().when("selectedPaymentMethod", {
+      is: (val) => ["Visa", "MasterCard"].includes(val),
+      then: (schema) => schema.required("Name on card is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
+    customer: Yup.string().when("selectedPaymentMethod", {
+      is: (val) => ["Visa", "MasterCard"].includes(val),
+      then: (schema) => schema.required("Customer name is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
+    cardNumber: Yup.string().when("selectedPaymentMethod", {
+      is: (val) => ["Visa", "MasterCard"].includes(val),
+      then: (schema) =>
+        schema.matches(/^\d{12,17}$/, "Card number must be between 12–16 digits").required("Card number is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
+
+    phoneNumber: Yup.string().when("selectedPaymentMethod", {
+      is: "Mpesa",
+      then: (schema) => schema.matches(/^\+?\d{10,15}$/, "Invalid phone number").required("Phone number is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
   });
 
+  // ✅ Formik Setup
   const formik = useFormik({
     initialValues: {
-      phoneNumber: phoneNumber,
-      email: email,
-      nameOnCard: convertToLowerCase(selectedPaymentMethod),
+      phoneNumber: phoneNumber || "",
+      email: email || "",
+      customer: "",
+      nameOnCard: selectedPaymentMethod.toLowerCase(),
       cardNumber: "",
-      expiryDate: "",
-      cvv: "",
-      selectedPaymentMethod: selectedPaymentMethod,
+      selectedPaymentMethod,
     },
     validationSchema: paymentValidationSchema,
-
-    onSubmit: (values) => {
-      // validate form
-      formik.validateForm().then((errors) => {
-        if (Object.keys(errors).length === 0) {
-          handleSubmitOrder(values); // ✅ only one call
-        } else {
-          console.log("Form errors", errors);
-        }
-      });
+    validateOnChange: true,
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      console.log("Submitting:", values);
+      await handleSubmitOrder(values);
     },
-    validateOnMount: true,
   });
 
-  // const validatePayment => {
-
-  // }
-  const validatePayment = async (values) => {
-    let formErrors = await formik.validateForm();
-
-    // console.log("errors", formErrors);
-    // console.log("form valid", formik.isValid);
-    if (formik.isValid) {
-      handleSubmitOrder(values);
-    }
-  };
-
-  function convertToLowerCase(str) {
-    return str.toLowerCase();
-  }
+  // ✅ Update method & revalidate when changing method
   const handlePaymentMethodChange = (method) => {
     setSelectedPaymentMethod(method);
     formik.setFieldValue("selectedPaymentMethod", method);
-    setTimeout(() => {
-      // console.log(formik.isValid);
-    }, 2000);
+    formik.validateForm();
   };
 
   const formatCardNumber = (value) => {
@@ -110,23 +78,11 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
     return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
   };
 
-  const formatExpiryDate = (value) => {
-    // Remove all non-digits
-    const digits = value.replace(/\D/g, "");
-
-    // Extract month and year parts
-    const month = digits.slice(0, 2);
-    const year = digits.slice(2, 4);
-    // Limit month to range 01-12
-    const validMonth = month.length === 2 && parseInt(month, 10) > 12 ? "12" : month;
-
-    // Format as MM/YY
-    return `${validMonth}/${year}`;
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Payment Method</Text>
+
+      {/* Payment Method Selector */}
       <View style={styles.paymentMethods}>
         {Object.entries(paymentMethods).map(([method, { label, imagePath }]) => (
           <TouchableOpacity
@@ -139,10 +95,23 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
         ))}
       </View>
 
-      {/* Form Inputs */}
-      {!["Mpesa"].includes(selectedPaymentMethod) ? (
+      {/* === Conditional Form Fields === */}
+      {selectedPaymentMethod === "Mpesa" ? (
         <>
-          {formik.touched.email && formik.errors.email ? <Text style={styles.error}>{formik.errors.email}</Text> : null}
+          <Text style={styles.label}>Phone Number</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Phone number"
+            keyboardType="numeric"
+            value={formik.values.phoneNumber}
+            onChangeText={(text) => formik.setFieldValue("phoneNumber", text)}
+            onBlur={formik.handleBlur("phoneNumber")}
+          />
+          {formik.touched.phoneNumber && formik.errors.phoneNumber && (
+            <Text style={styles.error}>{formik.errors.phoneNumber}</Text>
+          )}
+
+          <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
             placeholder="Email Address"
@@ -150,30 +119,35 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
             onChangeText={formik.handleChange("email")}
             onBlur={formik.handleBlur("email")}
           />
+          {formik.touched.email && formik.errors.email && <Text style={styles.error}>{formik.errors.email}</Text>}
+        </>
+      ) : (
+        <>
+          <Text style={styles.label}>Email</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Email Address"
+            value={formik.values.email}
+            onChangeText={formik.handleChange("email")}
+            onBlur={formik.handleBlur("email")}
+          />
+          {formik.touched.email && formik.errors.email && <Text style={styles.error}>{formik.errors.email}</Text>}
 
-          {/* Conditional inputs for Visa/MasterCard */}
           {["Visa", "MasterCard"].includes(selectedPaymentMethod) && (
             <>
-              <Text style={styles.label}> Name of card </Text>
-
+              <Text style={styles.label}>Name on Card</Text>
               <TextInput
                 style={styles.input}
-                placeholder={selectedPaymentMethod}
-                value={selectedPaymentMethod}
-                onChangeText={formik.handleChange("nameOnCard")}
-                editable={false}
-                onBlur={formik.handleBlur("nameOnCard")}
+                placeholder="Full name on card"
+                value={formik.values.customer}
+                onChangeText={formik.handleChange("customer")}
+                onBlur={formik.handleBlur("customer")}
               />
-              {formik.touched.nameOnCard && formik.errors.nameOnCard ? (
-                <Text style={styles.error}>{formik.errors.nameOnCard}</Text>
-              ) : null}
-
-              {formik.touched.cardNumber && formik.errors.cardNumber ? (
-                <Text style={styles.error}>{formik.errors.cardNumber}</Text>
-              ) : (
-                <Text style={styles.label}> Card Number </Text>
+              {formik.touched.customer && formik.errors.customer && (
+                <Text style={styles.error}>{formik.errors.customer}</Text>
               )}
 
+              <Text style={styles.label}>Card Number</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Card Number"
@@ -183,69 +157,44 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder }) =
                 onBlur={formik.handleBlur("cardNumber")}
                 maxLength={19}
               />
-
-              <Text style={styles.label}>Expiry Date</Text>
-
-              <View style={styles.row}>
-                <TextInput
-                  style={[styles.input, styles.halfInput]}
-                  placeholder="MM/YY"
-                  value={formatExpiryDate(formik.values.expiryDate)}
-                  keyboardType="numeric"
-                  onChangeText={(text) => formik.setFieldValue("expiryDate", text.replace(/\D/g, ""))}
-                  onBlur={formik.handleBlur("expiryDate")}
-                />
-
-                <TextInput
-                  style={[styles.input, styles.halfInput]}
-                  placeholder="CVV"
-                  keyboardType="numeric"
-                  maxLength={4}
-                  value={formik.values.cvv}
-                  onChangeText={(text) => formik.setFieldValue("cvv", text.replace(/\D/g, ""))}
-                  onBlur={formik.handleBlur("cvv")}
-                />
-              </View>
+              {formik.touched.cardNumber && formik.errors.cardNumber && (
+                <Text style={styles.error}>{formik.errors.cardNumber}</Text>
+              )}
             </>
           )}
         </>
-      ) : (
-        <>
-          <Text style={styles.label}>Phone number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="phone number"
-            keyboardType="numeric"
-            value={formik.values.phoneNumber}
-            onChangeText={(text) => formik.setFieldValue("phoneNumber", text)}
-            onBlur={formik.handleBlur("phoneNumber")}
-          />
-
-          {formik.touched.email && formik.errors.email ? <Text style={styles.error}>{formik.errors.email}</Text> : null}
-          <TextInput
-            style={styles.input}
-            placeholder="Email Address"
-            value={formik.values.email}
-            onChangeText={formik.handleChange("email")}
-            onBlur={formik.handleBlur("email")}
-          />
-        </>
       )}
 
+      {/* === Footer Section === */}
       <View style={styles.navRow}>
         <View style={styles.totalsRow}>
-          <Text style={styles.totalhead}>Total Price </Text>
+          <Text style={styles.totalhead}>Total Price</Text>
           <Text style={styles.totalAmount}>
-            {`Ksh ${new Intl.NumberFormat("en-US", { style: "currency", currency: "KES" })
+            {`Ksh ${new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "KES",
+            })
               .format(totalAmount)
               .replace("KES", "")
               .trim()}`}
           </Text>
         </View>
+
         <View style={styles.navigationButtons}>
-          <TouchableOpacity onPress={formik.handleSubmit} style={styles.submitOrder}>
-            <View>
-              <Text style={styles.submitText}>Submit Order</Text>
+          <TouchableOpacity
+            onPress={formik.handleSubmit}
+            style={[styles.submitOrder, { backgroundColor: isLoading ? COLORS.deepblue : COLORS.themey }]}
+            disabled={isLoading}
+          >
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              {isLoading ? (
+                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 30 }}>
+                  <ActivityIndicator size={27} color="#fff" />
+                  <Text style={styles.submitText}> Processing ...</Text>
+                </View>
+              ) : (
+                <Text style={styles.submitText}>Submit Order</Text>
+              )}
             </View>
           </TouchableOpacity>
 
@@ -337,7 +286,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     width: SIZES.width - 50,
-    backgroundColor: COLORS.primary,
+    // backgroundColor: COLORS.primary,
     borderRadius: SIZES.medium,
   },
   submitText: {
@@ -345,6 +294,7 @@ const styles = StyleSheet.create({
     fontSize: SIZES.large,
     color: COLORS.white,
     paddingLeft: 30,
+    textAlign: "center",
   },
   submitIconWrapper: {
     height: 50,

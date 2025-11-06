@@ -5,6 +5,7 @@ const COLORS = {
   primary: "#0bab7c",
   secondary: "#e6d270",
   tertiary: "#FF7754",
+  deepblue: "#4a00ff",
 
   warning: "rgba(252, 18, 52, 0.3)",
   info: "rgba(14, 0, 255, 0.3)",
