@@ -199,7 +199,12 @@ const Checkout = () => {
       // console.log(selectedMethod);
 
       // If card is selected, run Stripe PaymentSheet flow
-      if (selectedMethod === "Visa" || selectedMethod === "MasterCard" || selectedMethod === "Card") {
+      if (
+        selectedMethod === "CashApp" ||
+        selectedMethod === "Stripe" ||
+        selectedMethod === "Card" ||
+        selectedMethod === "amazon_pay"
+      ) {
         // 1) create appointment first (so backend returns appointment id / bookingId)
 
         // console.error(orderData);
@@ -222,7 +227,7 @@ const Checkout = () => {
           amount: estimatedAmount,
           appointmentId,
           userId: userData?._id,
-          paymentMethod: "Stripe",
+          paymentMethod: selectedMethod || "Card",
         });
 
         if (!intentRes) {
@@ -565,9 +570,7 @@ const Checkout = () => {
                         />
                       </View>
                       <View style={styles.stepContainer}>
-                        <View style={styles.stepContainerInner}>
-                          <Icon name="stethoscope" size={26} />
-                        </View>
+                        <View style={styles.stepContainerInner}>{/* <Icon name="stethoscope" size={26} /> */}</View>
 
                         <View style={{ width: SIZES.width - 27 }}></View>
 
@@ -580,7 +583,7 @@ const Checkout = () => {
                     </View>
 
                     <View style={styles.next2wrapper}>
-                      <TouchableOpacity onPress={handleNext} style={styles.next2}>
+                      <TouchableOpacity onPress={handleNext} style={styles.next2x}>
                         <Text style={styles.buttonText}>Next step</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={handleNext} style={styles.previous} disabled={!bookingData}>

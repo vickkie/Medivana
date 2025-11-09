@@ -17,6 +17,7 @@ const ReceiptScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const transaction = route.params?.appointment;
+  // console.log(transaction?.transaction);
 
   if (!transaction || !transaction?.doctor) {
     return <Text>No appointment details</Text>;
@@ -86,7 +87,7 @@ const ReceiptScreen = () => {
         .col { flex:1; }
         .col.right { width:220px; flex:unset; }
         .sectionTitle { font-size:11px; font-weight:800; color:#0f172a; text-transform:uppercase; margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid #14b8a6; }
-        .info { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+        .info { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f1f5f9;align-items:center }
         .label { font-size:9px; color:#64748b; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; }
         .value { font-size:11px; color:#0f172a; font-weight:600; }
         .amountBox { background:#f0fdfa; padding:14px; border-radius:8px; margin-top:10px; border:1px solid #99f6e4; }
@@ -99,7 +100,7 @@ const ReceiptScreen = () => {
         .appointment h4 { margin:0 0 8px 0; font-size:12px; color:#854d0e; text-transform:uppercase; }
         .footer { margin-top:26px; padding-top:20px; border-top:2px solid #f1f5f9; text-align:center; color:#94a3b8; font-size:11px; line-height:1.6; }
         .contact { margin-top:6px; font-size:10px; color:#64748b; }
-        .qr { width:100px; height:100px; margin-top:8px; border-radius:6px; }
+        .qr { width:60px; height:60px; margin-top:8px; border-radius:6px; }
         @media (max-width: 700px) { .grid{flex-direction:column;} .title{text-align:right;} }
       </style>
     </head>
@@ -121,7 +122,7 @@ const ReceiptScreen = () => {
         <div class="accent"></div>
         <div class="body">
           <div class="statusRow">
-            <div class="badge">${tx.status || "Completed"}</div>
+            <div class="badge">${tx?.transaction?.status || "Unverified"}</div>
             <div class="txid">REF: ${tx.bookingId || "-"}</div>
           </div>
 
@@ -131,7 +132,28 @@ const ReceiptScreen = () => {
 
               <div class="info">
                 <div class="label">Payment Method</div>
-                <div class="value">M-Pesa</div>
+                <div class="value" style="display: flex; align-items: center; gap: 8px;">
+                  ${(() => {
+                    // Lowercase/normalize for easier matching
+                    const method = (tx?.transaction?.paymentMethod || "").toLowerCase();
+                    if (method === "paypal" || method === "paypal") {
+                      return `<img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" style="width:20px;height:20px;vertical-align:middle;object-fit:contain;background:#fff;border-radius:3px;"/> PayPal`;
+                    } else if (method === "card" || method === "stripe") {
+                      return `<img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Card" style="width:32px;height:32px;vertical-align:middle;object-fit:contain;background:#fff;padding:2px;border-radius:3px;"/> Card`;
+                    } else if (method === "cashapp") {
+                      return `<img src="https://www.logo.wine/a/logo/Cash_App/Cash_App-Logo.wine.svg" alt="CashApp" style="width:40px;height:40px;vertical-align:middle;object-fit:contain;background:#fff;border-radius:3px;"/> CashApp`;
+                    } else if (method === "amazon_pay" || method === "amazonpay") {
+                      return `<img src="https://www.logo.wine/a/logo/Amazon_Pay/Amazon_Pay-Logo.wine.svg" alt="Amazon Pay" style="width:60px;height:40px;vertical-align:middle;object-fit:contain;background:#fff;border-radius:3px;"/> Amazon Pay`;
+                    } else if (method === "mpesa") {
+                      return `<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/512px-M-PESA_LOGO-01.svg.png?20191120100524" alt="M-Pesa" style="width:50px;height:40px;vertical-align:middle;object-fit:contain;background:#fff;border-radius:3px;"/> M-Pesa`;
+                    } else if (method) {
+                      // fallback: just show method
+                      return method.charAt(0).toUpperCase() + method.slice(1);
+                    } else {
+                      return "-";
+                    }
+                  })()}
+                </div>
               </div>
 
               <div class="info">
@@ -146,12 +168,11 @@ const ReceiptScreen = () => {
 
               <div class="amountBox">
                 <div class="lbl">Total Amount Paid</div>
-                <div class="amt">KSh ${Number.parseFloat(tx.amount || tx.doctor?.consultationFee).toLocaleString(
-                  "en-KE",
-                  {
-                    minimumFractionDigits: 2,
-                  }
-                )}</div>
+                <div class="amt">KSh ${Number.parseFloat(
+                  tx?.transaction?.amount || tx.doctor?.consultationFee
+                ).toLocaleString("en-KE", {
+                  minimumFractionDigits: 2,
+                })}</div>
               </div>
               
             </div>
@@ -160,7 +181,8 @@ const ReceiptScreen = () => {
               <div class="sectionTitle">Patient</div>
               <div class="customerCard">
                 <h3>${userFull}</h3>
-                <div class="small">Codename: ${tx.user?.username || "-"}</div>
+                <div class="small">Name: ${tx.user?.username || "-"}</div>
+                <div class="small">Phone Number: ${tx.transaction?.phoneNumber || "-"}</div>
               
                 <img src="${qrUrl}" class="qr" />
               </div>

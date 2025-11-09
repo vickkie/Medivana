@@ -1,44 +1,28 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ActivityIndicator, Linking } from "react-native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
+const safeIMg = require("../assets/images/logos/safe-ensure.png");
 
 const paymentMethods = {
   Mpesa: { label: "Mpesa", imagePath: require("../assets/images/logos/Mpesa.png") },
-  Visa: { label: "Visa", imagePath: require("../assets/images/logos/visa.png") },
-  MasterCard: { label: "MasterCard", imagePath: require("../assets/images/logos/mastercard.png") },
-  PayPal: { label: "PayPal", imagePath: require("../assets/images/logos/paypal.png") },
+  Card: { label: "Card", imagePath: require("../assets/images/logos/crediit-card.png") },
+  Stripe: { label: "Stripe", imagePath: require("../assets/images/logos/link.png") },
+  CashApp: { label: "CashApp", imagePath: require("../assets/images/logos/Cash_App.png") },
+  amazon_pay: { label: "Amazon Pay", imagePath: require("../assets/images/logos/Amazon_Pay.png") },
 };
 
 const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isLoading = false }) => {
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("MasterCard");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Card");
+  const [selectedLabel, setSelectedLabel] = useState("Card");
 
   // ✅ Validation Schema
   const paymentValidationSchema = Yup.object().shape({
     selectedPaymentMethod: Yup.string().required("Select a payment method"),
 
     email: Yup.string().email("Invalid email").required("Email is required"),
-
-    nameOnCard: Yup.string().when("selectedPaymentMethod", {
-      is: (val) => ["Visa", "MasterCard"].includes(val),
-      then: (schema) => schema.required("Name on card is required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-
-    customer: Yup.string().when("selectedPaymentMethod", {
-      is: (val) => ["Visa", "MasterCard"].includes(val),
-      then: (schema) => schema.required("Customer name is required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
-
-    cardNumber: Yup.string().when("selectedPaymentMethod", {
-      is: (val) => ["Visa", "MasterCard"].includes(val),
-      then: (schema) =>
-        schema.matches(/^\d{12,17}$/, "Card number must be between 12–16 digits").required("Card number is required"),
-      otherwise: (schema) => schema.notRequired(),
-    }),
 
     phoneNumber: Yup.string().when("selectedPaymentMethod", {
       is: "Mpesa",
@@ -52,9 +36,6 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
     initialValues: {
       phoneNumber: phoneNumber || "",
       email: email || "",
-      customer: "",
-      nameOnCard: selectedPaymentMethod.toLowerCase(),
-      cardNumber: "",
       selectedPaymentMethod,
     },
     validationSchema: paymentValidationSchema,
@@ -67,20 +48,16 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
   });
 
   // ✅ Update method & revalidate when changing method
-  const handlePaymentMethodChange = (method) => {
+  const handlePaymentMethodChange = (method, label) => {
     setSelectedPaymentMethod(method);
+    setSelectedLabel(label);
     formik.setFieldValue("selectedPaymentMethod", method);
     formik.validateForm();
   };
 
-  const formatCardNumber = (value) => {
-    const digits = value.replace(/\D/g, "").slice(0, 16);
-    return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
-  };
-
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Payment Method</Text>
+      <Text style={styles.label}>Payment Method - {selectedLabel}</Text>
 
       {/* Payment Method Selector */}
       <View style={styles.paymentMethods}>
@@ -88,9 +65,9 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
           <TouchableOpacity
             key={method}
             style={[styles.paymentMethodButton, selectedPaymentMethod === method && styles.selectedPaymentMethod]}
-            onPress={() => handlePaymentMethodChange(method)}
+            onPress={() => handlePaymentMethodChange(method, label)}
           >
-            <Image source={imagePath} style={{ height: 24, width: 48 }} />
+            <Image source={imagePath} style={{ height: 34, width: 48 }} />
           </TouchableOpacity>
         ))}
       </View>
@@ -132,36 +109,6 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
             onBlur={formik.handleBlur("email")}
           />
           {formik.touched.email && formik.errors.email && <Text style={styles.error}>{formik.errors.email}</Text>}
-
-          {["Visa", "MasterCard"].includes(selectedPaymentMethod) && (
-            <>
-              <Text style={styles.label}>Name on Card</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Full name on card"
-                value={formik.values.customer}
-                onChangeText={formik.handleChange("customer")}
-                onBlur={formik.handleBlur("customer")}
-              />
-              {formik.touched.customer && formik.errors.customer && (
-                <Text style={styles.error}>{formik.errors.customer}</Text>
-              )}
-
-              <Text style={styles.label}>Card Number</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Card Number"
-                keyboardType="numeric"
-                value={formatCardNumber(formik.values.cardNumber)}
-                onChangeText={(text) => formik.setFieldValue("cardNumber", text.replace(/\D/g, ""))}
-                onBlur={formik.handleBlur("cardNumber")}
-                maxLength={19}
-              />
-              {formik.touched.cardNumber && formik.errors.cardNumber && (
-                <Text style={styles.error}>{formik.errors.cardNumber}</Text>
-              )}
-            </>
-          )}
         </>
       )}
 
@@ -188,19 +135,28 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
           >
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               {isLoading ? (
-                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 30 }}>
+                <View style={{ flexDirection: "row", alignItems: "center", marginHorizontal: 20 }}>
                   <ActivityIndicator size={27} color="#fff" />
-                  <Text style={styles.submitText}> Processing ...</Text>
+                  <Text style={styles.submitinText}> Processing Payment...</Text>
                 </View>
               ) : (
-                <Text style={styles.submitText}>Submit Order</Text>
+                <Text style={styles.submitText}>Checkout Payment</Text>
               )}
             </View>
           </TouchableOpacity>
 
           <View style={styles.submitIconWrapper}>
-            <Icon name="cartcheck" size={29} />
+            <Icon name="cartcheck" size={24} />
           </View>
+        </View>
+        <View style={{ marginTop: 50 }}>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL("https://stripe.com/");
+            }}
+          >
+            <Image source={safeIMg} style={{ height: SIZES.width / 4, width: SIZES.width - 40 }} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -217,15 +173,17 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: SIZES.small + 2,
-    marginBottom: 8,
+    marginBottom: 23,
     fontFamily: "semibold",
+    // color: COLORS.themey,
   },
   paymentMethods: {
     flexDirection: "row",
     marginBottom: 16,
+    marginRight: 20,
   },
   paymentMethodButton: {
-    padding: 8,
+    padding: 1,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 4,
@@ -296,9 +254,17 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     textAlign: "center",
   },
+  submitinText: {
+    fontFamily: "medium",
+    fontSize: SIZES.large,
+    color: COLORS.white,
+    paddingLeft: 10,
+    textAlign: "center",
+  },
   submitIconWrapper: {
     height: 50,
     width: 50,
+    marginRight: 6,
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.themew,
     justifyContent: "center",

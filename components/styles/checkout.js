@@ -195,9 +195,7 @@ export default StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     gap: 10,
-    marginTop: 20,
-    // position: "absolute",
-    // bottom: 20,
+    marginTop: 10,
   },
   next2: {
     justifyContent: "center",

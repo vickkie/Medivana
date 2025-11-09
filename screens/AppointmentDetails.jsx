@@ -68,6 +68,7 @@ const AppointmentDetails = () => {
       });
 
       if (response.data.success) {
+        // console.log(appointmentId);
         setAppointment(response.data.appointment);
       } else {
         setErrorState(true);
@@ -157,7 +158,7 @@ const AppointmentDetails = () => {
       setIsLoading(false);
     }
   };
-  console.log(appointment?.doctorSnapshot);
+  // console.log(appointment?.doctorSnapshot);
 
   const DoctorInfoComponent = ({ doctor }) => (
     <View style={styles.doctorInfoContainer}>
