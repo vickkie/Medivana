@@ -113,6 +113,17 @@
         "Doctor rating and reviews available"
       ],
       "fixed": ["Notifications availabilty issue"]
+    },
+    {
+      "releaseDate": "2025-10-25",
+      "version": "2.1.0",
+      "whatsNew": [
+        "Cash App, Amazon pay, Debit/credit card payment available",
+        "Improved Security on checkout process",
+        "Detailed receipt generation",
+        "Doctor approval and certification shown"
+      ],
+      "fixed": ["Redundency in checkout"]
     }
   ]
 }
