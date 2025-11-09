@@ -62,7 +62,7 @@ const SCREEN_LIST = [
   { name: "ProfileDetails", component: Screens.ProfileDetails, options: { headerShown: false } },
   { name: "SecurityDetails", component: Screens.SecurityDetails, options: { headerShown: false } },
   { name: "MedicalDetails", component: Screens.MedicalDetails, options: { headerShown: false } },
-  { name: "NotificationSettings", component: Screens.NotificationSettings, options: { headerShown: false } },
+  { name: "NotificationSettings", component: Screens.NotificationSettings, options: { headerShown: true } },
   { name: "PrivacyPolicy", component: Screens.PrivacyPolicy, options: { headerShown: false } },
   { name: "Ratings", component: Screens.Ratings, options: { headerShown: false } },
   { name: "ReceiptScreen", component: Screens.ReceiptScreen, options: { headerShown: false } },

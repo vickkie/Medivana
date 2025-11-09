@@ -583,7 +583,7 @@ const Checkout = () => {
                     </View>
 
                     <View style={styles.next2wrapper}>
-                      <TouchableOpacity onPress={handleNext} style={styles.next2x}>
+                      <TouchableOpacity onPress={handleNext} style={styles.next2}>
                         <Text style={styles.buttonText}>Next step</Text>
                       </TouchableOpacity>
                       <TouchableOpacity onPress={handleNext} style={styles.previous} disabled={!bookingData}>

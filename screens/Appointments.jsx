@@ -61,7 +61,7 @@ const Appointments = () => {
                     onChangeText={setSearchQuery}
                   />
                   <TouchableOpacity style={styles.searchButton}>
-                    <Icon name="search" size={26} />
+                    <Icon name="search" size={22} />
                   </TouchableOpacity>
                 </View>
               )}
@@ -224,6 +224,10 @@ const styles = StyleSheet.create({
   searchButton: {
     position: "absolute",
     right: 17,
+    padding: 3,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: COLORS.themey,
   },
   filterContainer: {
     paddingVertical: 8,
