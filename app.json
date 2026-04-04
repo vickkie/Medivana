@@ -41,6 +41,13 @@
         "projectId": "7e9be3e9-bc5d-442e-aa32-586bbba904a1"
       }
     },
+    
+      "expo": {
+        "android": {
+          "softwareKeyboardLayoutMode": "pan"
+        }
+      },
+    
     "owner": "killoy",
     "plugins": ["expo-font"]
   }
