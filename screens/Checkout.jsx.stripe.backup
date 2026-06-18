@@ -30,7 +30,7 @@ import axios from "axios";
 import Toast from "react-native-toast-message";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { ArrowBigLeftIcon, ArrowLeftIcon, ChevronLeft, ChevronRightIcon } from "lucide-react-native";
-import { WebView } from "react-native-webview";
+import { useStripe } from "@stripe/stripe-react-native";
 
 const Checkout = () => {
   const route = useRoute();
@@ -69,10 +69,7 @@ const Checkout = () => {
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState(true);
 
-  // Paystack WebView state
-  const [paystackUrl, setPaystackUrl] = useState(null);
-  const [paystackReference, setPaystackReference] = useState(null);
-  const [showPaystackWebView, setShowPaystackWebView] = useState(false);
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
 
   const showToast = (type, text1, text2 = "") => {
     Toast.show({
@@ -201,46 +198,118 @@ const Checkout = () => {
       // console.log("Sending data", orderData);
       // console.log(selectedMethod);
 
-      // If Paystack/card is selected, run Paystack flow
+      // If card is selected, run Stripe PaymentSheet flow
       if (
-        selectedMethod === "Paystack" ||
+        selectedMethod === "CashApp" ||
+        selectedMethod === "Stripe" ||
         selectedMethod === "Card" ||
-        selectedMethod === "Visa" ||
-        selectedMethod === "MasterCard"
+        selectedMethod === "amazon_pay"
       ) {
-        // 1) create appointment first
+        // 1) create appointment first (so backend returns appointment id / bookingId)
+
+        // console.error(orderData);
         const responseAppt = await axios.post(`${BACKEND_PORT}/api/v1/appointment`, orderData);
+
+        // console.log(responseAppt);
 
         if (!responseAppt || !responseAppt.data) {
           showToast("error", "Failed to create appointment");
           setIsLoading(false);
           return;
         }
+        // console.log(responseAppt?.data);
 
         const appointment = responseAppt.data.appointment;
         const appointmentId = appointment?._id || "123";
 
-        // 2) Initialize Paystack transaction
-        const initRes = await axios.post(`${BACKEND_PORT}/api/v6/payments/initialize`, {
+        // 2) create payment intent
+        const intentRes = await axios.post(`${BACKEND_PORT}/api/v6/payments/create-intent`, {
           amount: estimatedAmount,
-          email: paymentInfo?.email || email,
           appointmentId,
           userId: userData?._id,
-          callback_url: `${BACKEND_PORT}/payment/callback`,
+          paymentMethod: selectedMethod || "Card",
         });
 
-        if (!initRes.data?.success) {
-          showToast("error", initRes.data?.message || "Failed to initialize payment");
+        if (!intentRes) {
+          showToast("error", "No new intent");
+        }
+        // console.log("intent", intentRes.data);
+
+        const clientSecret = intentRes?.data?.clientSecret;
+
+        if (!clientSecret) throw new Error("No client secret returned from server");
+        // console.log(userData);
+
+        // 3) init payment sheet
+        const initResult = await initPaymentSheet({
+          paymentIntentClientSecret: clientSecret,
+          merchantDisplayName: "Medivana",
+          defaultBillingDetails: {
+            name: userData?.username || "medivana tester",
+            email: paymentInfo?.email || email,
+            phone: paymentInfo?.phone || userData?.phoneNumber,
+            address: {
+              city: "Nairobi",
+              country: "KE",
+              line1: "123 Kenyatta Avenue",
+              line2: "Suite 5A",
+              postalCode: "00100",
+              state: "Nairobi",
+            },
+          },
+          allowsDelayedPaymentMethods: false,
+          appearance: {
+            colors: {
+              primary: "#4CAF50", // main accent color (your brand color)
+              background: "#121212", // background color
+              componentBackground: "#1E1E1E", // card / field background
+              componentBorder: "#333333", // border around input fields
+              componentDivider: "#2A2A2A", // divider color
+              text: "#FFFFFF", // text color
+              placeholderText: "#AAAAAA", // placeholder color
+              icon: "#FFFFFF", // icon tint
+              error: "#FF5252", // error red
+            },
+            shapes: {
+              borderRadius: 12, // round corners
+              borderWidth: 1,
+            },
+            primaryButton: {
+              colors: {
+                background: "#4CAF50",
+                text: "#FFFFFF",
+                border: "#4CAF50",
+              },
+              shapes: {
+                borderRadius: 10,
+              },
+            },
+            typography: {
+              fontFamily: "System", // or your custom font if configured
+              fontSizeBase: 16,
+            },
+            theme: "dark", // "light" | "dark" | "auto"
+          },
+        });
+
+        if (initResult.error) {
+          throw new Error(initResult.error.message || "Failed to initialize payment sheet");
+        }
+
+        // 4) present payment sheet
+        const presentResult = await presentPaymentSheet();
+
+        if (presentResult.error) {
+          // payment failed / cancelled
+          Alert.alert("Payment failed", presentResult.error.message || "Payment was not completed");
           setIsLoading(false);
           return;
         }
 
-        const { authorization_url, reference } = initRes.data;
-
-        // 3) Open Paystack WebView
-        setPaystackUrl(authorization_url);
-        setPaystackReference(reference);
-        setShowPaystackWebView(true);
+        // success — Stripe will hit webhook to finalize DB but we can navigate
+        setBookingId(responseAppt.data.bookingId || appointmentId);
+        showToast("success", "Payment successful", "");
+        navigation.navigate("OrderSuccess", { orderId: responseAppt.data.bookingId || appointmentId });
         setIsLoading(false);
         return;
       }
@@ -584,87 +653,6 @@ const Checkout = () => {
           </View>
         </View>
       </View>
-
-      {/* Paystack WebView Modal */}
-      {showPaystackWebView && paystackUrl && (
-        <Modal
-          visible={showPaystackWebView}
-          animationType="slide"
-          onRequestClose={() => {
-            setShowPaystackWebView(false);
-            setIsLoading(false);
-          }}
-        >
-          <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                padding: 16,
-                borderBottomWidth: 1,
-                borderBottomColor: "#eee",
-              }}
-            >
-              <TouchableOpacity
-                onPress={() => {
-                  setShowPaystackWebView(false);
-                  setIsLoading(false);
-                }}
-                style={{ marginRight: 16 }}
-              >
-                <ChevronLeft size={24} color="#333" />
-              </TouchableOpacity>
-              <Text style={{ fontSize: 18, fontWeight: "600", color: "#333" }}>Complete Payment</Text>
-            </View>
-            <WebView
-              source={{ uri: paystackUrl }}
-              style={{ flex: 1 }}
-              onNavigationStateChange={async (navState) => {
-                const { url } = navState;
-
-                // Check for success callback
-                if (url.includes("/payment/callback") || url.includes("reference=")) {
-                  // Extract reference from URL
-                  const refMatch = url.match(/reference=([^&]+)/);
-                  const ref = refMatch ? refMatch[1] : paystackReference;
-
-                  if (ref) {
-                    try {
-                      // Verify payment
-                      const verifyRes = await axios.get(`${BACKEND_PORT}/api/v6/payments/verify/${ref}`);
-
-                      if (verifyRes.data?.status === "success") {
-                        setShowPaystackWebView(false);
-                        showToast("success", "Payment successful!");
-                        navigation.navigate("OrderSuccess", { orderId: ref });
-                      } else {
-                        showToast("error", "Payment verification failed");
-                      }
-                    } catch (err) {
-                      console.error("Verification error:", err);
-                      showToast("error", "Could not verify payment");
-                    }
-                  }
-                  setIsLoading(false);
-                }
-
-                // Check for cancel/close
-                if (url.includes("close") || url.includes("cancel")) {
-                  setShowPaystackWebView(false);
-                  setIsLoading(false);
-                  showToast("info", "Payment cancelled");
-                }
-              }}
-              onError={(error) => {
-                console.error("WebView error:", error);
-                setShowPaystackWebView(false);
-                setIsLoading(false);
-                showToast("error", "Payment page failed to load");
-              }}
-            />
-          </SafeAreaView>
-        </Modal>
-      )}
     </SafeAreaView>
   );
 };

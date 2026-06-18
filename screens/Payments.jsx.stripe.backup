@@ -7,13 +7,16 @@ import Icon from "../constants/icons";
 const safeIMg = require("../assets/images/logos/safe-ensure.png");
 
 const paymentMethods = {
-  Mpesa: { label: "M-Pesa", imagePath: require("../assets/images/logos/Mpesa.png") },
-  Paystack: { label: "Card/M-Pesa", imagePath: require("../assets/images/logos/crediit-card.png") },
+  Mpesa: { label: "Mpesa", imagePath: require("../assets/images/logos/Mpesa.png") },
+  Card: { label: "Card", imagePath: require("../assets/images/logos/crediit-card.png") },
+  Stripe: { label: "Stripe", imagePath: require("../assets/images/logos/link.png") },
+  CashApp: { label: "CashApp", imagePath: require("../assets/images/logos/Cash_App.png") },
+  amazon_pay: { label: "Amazon Pay", imagePath: require("../assets/images/logos/Amazon_Pay.png") },
 };
 
 const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isLoading = false }) => {
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Paystack");
-  const [selectedLabel, setSelectedLabel] = useState("Card/M-Pesa");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Card");
+  const [selectedLabel, setSelectedLabel] = useState("Card");
 
   // ✅ Validation Schema
   const paymentValidationSchema = Yup.object().shape({
@@ -146,7 +149,15 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
             <Icon name="cartcheck" size={24} />
           </View>
         </View>
-        {/* Payment secured by Paystack - Kenya's leading payment processor */}
+        <View style={{ marginTop: 50 }}>
+          <TouchableOpacity
+            onPress={() => {
+              Linking.openURL("https://stripe.com/");
+            }}
+          >
+            <Image source={safeIMg} style={{ height: SIZES.width / 4, width: SIZES.width - 40 }} />
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );

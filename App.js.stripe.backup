@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -15,7 +17,7 @@ import { useAuthLoader } from "./components/auth/useAuthLoader";
 import { CartProvider } from "./contexts/CartContext";
 import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionContext";
 import { WishProvider } from "./contexts/WishContext";
-// Paystack integration - no SDK provider needed, uses WebView for checkout
+import { StripeProvider } from "@stripe/stripe-react-native";
 
 import BottomTabNavigation from "./navigation/BottomTabNavigation";
 import UpdateCheck from "./components/UpdateCheck";
@@ -66,6 +68,21 @@ const SCREEN_LIST = [
   { name: "ReceiptScreen", component: Screens.ReceiptScreen, options: { headerShown: false } },
 ];
 
+const STRIPE_CACHE_KEY = "ACTIVE_STRIPE_KEY";
+
+async function fetchStripeKeyWithRetry(url, retries = 3, delayMs = 2000) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const { data } = await axios.get(url, { timeout: 5000 });
+      if (data?.success && data.data?.publishableKey) return data.data.publishableKey;
+      throw new Error("No publishableKey in response");
+    } catch (err) {
+      if (attempt < retries - 1) await new Promise((r) => setTimeout(r, delayMs));
+      else throw err;
+    }
+  }
+}
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     bold: require("./assets/fonts/Urbanist/static/Urbanist-Bold.ttf"),
@@ -79,6 +96,34 @@ export default function App() {
   });
 
   const { userData, authLoading } = useAuthLoader();
+  const [stripeKey, setStripeKey] = useState(null);
+
+  useEffect(() => {
+    const cachedKeyLoader = async () => {
+      const cached = await AsyncStorage.getItem(STRIPE_CACHE_KEY);
+      if (cached) setStripeKey(cached);
+    };
+    cachedKeyLoader();
+  }, []);
+
+  useEffect(() => {
+    const fetchAndCacheStripeKey = async () => {
+      const url = `${process.env.BACKEND_PORT}/api/v9/stripe/active`;
+      try {
+        const key = await fetchStripeKeyWithRetry(url, 3);
+        if (key && key !== stripeKey) {
+          await AsyncStorage.setItem(STRIPE_CACHE_KEY, key);
+          setStripeKey(key);
+        }
+      } catch (err) {
+        console.warn("Stripe key fetch failed:", err.message);
+      }
+    };
+
+    fetchAndCacheStripeKey();
+    const interval = setInterval(fetchAndCacheStripeKey, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [stripeKey]);
 
   useEffect(() => {
     if (fontsLoaded && !authLoading) SplashScreen.hideAsync();
@@ -90,33 +135,35 @@ export default function App() {
 
   return (
     <ErrorBoundary2>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <UpdateCheck />
-        <BottomSheetModalProvider>
-          <AuthProvider>
-            <ProfileCompletionProvider>
-              <CartProvider>
-                <WishProvider>
-                  <NavigationContainer theme={MyTheme}>
-                    <PushNotification />
-                    <Stack.Navigator initialRouteName={initialRoute}>
-                      {SCREEN_LIST.map((screen, i) => (
-                        <Stack.Screen
-                          key={i}
-                          name={screen.name}
-                          component={screen.component}
-                          options={screen.options}
-                        />
-                      ))}
-                    </Stack.Navigator>
-                    <Toast />
-                  </NavigationContainer>
-                </WishProvider>
-              </CartProvider>
-            </ProfileCompletionProvider>
-          </AuthProvider>
-        </BottomSheetModalProvider>
-      </GestureHandlerRootView>
+      <StripeProvider publishableKey={stripeKey || "pk_test_no_key_found"} urlScheme="medivana">
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <UpdateCheck />
+          <BottomSheetModalProvider>
+            <AuthProvider>
+              <ProfileCompletionProvider>
+                <CartProvider>
+                  <WishProvider>
+                    <NavigationContainer theme={MyTheme}>
+                      <PushNotification />
+                      <Stack.Navigator initialRouteName={initialRoute}>
+                        {SCREEN_LIST.map((screen, i) => (
+                          <Stack.Screen
+                            key={i}
+                            name={screen.name}
+                            component={screen.component}
+                            options={screen.options}
+                          />
+                        ))}
+                      </Stack.Navigator>
+                      <Toast />
+                    </NavigationContainer>
+                  </WishProvider>
+                </CartProvider>
+              </ProfileCompletionProvider>
+            </AuthProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
+      </StripeProvider>
     </ErrorBoundary2>
   );
 }
