@@ -150,10 +150,11 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
           </View>
         </View>
 
-        <View style={styles.paystackBadge}>
-          <View style={styles.paystackDot} />
-          <Text style={styles.paystackText}>Secured by Paystack</Text>
-        </View>
+        <Image
+          source={require("../assets/images/logos/paystack-ii.webp")}
+          style={styles.paystackImage}
+          resizeMode="contain"
+        />
       </View>
     </View>
   );
@@ -277,29 +278,10 @@ const styles = StyleSheet.create({
     right: 1,
     alignItems: "center",
   },
-  paystackBadge: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: "#f0f9f6",
+  paystackImage: {
+    width: SIZES.width - 50,
+    height: 70,
     alignSelf: "center",
-    borderWidth: 1,
-    borderColor: "#0BAB7B",
-  },
-  paystackDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: "#0BAB7B",
-    marginRight: 8,
-  },
-  paystackText: {
-    fontSize: SIZES.small + 1,
-    fontFamily: "semibold",
-    color: "#0BAB7B",
+    marginTop: 20,
   },
 });
