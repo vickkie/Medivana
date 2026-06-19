@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ActivityIndicator, Linking } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from "react-native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
-const safeIMg = require("../assets/images/logos/safe-ensure.png");
 
 const paymentMethods = {
   Mpesa: { label: "M-Pesa", imagePath: require("../assets/images/logos/Mpesa.png") },
+  Airtel: { label: "Airtel Money", imagePath: require("../assets/images/logos/airtel-money-w.png") },
+  PesaLink: { label: "PesaLink", imagePath: require("../assets/images/logos/pesalink-logo.png") },
   Paystack: { label: "Card/M-Pesa", imagePath: require("../assets/images/logos/crediit-card.png") },
 };
 
@@ -15,20 +16,16 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("Paystack");
   const [selectedLabel, setSelectedLabel] = useState("Card/M-Pesa");
 
-  // ✅ Validation Schema
   const paymentValidationSchema = Yup.object().shape({
     selectedPaymentMethod: Yup.string().required("Select a payment method"),
-
     email: Yup.string().email("Invalid email").required("Email is required"),
-
     phoneNumber: Yup.string().when("selectedPaymentMethod", {
-      is: "Mpesa",
+      is: (val) => val === "Mpesa" || val === "Airtel",
       then: (schema) => schema.matches(/^\+?\d{10,15}$/, "Invalid phone number").required("Phone number is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
   });
 
-  // ✅ Formik Setup
   const formik = useFormik({
     initialValues: {
       phoneNumber: phoneNumber || "",
@@ -39,12 +36,10 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: async (values) => {
-      console.log("Submitting:", values);
       await handleSubmitOrder(values);
     },
   });
 
-  // ✅ Update method & revalidate when changing method
   const handlePaymentMethodChange = (method, label) => {
     setSelectedPaymentMethod(method);
     setSelectedLabel(label);
@@ -56,7 +51,6 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
     <View style={styles.container}>
       <Text style={styles.label}>Payment Method - {selectedLabel}</Text>
 
-      {/* Payment Method Selector */}
       <View style={styles.paymentMethods}>
         {Object.entries(paymentMethods).map(([method, { label, imagePath }]) => (
           <TouchableOpacity
@@ -64,13 +58,14 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
             style={[styles.paymentMethodButton, selectedPaymentMethod === method && styles.selectedPaymentMethod]}
             onPress={() => handlePaymentMethodChange(method, label)}
           >
-            <Image source={imagePath} style={{ height: 34, width: 48 }} />
+            <View style={styles.paymentImageWrapper}>
+              <Image source={imagePath} style={styles.paymentImage} resizeMode="contain" />
+            </View>
           </TouchableOpacity>
         ))}
       </View>
 
-      {/* === Conditional Form Fields === */}
-      {selectedPaymentMethod === "Mpesa" ? (
+      {selectedPaymentMethod === "Mpesa" || selectedPaymentMethod === "Airtel" ? (
         <>
           <Text style={styles.label}>Phone Number</Text>
           <TextInput
@@ -109,7 +104,6 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
         </>
       )}
 
-      {/* === Footer Section === */}
       <View style={styles.navRow}>
         <View style={styles.totalsRow}>
           <Text style={styles.totalhead}>Total Price</Text>
@@ -146,7 +140,11 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
             <Icon name="cartcheck" size={24} />
           </View>
         </View>
-        {/* Payment secured by Paystack - Kenya's leading payment processor */}
+
+        <View style={styles.paystackBadge}>
+          <View style={styles.paystackDot} />
+          <Text style={styles.paystackText}>Secured by Paystack</Text>
+        </View>
       </View>
     </View>
   );
@@ -164,7 +162,6 @@ const styles = StyleSheet.create({
     fontSize: SIZES.small + 2,
     marginBottom: 23,
     fontFamily: "semibold",
-    // color: COLORS.themey,
   },
   paymentMethods: {
     flexDirection: "row",
@@ -172,14 +169,26 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   paymentMethodButton: {
-    padding: 1,
+    padding: 6,
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 4,
+    borderRadius: 8,
     marginRight: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
   selectedPaymentMethod: {
     borderColor: "#000",
+  },
+  paymentImageWrapper: {
+    width: 60,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paymentImage: {
+    width: "100%",
+    height: "100%",
   },
   input: {
     flexDirection: "row",
@@ -208,7 +217,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   navRow: {
-    // flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     marginTop: 30,
@@ -233,7 +241,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     width: SIZES.width - 50,
-    // backgroundColor: COLORS.primary,
     borderRadius: SIZES.medium,
   },
   submitText: {
@@ -257,9 +264,33 @@ const styles = StyleSheet.create({
     borderRadius: SIZES.medium,
     backgroundColor: COLORS.themew,
     justifyContent: "center",
-
     position: "absolute",
     right: 1,
     alignItems: "center",
+  },
+  paystackBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "#f0f9f6",
+    alignSelf: "center",
+    borderWidth: 1,
+    borderColor: "#0BAB7B",
+  },
+  paystackDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#0BAB7B",
+    marginRight: 8,
+  },
+  paystackText: {
+    fontSize: SIZES.small + 1,
+    fontFamily: "semibold",
+    color: "#0BAB7B",
   },
 });

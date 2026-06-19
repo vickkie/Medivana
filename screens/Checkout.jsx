@@ -201,12 +201,15 @@ const Checkout = () => {
       // console.log("Sending data", orderData);
       // console.log(selectedMethod);
 
-      // If Paystack/card is selected, run Paystack flow
+      // If Paystack/card/mobile money is selected, run Paystack flow
       if (
         selectedMethod === "Paystack" ||
         selectedMethod === "Card" ||
         selectedMethod === "Visa" ||
-        selectedMethod === "MasterCard"
+        selectedMethod === "MasterCard" ||
+        selectedMethod === "Mpesa" ||
+        selectedMethod === "Airtel" ||
+        selectedMethod === "PesaLink"
       ) {
         // 1) create appointment first
         const responseAppt = await axios.post(`${BACKEND_PORT}/api/v1/appointment`, orderData);

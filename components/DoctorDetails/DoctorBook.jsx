@@ -49,7 +49,7 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
   const [gender, setGender] = useState(
     userData?.personalDetails?.gender
       ? userData.personalDetails.gender.charAt(0).toUpperCase() + userData.personalDetails.gender.slice(1)
-      : ""
+      : "",
   );
 
   const [age, setAge] = useState(18);
@@ -158,7 +158,39 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
     setCurrentMonth(month);
   };
 
+  const isDateInPast = (dateObj) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const checkDate = new Date(dateObj);
+    checkDate.setHours(0, 0, 0, 0);
+    return checkDate < today;
+  };
+
+  const isTimeSlotPast = (slotTime) => {
+    if (!selectedDateObj || !isDateInPast(selectedDateObj)) return false;
+    // Only block past times if selected date is today
+    const today = new Date();
+    const selected = new Date(selectedDateObj);
+    selected.setHours(0, 0, 0, 0);
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    if (selected.getTime() !== now.getTime()) return false;
+
+    const [hour, minute] = slotTime.split(":").map(Number);
+    const slotDate = new Date();
+    slotDate.setHours(hour, minute, 0, 0);
+    return slotDate < new Date();
+  };
+
   const handleDateSelect = (item) => {
+    if (isDateInPast(item?.dateObj)) {
+      Toast.show({
+        type: "error",
+        text1: "Cannot select a past date",
+        position: "top",
+      });
+      return;
+    }
     setSelectedDate(item.day);
     setSelectedDateObj(item?.dateObj);
     setSelectedDay(getFullDayName(item?.dayShort));
@@ -357,20 +389,28 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                   </View>
                 </View>
                 <View style={styles.calendar}>
-                  {calendarDays.map((item, index) => (
-                    <TouchableOpacity
-                      key={index}
-                      style={[styles.calendarDay, selectedDate === item.day && styles.selectedDay]}
-                      onPress={() => handleDateSelect(item)}
-                    >
-                      <Text style={[styles.dayNumber, selectedDate === item.day && styles.selectedDayText]}>
-                        {item.day}
-                      </Text>
-                      <Text style={[styles.dayName, selectedDate === item.day && styles.selectedDayText]}>
-                        {item.dayName}
-                      </Text>
-                    </TouchableOpacity>
-                  ))}
+                  {calendarDays.map((item, index) => {
+                    const past = isDateInPast(item?.dateObj);
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        disabled={past}
+                        style={[
+                          styles.calendarDay,
+                          selectedDate === item.day && styles.selectedDay,
+                          past && { opacity: 0.4, backgroundColor: "#f0f0f0" },
+                        ]}
+                        onPress={() => handleDateSelect(item)}
+                      >
+                        <Text style={[styles.dayNumber, selectedDate === item.day && styles.selectedDayText]}>
+                          {item.day}
+                        </Text>
+                        <Text style={[styles.dayName, selectedDate === item.day && styles.selectedDayText]}>
+                          {item.dayName}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
                 </View>
                 <View style={styles.slotsHolder}>
                   {availableHours.map((slot, index) => (
@@ -397,18 +437,36 @@ const DoctorBook = ({ sendDataToParent, routeParams }) => {
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={(item) => item}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity
-                        style={[styles.timeslotsH, selectedTime === item && { backgroundColor: COLORS.primary }]}
-                        onPress={() => setSelectedTime(item)}
-                      >
-                        <Text
-                          style={[styles.timeslotH, selectedTime === item && { color: "#fff", fontWeight: "bold" }]}
+                    renderItem={({ item }) => {
+                      const pastSlot = isTimeSlotPast(item);
+                      return (
+                        <TouchableOpacity
+                          disabled={pastSlot}
+                          style={[
+                            styles.timeslotsH,
+                            selectedTime === item && { backgroundColor: COLORS.primary },
+                            pastSlot && { opacity: 0.4, backgroundColor: "#f0f0f0" },
+                          ]}
+                          onPress={() => {
+                            if (pastSlot) {
+                              Toast.show({
+                                type: "error",
+                                text1: "Cannot select a past time slot",
+                                position: "top",
+                              });
+                              return;
+                            }
+                            setSelectedTime(item);
+                          }}
                         >
-                          {item}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
+                          <Text
+                            style={[styles.timeslotH, selectedTime === item && { color: "#fff", fontWeight: "bold" }]}
+                          >
+                            {item}
+                          </Text>
+                        </TouchableOpacity>
+                      );
+                    }}
                   />
                 ) : (
                   <View style={{ background: COLORS.themeg, paddingVertical: 10 }}>

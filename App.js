@@ -81,12 +81,17 @@ export default function App() {
   const { userData, authLoading } = useAuthLoader();
 
   useEffect(() => {
-    if (fontsLoaded && !authLoading) SplashScreen.hideAsync();
+    console.log("fontsLoaded:", fontsLoaded, "authLoading:", authLoading);
+    if (!authLoading) SplashScreen.hideAsync();
   }, [fontsLoaded, authLoading]);
 
-  if (!fontsLoaded || authLoading) return null;
+  if (authLoading) {
+    console.log("Still loading - returning null");
+    return null;
+  }
 
   const initialRoute = userData ? "Bottom Navigation" : "Onboarding";
+  console.log("Initial route:", initialRoute, "userData:", userData);
 
   return (
     <ErrorBoundary2>
