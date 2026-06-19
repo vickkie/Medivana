@@ -124,6 +124,22 @@
         "Doctor approval and certification shown"
       ],
       "fixed": ["Redundency in checkout"]
+    },
+    {
+      "releaseDate": "2026-06-19",
+      "version": "2.1.1",
+      "whatsNew": [
+        "Paystack payment gateway integration",
+        "Airtel Money payment option added",
+        "PesaLink payment option added",
+        "Payment methods now horizontally scrollable"
+      ],
+      "fixed": [
+        "Font loading issue - downloaded real Urbanist fonts",
+        "Past date selection blocked in booking",
+        "Past time slots blocked for today",
+        "M-Pesa now routes through Paystack checkout"
+      ]
     }
   ]
 }
