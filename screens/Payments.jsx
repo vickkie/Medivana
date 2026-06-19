@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+  ScrollView,
+} from "react-native";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { COLORS, SIZES } from "../constants";
@@ -51,7 +60,7 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
     <View style={styles.container}>
       <Text style={styles.label}>Payment Method - {selectedLabel}</Text>
 
-      <View style={styles.paymentMethods}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.paymentMethods}>
         {Object.entries(paymentMethods).map(([method, { label, imagePath }]) => (
           <TouchableOpacity
             key={method}
@@ -63,7 +72,7 @@ const CheckoutStep3 = ({ phoneNumber, email, totalAmount, handleSubmitOrder, isL
             </View>
           </TouchableOpacity>
         ))}
-      </View>
+      </ScrollView>
 
       {selectedPaymentMethod === "Mpesa" || selectedPaymentMethod === "Airtel" ? (
         <>
