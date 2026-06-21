@@ -7,25 +7,34 @@ import { BACKEND_PORT, EAS_PROJECT_ID } from "@env";
 import axios from "axios";
 import axiosRetry from "axios-retry";
 
-
 axiosRetry(axios, { retries: 3 });
 
 export async function registerForPushNotificationsAsync(userId) {
   if (!Device.isDevice) {
-    console.log("Must use a physical device for push notifications");
+    if (__DEV__) console.log("Must use a physical device for push notifications");
     return;
+  }
+
+  // Android 13+ (API 33) requires POST_NOTIFICATIONS at runtime
+  if (Platform.OS === "android" && Platform.Version >= 33) {
+    const { status: androidStatus } = await Notifications.requestPermissionsAsync({
+      android: { allowAlert: true, allowBadge: true, allowSound: true },
+    });
+    if (androidStatus !== "granted") {
+      if (__DEV__) console.log("Failed to get permission for push notification");
+      return;
+    }
   }
 
   let { status } = await Notifications.getPermissionsAsync();
 
-  // Request permissions if not granted. Expo's API handles platform specifics.
   if (status !== "granted") {
     const { status: newStatus } = await Notifications.requestPermissionsAsync();
     status = newStatus;
   }
 
   if (status !== "granted") {
-    console.log("Failed to get permission for push notification");
+    if (__DEV__) console.log("Failed to get permission for push notification");
     return;
   }
 
@@ -33,43 +42,35 @@ export async function registerForPushNotificationsAsync(userId) {
   const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? EAS_PROJECT_ID;
 
   if (!projectId) {
-    console.error("Missing EAS Project ID! Push notifications may fail.");
+    if (__DEV__) console.error("Missing EAS Project ID! Push notifications may fail.");
     return;
   }
 
   let token = null;
-  console.log("starting...", projectId);
 
   try {
     const response = await Notifications.getExpoPushTokenAsync({ projectId });
 
-    console.log(response, "response");
-
     if (response?.data) {
       token = response.data;
-      console.log("Expo Push Token:", token);
     } else {
-      console.warn("⚠️ No token returned from getExpoPushTokenAsync. Response:", response);
+      if (__DEV__) console.warn("No token returned from getExpoPushTokenAsync.", response);
     }
   } catch (err) {
-    console.error("Error while fetching Expo Push Token:", err);
-    return; // Exit if token fetching fails
-  }
-
-  if (token === lastToken) {
-    console.log("Same token already sent, skipping update");
+    if (__DEV__) console.error("Error while fetching Expo Push Token:", err);
     return;
   }
 
+  if (!token || token === lastToken) return;
+
   try {
-    const response = await axios.post(`${BACKEND_PORT}/api/notification/updatePushToken`, {
+    await axios.post(`${BACKEND_PORT}/api/notification/updatePushToken`, {
       userId,
       expoPushToken: token,
     });
     await AsyncStorage.setItem("lastExpoPushToken", token);
-    console.log("Push token updated successfully", response.data);
   } catch (err) {
-    console.error("Error updating push token:", err);
+    if (__DEV__) console.error("Error updating push token:", err);
   }
 }
 
