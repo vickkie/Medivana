@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef, useCallback } from "react";
 import {
   View,
   Text,
@@ -73,6 +73,64 @@ const Checkout = () => {
   const [paystackUrl, setPaystackUrl] = useState(null);
   const [paystackReference, setPaystackReference] = useState(null);
   const [showPaystackWebView, setShowPaystackWebView] = useState(false);
+  const pollIntervalRef = useRef(null);
+  const verifiedRef = useRef(false);
+
+  const stopPolling = useCallback(() => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+  }, []);
+
+  const handleVerifyPayment = useCallback(
+    async (ref) => {
+      stopPolling();
+      try {
+        const verifyRes = await axios.get(`${BACKEND_PORT}/api/v6/payments/verify/${ref}`);
+        if (verifyRes.data?.status === "success") {
+          setShowPaystackWebView(false);
+          showToast("success", "Payment successful!");
+          navigation.navigate("OrderSuccess", { orderId: ref });
+        } else {
+          showToast("error", "Payment verification failed");
+          setShowPaystackWebView(false);
+        }
+      } catch (err) {
+        if (__DEV__) console.error("Verification error:", err);
+        showToast("error", "Could not verify payment");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [stopPolling, navigation],
+  );
+
+  // Poll payment status every 4s once WebView is open — catches M-Pesa STK
+  // completion via webhook without waiting for Paystack's own countdown redirect
+  useEffect(() => {
+    if (showPaystackWebView && paystackReference) {
+      verifiedRef.current = false;
+      pollIntervalRef.current = setInterval(async () => {
+        if (verifiedRef.current) return;
+        try {
+          const statusRes = await axios.get(`${BACKEND_PORT}/api/v6/payments/status/${paystackReference}`);
+          const st = statusRes.data?.status;
+          if (st === "success" && !verifiedRef.current) {
+            verifiedRef.current = true;
+            handleVerifyPayment(paystackReference);
+          } else if (st === "failed") {
+            stopPolling();
+            setShowPaystackWebView(false);
+            showToast("error", "Payment failed");
+          }
+        } catch (_) {}
+      }, 4000);
+    } else {
+      stopPolling();
+    }
+    return () => stopPolling();
+  }, [showPaystackWebView, paystackReference, handleVerifyPayment, stopPolling]);
 
   const showToast = (type, text1, text2 = "") => {
     Toast.show({
@@ -622,44 +680,29 @@ const Checkout = () => {
             <WebView
               source={{ uri: paystackUrl }}
               style={{ flex: 1 }}
-              onNavigationStateChange={async (navState) => {
-                const { url } = navState;
-
-                // Check for success callback
-                if (url.includes("/payment/callback") || url.includes("reference=")) {
-                  // Extract reference from URL
+              onShouldStartLoadWithRequest={(request) => {
+                const { url } = request;
+                // Intercept callback URL BEFORE blank backend page loads
+                if (url.includes("/payment/callback") || (url.includes("reference=") && !url.includes("paystack.co"))) {
                   const refMatch = url.match(/reference=([^&]+)/);
-                  const ref = refMatch ? refMatch[1] : paystackReference;
-
-                  if (ref) {
-                    try {
-                      // Verify payment
-                      const verifyRes = await axios.get(`${BACKEND_PORT}/api/v6/payments/verify/${ref}`);
-
-                      if (verifyRes.data?.status === "success") {
-                        setShowPaystackWebView(false);
-                        showToast("success", "Payment successful!");
-                        navigation.navigate("OrderSuccess", { orderId: ref });
-                      } else {
-                        showToast("error", "Payment verification failed");
-                      }
-                    } catch (err) {
-                      console.error("Verification error:", err);
-                      showToast("error", "Could not verify payment");
-                    }
+                  const ref = refMatch ? decodeURIComponent(refMatch[1]) : paystackReference;
+                  if (ref && !verifiedRef.current) {
+                    verifiedRef.current = true;
+                    handleVerifyPayment(ref);
                   }
-                  setIsLoading(false);
+                  return false; // Block WebView from loading the blank callback page
                 }
-
-                // Check for cancel/close
-                if (url.includes("close") || url.includes("cancel")) {
+                if (url.includes("paystack.co/close") || url.includes("?cancelled=true")) {
+                  stopPolling();
                   setShowPaystackWebView(false);
                   setIsLoading(false);
                   showToast("info", "Payment cancelled");
+                  return false;
                 }
+                return true;
               }}
-              onError={(error) => {
-                console.error("WebView error:", error);
+              onError={() => {
+                stopPolling();
                 setShowPaystackWebView(false);
                 setIsLoading(false);
                 showToast("error", "Payment page failed to load");
