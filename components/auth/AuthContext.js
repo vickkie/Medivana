@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback, useMemo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
@@ -22,14 +22,13 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (userData?._id) {
-      console.log("started notification for", userData?._id);
       // startPermissionCheck(userData?._id);
     }
   }, [userData]);
 
   // console.log("data", AsyncStorage.getItem("id"));
 
-  const checkExistingUser = async () => {
+  const checkExistingUser = useCallback(async () => {
     try {
       const id = await AsyncStorage.getItem("id");
       if (id) {
@@ -42,16 +41,16 @@ const AuthProvider = ({ children }) => {
 
           axios.defaults.headers.common["Authorization"] = `Bearer ${parsedData?.TOKEN}`;
         } else {
-          console.log("User data not available");
+          if (__DEV__) console.log("User data not available");
         }
       }
     } catch (error) {
-      console.log("Error retrieving data:", error);
+      if (__DEV__) console.log("Error retrieving data:", error);
     }
-  };
+  }, []);
 
   // AsyncStorage.clear();
-  const login = async (data) => {
+  const login = useCallback(async (data) => {
     await AsyncStorage.removeItem("id");
 
     setUserData(data);
@@ -62,21 +61,21 @@ const AuthProvider = ({ children }) => {
     await AsyncStorage.setItem("id", JSON.stringify(data?._id));
 
     await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(data));
-  };
-  const logout = async () => {
+  }, []);
+  const logout = useCallback(async () => {
     setUserData(null);
     setUserLogin(false);
 
     delete axios.defaults.headers.common["Authorization"];
     await AsyncStorage.removeItem("id");
     await AsyncStorage.removeItem(`user${userData?._id}`);
-  };
+  }, [userData?._id]);
 
-  const userLogout = () => {
+  const userLogout = useCallback(() => {
     logout();
-  };
+  }, [logout]);
 
-  const updateUserData = async (updatedData) => {
+  const updateUserData = useCallback(async (updatedData) => {
     if (!updatedData || typeof updatedData !== "object") {
       console.error("Invalid user data:", updatedData);
       return;
@@ -88,30 +87,32 @@ const AuthProvider = ({ children }) => {
       const stringifiedData = JSON.stringify(updatedData);
       await AsyncStorage.setItem(`user${updatedData._id}`, stringifiedData);
     } catch (error) {
-      console.error("Error saving user data to AsyncStorage:", error);
+      if (__DEV__) console.error("Error saving user data to AsyncStorage:", error);
     }
-  };
+  }, []);
 
   // Utility function to check user's role
-  const hasRole = (requiredRole) => {
-    if (!requiredRole || !userData?.TOKEN) {
-      return false;
-    }
+  const hasRole = useCallback(
+    (requiredRole) => {
+      if (!requiredRole || !userData?.TOKEN) {
+        return false;
+      }
 
-    try {
-      const decodedToken = jwtDecode(userData.TOKEN);
-      const userRole = decodedToken?.role || "customer";
+      try {
+        const decodedToken = jwtDecode(userData.TOKEN);
+        const userRole = decodedToken?.role || "customer";
 
-      return userRole === requiredRole;
-    } catch (error) {
-      console.error("Invalid token, cannot decode:", error);
-      return false;
-    }
-  };
+        return userRole === requiredRole;
+      } catch (error) {
+        if (__DEV__) console.error("Invalid token, cannot decode:", error);
+        return false;
+      }
+    },
+    [userData?.TOKEN],
+  );
 
-  const getRole = (data) => {
+  const getRole = useCallback((data) => {
     if (!data) {
-      console.log("no user data");
       return "customer";
     }
 
@@ -122,18 +123,21 @@ const AuthProvider = ({ children }) => {
 
     const userRole = decodedToken.position || "customer";
     return userRole;
-  };
+  }, []);
 
-  const authContextValue = {
-    userData,
-    userLogin,
-    userLogout,
-    login,
-    logout,
-    updateUserData,
-    hasRole,
-    getRole,
-  };
+  const authContextValue = useMemo(
+    () => ({
+      userData,
+      userLogin,
+      userLogout,
+      login,
+      logout,
+      updateUserData,
+      hasRole,
+      getRole,
+    }),
+    [userData, userLogin, userLogout, login, logout, updateUserData, hasRole, getRole],
+  );
 
   return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
 };

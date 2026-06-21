@@ -1,10 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
-
-// const BACKEND_PORT = "http://192.168.100.218:3000";
-
-console.log(BACKEND_PORT);
 
 const useFetch = (endpoint, requiresAuth = false, token = null) => {
   const [data, setData] = useState([]);
@@ -12,18 +8,20 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
   const [error, setError] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
   const [statusCode, setStatusCode] = useState(null);
+  const abortControllerRef = useRef(null);
 
-  // Function to handle the API call
   const fetchData = useCallback(
     (skipCache = false) => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+
       setIsLoading(true);
-      setError(null); // Reset error state before fetching data
-      const startTime = Date.now(); // Start time for response time logging
+      setError(null);
 
       const url = `${BACKEND_PORT}/api/${endpoint}`;
-
-      // console.log(url);
-
       const headers = {};
 
       if (requiresAuth && token) {
@@ -31,45 +29,44 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
       }
 
       if (skipCache) {
-        headers["X-Skip-Cache"] = "true"; // Add skip cache header if needed
+        headers["X-Skip-Cache"] = "true";
       }
 
       axios
-        .get(url, { headers })
+        .get(url, { headers, signal: controller.signal })
         .then((response) => {
-          const endTime = Date.now(); // End time for response time logging
-          const responseTime = endTime - startTime; // Calculate response time
-
-          setData(response.data); // Save the fetched data
+          setData(response.data);
           setStatusCode(response?.status);
           setErrorMessage(null);
           setError(false);
         })
         .catch((err) => {
+          if (axios.isCancel(err) || err.name === "CanceledError") return;
           const message = err.response?.data?.message || err.message || "An error occurred";
           setErrorMessage(message);
           setStatusCode(err.response?.status || null);
           setError(true);
-          console.log(err);
+          if (__DEV__) console.error("[useFetch]", endpoint, err.message);
         })
         .finally(() => {
           setIsLoading(false);
         });
     },
-    [endpoint, requiresAuth, token]
+    [endpoint, requiresAuth, token],
   );
 
-  const refetch = () => {
-    // setIsLoading(true);
-
-    fetchData(true); // Pass `true` to skip cache when refetching
-  };
+  const refetch = useCallback(() => {
+    fetchData(true);
+  }, [fetchData]);
 
   useEffect(() => {
     if (endpoint) {
       fetchData();
     }
-  }, [endpoint, token]);
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, [endpoint, token, fetchData]);
 
   return { data, isLoading, error, errorMessage, statusCode, refetch };
 };

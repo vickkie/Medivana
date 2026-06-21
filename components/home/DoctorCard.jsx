@@ -5,6 +5,29 @@ import { MessageCircle, Phone, Star } from "lucide-react-native";
 import styles from "./styles/doctorCard.js";
 import { useNavigation } from "@react-navigation/native";
 
+const FALLBACK_AVATAR = require("../../assets/images/userDefault.webp");
+
+const DoctorAvatar = ({ uri }) => {
+  const [error, setError] = useState(false);
+  return (
+    <Image
+      source={error || !uri || typeof uri !== "string" || uri.trim() === "" ? FALLBACK_AVATAR : { uri }}
+      style={styles.avatarImage}
+      onError={() => setError(true)}
+    />
+  );
+};
+
+const renderStars = (value) =>
+  Array.from({ length: 5 }, (_, index) => (
+    <Star
+      key={index}
+      size={14}
+      color={COLORS.themey}
+      fill={index < Math.floor(value) ? COLORS.themey : "transparent"}
+    />
+  ));
+
 const DoctorCard = ({ doctor, showBook }) => {
   const navigation = useNavigation();
   const name = doctor?.fullName || `${doctor?.firstname} ${doctor?.lastname}` || doctor?.email?.split("@")[0];
@@ -12,31 +35,6 @@ const DoctorCard = ({ doctor, showBook }) => {
 
   // Use backend-provided averageRating directly
   const rating = doctor?.averageRating ? doctor.averageRating.toFixed(1) : "—";
-
-  const FALLBACK_AVATAR = require("../../assets/images/userDefault.webp");
-
-  const DoctorAvatar = ({ uri }) => {
-    const [error, setError] = useState(false);
-
-    return (
-      <Image
-        source={error || !uri || typeof uri !== "string" || uri.trim() === "" ? FALLBACK_AVATAR : { uri }}
-        style={styles.avatarImage}
-        onError={() => setError(true)}
-      />
-    );
-  };
-
-  const renderStars = (value) => {
-    return Array.from({ length: 5 }, (_, index) => (
-      <Star
-        key={index}
-        size={14}
-        color={COLORS.themey}
-        fill={index < Math.floor(value) ? COLORS.themey : "transparent"}
-      />
-    ));
-  };
 
   return (
     <TouchableOpacity style={styles.card} onPress={() => navigation.navigate("DoctorDetails", { doctor })}>

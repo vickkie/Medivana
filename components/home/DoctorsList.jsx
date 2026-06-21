@@ -53,7 +53,7 @@ const DoctorsList = ({
           try {
             await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(fetched));
           } catch (err) {
-            console.error("Cache write error:", err);
+            if (__DEV__) console.error("Cache write error:", err);
           }
         }
       }
@@ -79,7 +79,7 @@ const DoctorsList = ({
       // If your useFetch hook supports options, pass force:true
       await refetch({ force: true });
     } catch (err) {
-      console.error("Refresh failed:", err);
+      if (__DEV__) console.error("Refresh failed:", err);
     } finally {
       setRefreshing(false);
     }
@@ -94,10 +94,9 @@ const DoctorsList = ({
           if (json) {
             const cached = JSON.parse(json);
             setDoctors(cached);
-            console.log("Loaded cached doctors (fallback).");
           }
         } catch (err) {
-          console.error("Cache load error:", err);
+          if (__DEV__) console.error("Cache load error:", err);
         }
       }
     };
@@ -171,6 +170,11 @@ const DoctorsList = ({
           onEndReachedThreshold={0.5}
           onEndReached={scrollEnabled ? handleEndReached : null}
           ListFooterComponent={renderFooter}
+          initialNumToRender={6}
+          maxToRenderPerBatch={8}
+          windowSize={7}
+          removeClippedSubviews
+          getItemLayout={(_, index) => ({ length: 186, offset: 186 * index, index })}
         />
       )}
     </SafeAreaView>
