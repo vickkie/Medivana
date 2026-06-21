@@ -238,7 +238,7 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
           <RefreshControl refreshing={refreshing} onRefresh={() => setRefreshing(true)} tintColor="#000" />
         }
       >
-        {!isSearching ? (
+        {!isSearching && (
           <>
             <View style={{ marginTop: 10 }}>
               <Text style={styles.monthHeader}>{isMonth}</Text>
@@ -255,23 +255,21 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
               </TouchableOpacity>
             </View>
           </>
-        ) : (
-          <View style={{ flexDirection: "row", justifyContent: "space-around", marginVertical: 10 }}>
-            {["All", "Completed", "Upcoming", "Cancelled", "Pending Approval"].map((status) => (
-              <TouchableOpacity
-                key={status}
-                onPress={() => setSelectedStatus(status)}
-                style={{
-                  padding: 8,
-                  backgroundColor: selectedStatus === status ? COLORS.themey : "#ddd",
-                  borderRadius: 20,
-                }}
-              >
-                <Text style={{ color: selectedStatus === status ? "#fff" : "#333" }}>{status}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
         )}
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
+          {["All", "Upcoming", "Completed", "Pending Approval", "Cancelled"].map((status) => (
+            <TouchableOpacity
+              key={status}
+              onPress={() => setSelectedStatus(status)}
+              style={[styles.filterChip, selectedStatus === status && styles.filterChipActive]}
+            >
+              <Text style={[styles.filterChipText, selectedStatus === status && styles.filterChipTextActive]}>
+                {status}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
         <SafeAreaView>
           {error && !loading ? (
             <View style={styles.errorContainer}>
@@ -385,5 +383,32 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: SIZES.medium,
     textAlign: "center",
+  },
+  filterRow: {
+    flexDirection: "row",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  filterChip: {
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 20,
+    backgroundColor: "#EFEFEF",
+    borderWidth: 1,
+    borderColor: "#E0E0E0",
+  },
+  filterChipActive: {
+    backgroundColor: COLORS.themey,
+    borderColor: COLORS.themey,
+  },
+  filterChipText: {
+    fontSize: 13,
+    fontFamily: "medium",
+    color: "#555",
+  },
+  filterChipTextActive: {
+    color: "#fff",
+    fontFamily: "semibold",
   },
 });

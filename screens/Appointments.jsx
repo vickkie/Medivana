@@ -1,15 +1,5 @@
 import React, { useContext, useState, useEffect, useCallback, useMemo } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Image,
-  SafeAreaView,
-  ScrollView,
-} from "react-native";
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, SafeAreaView } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import Icon from "../constants/icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -21,7 +11,7 @@ const Appointments = () => {
   const navigation = useNavigation();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(true);
+  const [isSearching, setIsSearching] = useState(false);
 
   return (
     <>
@@ -50,27 +40,25 @@ const Appointments = () => {
             </View>
           </View>
 
-          <ScrollView>
-            <View style={{ marginTop: 78 }}>
-              {isSearching && (
-                <View style={styles.searchBarContainer}>
-                  <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search Appointments"
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                  />
-                  <TouchableOpacity style={styles.searchButton}>
-                    <Icon name="search" size={22} />
-                  </TouchableOpacity>
-                </View>
-              )}
-
-              <View style={styles.detailsWrapper}>
-                <AppointmentPage filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
+          <View style={{ marginTop: 78, flex: 1 }}>
+            {isSearching && (
+              <View style={styles.searchBarContainer}>
+                <TextInput
+                  style={styles.searchInput}
+                  placeholder="Search Appointments"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                />
+                <TouchableOpacity style={styles.searchButton}>
+                  <Icon name="search" size={22} />
+                </TouchableOpacity>
               </View>
+            )}
+
+            <View style={styles.detailsWrapper}>
+              <AppointmentPage filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
             </View>
-          </ScrollView>
+          </View>
         </>
       </SafeAreaView>
     </>
@@ -199,12 +187,12 @@ const styles = StyleSheet.create({
     color: "#cccca0",
   },
   detailsWrapper: {
+    flex: 1,
     width: SIZES.width - 12,
     marginHorizontal: 6,
     marginTop: SIZES.xSmall,
     backgroundColor: COLORS.themew,
     borderRadius: SIZES.medium,
-    minHeight: SIZES.height / 3,
     marginBottom: 60,
   },
   searchBarContainer: {
