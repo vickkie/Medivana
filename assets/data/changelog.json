@@ -129,17 +129,14 @@
       "releaseDate": "2026-06-21",
       "version": "2.3.0",
       "whatsNew": [
-        "Faster app-wide rendering - global state providers now memoized",
-        "Doctor list virtualization - improved scroll performance on large lists",
-        "Network requests now cancelled on screen exit - no stale updates"
+        "Smoother scrolling when browsing doctors",
+        "Faster app startup and navigation",
+        "Improved overall app performance and responsiveness"
       ],
       "fixed": [
-        "app.json schema error causing EAS build failure",
-        "android/ native folder untracked - prebuild now source of truth",
-        "google-services.json now written to correct android/app/ path in EAS builds",
-        "Double JSON serialization bug in cart and wishlist storage",
-        "DoctorCard component was recreating sub-components on every render",
-        "Production console logs removed - reduces JS thread overhead"
+        "Cart and wishlist data loading correctly after app restart",
+        "Doctor cards rendering faster in lists",
+        "App stability improvements"
       ]
     },
     {
