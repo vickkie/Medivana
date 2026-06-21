@@ -198,7 +198,14 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
             }
           }}
         >
-          <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
+          <Image
+            source={
+              item.doctor?.profilePicture
+                ? { uri: item.doctor.profilePicture }
+                : require("../assets/images/userDefault.webp")
+            }
+            style={styles.avatar}
+          />
           <View style={styles.info}>
             <Text style={styles.name}>Dr. {item?.doctor?.fullName}</Text>
             {/* {isSearching && ( */}
@@ -221,7 +228,7 @@ export default function AppointmentPage({ filterList, searchQuery1 = "", isSearc
         </TouchableOpacity>
       );
     },
-    [appointments]
+    [appointments],
   );
 
   return (

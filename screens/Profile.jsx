@@ -98,7 +98,7 @@ const Profile = () => {
           },
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
@@ -155,7 +155,7 @@ const Profile = () => {
           },
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
 
@@ -177,7 +177,7 @@ const Profile = () => {
           },
         },
       ],
-      { cancelable: true }
+      { cancelable: true },
     );
   };
   const login = () => {
@@ -225,7 +225,9 @@ const Profile = () => {
             />
           )}
           <Image
-            source={{ uri: userData?.profilePicture }}
+            source={
+              userData?.profilePicture ? { uri: userData.profilePicture } : require("../assets/images/userDefault.webp")
+            }
             style={styles.profile}
             onLoadStart={() => setLoading(true)}
             onLoad={() => setLoading(false)}

@@ -145,7 +145,7 @@ const AppointmentDetails = () => {
             Authorization: `Bearer ${userData?.Token}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
 
       if (response.data.success) {
@@ -165,7 +165,11 @@ const AppointmentDetails = () => {
       <View style={styles.doctorHeader}>
         <TouchableOpacity onPress={() => navigation.navigate("DoctorDetails", { doctor: doctor })}>
           <Image
-            source={{ uri: doctor?.profilePicture || appointment?.doctorSnapshot?.profilePicture }}
+            source={
+              doctor?.profilePicture || appointment?.doctorSnapshot?.profilePicture
+                ? { uri: doctor?.profilePicture || appointment?.doctorSnapshot?.profilePicture }
+                : require("../assets/images/userDefault.webp")
+            }
             style={styles.doctorImage}
           />
         </TouchableOpacity>
