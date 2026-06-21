@@ -9,6 +9,8 @@ import {
   Image,
   Text,
   Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useNavigation, useRoute } from "@react-navigation/native";
@@ -131,7 +133,7 @@ const ChatScreen = () => {
 
     if (Object.keys(updates).length > 0) {
       update(ref(db, `medivana/messages/${conversationId}`), updates).catch((error) =>
-        console.error("Error updating read status:", error)
+        console.error("Error updating read status:", error),
       );
     }
   }, [messages, conversationRef, userData._id]);
@@ -252,7 +254,7 @@ const ChatScreen = () => {
           duration: 1000,
           easing: Easing.linear,
           useNativeDriver: true,
-        })
+        }),
       ).start();
     } else {
       spinAnim.stopAnimation();
@@ -265,7 +267,11 @@ const ChatScreen = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
       <View style={styles.wrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
           <Icon name="backbutton" size={26} />
@@ -323,6 +329,7 @@ const ChatScreen = () => {
         <GiftedChat
           messages={messages}
           onSend={(newMessages) => handleSend(newMessages)}
+          bottomOffset={Platform.OS === "ios" ? 90 : 0}
           user={{
             _id: userData._id,
             name: userData.username,
@@ -384,7 +391,7 @@ const ChatScreen = () => {
           </View>
         </Modal>
       </ImageBackground>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

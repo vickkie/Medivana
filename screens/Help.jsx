@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useContext, useMemo, useRef } from "react";
-import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ImageBackground,
+  TouchableOpacity,
+  Image,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { Animated, Easing } from "react-native";
 
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
@@ -76,7 +85,7 @@ const Help = () => {
         (snap) => {
           resolve(snap);
         },
-        { onlyOnce: true }
+        { onlyOnce: true },
       );
     });
 
@@ -117,7 +126,7 @@ const Help = () => {
           duration: 1000,
           easing: Easing.linear,
           useNativeDriver: true,
-        })
+        }),
       ).start();
     } else {
       spinAnim.stopAnimation();
@@ -233,7 +242,11 @@ const Help = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
       {/* {console.log(isPreviewVisible)} */}
       {isPreviewVisible && (
         <View style={styles.previewBox} key={isPreviewVisible ? "visible" : "hidden"}>
@@ -264,6 +277,7 @@ const Help = () => {
         <GiftedChat
           messages={messages}
           onSend={(newMessages) => handleSend(newMessages, "sent")}
+          bottomOffset={Platform.OS === "ios" ? 90 : 0}
           user={{
             _id: userId,
             name: userData.username,
@@ -341,7 +355,7 @@ const Help = () => {
           }}
         />
       </ImageBackground>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
