@@ -11,7 +11,7 @@ const Appointments = () => {
   const navigation = useNavigation();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(true);
 
   return (
     <>
