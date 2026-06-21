@@ -126,6 +126,23 @@
       "fixed": ["Redundency in checkout"]
     },
     {
+      "releaseDate": "2026-06-21",
+      "version": "2.3.0",
+      "whatsNew": [
+        "Faster app-wide rendering - global state providers now memoized",
+        "Doctor list virtualization - improved scroll performance on large lists",
+        "Network requests now cancelled on screen exit - no stale updates"
+      ],
+      "fixed": [
+        "app.json schema error causing EAS build failure",
+        "android/ native folder untracked - prebuild now source of truth",
+        "google-services.json now written to correct android/app/ path in EAS builds",
+        "Double JSON serialization bug in cart and wishlist storage",
+        "DoctorCard component was recreating sub-components on every render",
+        "Production console logs removed - reduces JS thread overhead"
+      ]
+    },
+    {
       "releaseDate": "2026-06-19",
       "version": "2.1.1",
       "whatsNew": [
