@@ -1,14 +1,5 @@
 import React, { useRef, useState, useEffect, useContext, useMemo } from "react";
-import {
-  StyleSheet,
-  View,
-  ImageBackground,
-  TouchableOpacity,
-  Image,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
 import { Animated, Easing } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -198,11 +189,7 @@ const HelpAgentChatScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-    >
+    <>
       {selectedImage && (
         <View style={styles.previewBox}>
           <Text style={{ fontWeight: "600", marginBottom: -10 }}>Picked image</Text>
@@ -318,7 +305,7 @@ const HelpAgentChatScreen = () => {
           }}
         />
       </ImageBackground>
-    </KeyboardAvoidingView>
+    </>
   );
 };
 

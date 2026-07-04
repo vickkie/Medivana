@@ -39,7 +39,7 @@ const SCREEN_LIST = [
   { name: "Register", component: Screens.Register, options: { headerShown: false } },
   { name: "UserDetails", component: Screens.UserDetails, options: { headerShown: false } },
   { name: "Message", component: Screens.MessageCenter, options: { headerShown: false } },
-  { name: "Help", component: Screens.Help, options: { headerShown: false } },
+  { name: "Help", component: Screens.Help, options: { headerShown: true } },
   { name: "About", component: Screens.About, options: { headerShown: false } },
   { name: "AboutUs", component: Screens.AboutUs, options: { headerShown: false } },
   { name: "Faqs", component: Screens.Faqs, options: { headerShown: false } },

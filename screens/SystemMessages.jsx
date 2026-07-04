@@ -72,12 +72,12 @@ const SystemMessages = () => {
       currentMessage.type === "info"
         ? COLORS.info
         : currentMessage.type === "warning"
-        ? COLORS.warning
-        : currentMessage.type === "error"
-        ? COLORS.tertiary
-        : currentMessage.type === "success"
-        ? COLORS.success
-        : COLORS.themeg;
+          ? COLORS.warning
+          : currentMessage.type === "error"
+            ? COLORS.tertiary
+            : currentMessage.type === "success"
+              ? COLORS.success
+              : COLORS.themeg;
 
     return (
       <View>

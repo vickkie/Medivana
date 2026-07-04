@@ -242,11 +242,12 @@ const Help = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-    >
+    // <KeyboardAvoidingView
+    //   style={styles.container}
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    // >
+    <>
       {/* {console.log(isPreviewVisible)} */}
       {isPreviewVisible && (
         <View style={styles.previewBox} key={isPreviewVisible ? "visible" : "hidden"}>
@@ -355,7 +356,8 @@ const Help = () => {
           }}
         />
       </ImageBackground>
-    </KeyboardAvoidingView>
+    </>
+    // </KeyboardAvoidingView>
   );
 };
 

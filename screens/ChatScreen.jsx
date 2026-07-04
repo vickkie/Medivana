@@ -267,11 +267,12 @@ const ChatScreen = () => {
   });
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
-    >
+    // <KeyboardAvoidingView
+    //   style={styles.container}
+    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
+    //   keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    // >
+    <>
       <View style={styles.wrapper}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
           <Icon name="backbutton" size={26} />
@@ -391,7 +392,8 @@ const ChatScreen = () => {
           </View>
         </Modal>
       </ImageBackground>
-    </KeyboardAvoidingView>
+    </>
+    // </KeyboardAvoidingView>
   );
 };
 
