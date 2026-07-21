@@ -10,14 +10,15 @@
       "image": "./assets/icons/medivana-splash-light.png",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "UIStatusBarHidden": false,
         "UIStatusBarStyle": "UIStatusBarStyleDefault"
       },
-
       "bundleIdentifier": "com.uzitrake.medivana"
     },
     "android": {
@@ -28,7 +29,11 @@
         "foregroundImage": "./assets/icons/medivana-adaptive.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["android.permission.POST_NOTIFICATIONS", "android.permission.RECEIVE_BOOT_COMPLETED", "android.permission.VIBRATE"],
+      "permissions": [
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE"
+      ],
       "package": "com.uzitrake.medivana"
     },
     "web": {
@@ -45,6 +50,14 @@
     "owner": "killoy",
     "plugins": [
       "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "targetSdkVersion": 35
+          }
+        }
+      ],
       [
         "expo-notifications",
         {
