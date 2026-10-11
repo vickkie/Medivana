@@ -68,6 +68,7 @@ const Checkout = () => {
   const [moreDescription, setmoreDescription] = useState("");
   const [userId, setUserId] = useState(null);
   const [phoneError, setPhoneError] = useState(true);
+  const phoneInput = useRef(null);
 
   // Paystack WebView state
   const [paystackUrl, setPaystackUrl] = useState(null);
@@ -404,7 +405,7 @@ const Checkout = () => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => {
-                this.phoneInput.hideModal();
+                phoneInput.current?.hideModal();
                 setFilteredCountries(countries);
               }}
             >
@@ -541,7 +542,7 @@ const Checkout = () => {
                       <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
                         <IntlPhoneInput
                           placeholder={getPhoneMeta(finalPhoneNumber)?.nationalNumber || ""}
-                          ref={(ref) => (phoneInput = ref)}
+                          ref={phoneInput}
                           customModal={renderCustomModal}
                           defaultCountry={getPhoneMeta(finalPhoneNumber)?.country || ""}
                           lang="EN"
