@@ -180,7 +180,6 @@ const ChatScreen = () => {
           headers: { "Content-Type": "multipart/form-data" },
         });
         const result = await response.json();
-        console.log(result?.fileUrl);
         return result.fileUrl || null;
       } catch (error) {
         console.error("Error uploading image:", error);
@@ -279,7 +278,6 @@ const ChatScreen = () => {
         </TouchableOpacity>
         <View style={styles.upperRow}>
           <View style={styles.upperButtons}>
-            {console.log(chatWith?.role)}
             <Text style={styles.heading}>
               {[chatWith?.title || "", chatWith?.firstname || "", chatWith?.lastname || "", chatWith?.username || ""]
                 .filter(Boolean)
