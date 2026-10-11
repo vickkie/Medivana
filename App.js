@@ -35,6 +35,7 @@ const SCREEN_LIST = [
   { name: "Favourites", component: Screens.Favourites, options: { headerShown: false } },
   { name: "Categories", component: Screens.Categories, options: { headerShown: true } },
   { name: "Checkout", component: Screens.Checkout, options: { headerShown: false } },
+  { name: "Search", component: Screens.Search, options: { headerShown: false } },
   { name: "Orders", component: Screens.Orders, options: { headerShown: false } },
   { name: "Register", component: Screens.Register, options: { headerShown: false } },
   { name: "UserDetails", component: Screens.UserDetails, options: { headerShown: false } },
