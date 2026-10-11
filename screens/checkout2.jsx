@@ -191,7 +191,6 @@ const Checkout = () => {
     try {
       setIsLoading(true);
       setErrorState(false);
-      console.log(BACKEND_PORT, orderData);
 
       // return;
 
