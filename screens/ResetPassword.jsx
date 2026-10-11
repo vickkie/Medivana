@@ -49,8 +49,6 @@ const ResetPassword = ({ navigation }) => {
   const handleReset = async (values) => {
     setLoader(true);
     try {
-      console.log("Requesting code for:", values.password);
-
       const newPassword = values.password;
 
       const endpoint = `${BACKEND_PORT}/auth/reset-password`;
