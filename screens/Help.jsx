@@ -160,7 +160,6 @@ const Help = () => {
 
         // console.log(imageUri);
 
-        console.log("Selected Image URI:", imageUri);
         setSelectedImage(imageUri);
         setIsPreviewVisible(true);
         setImageFromRoute(false);
@@ -171,7 +170,6 @@ const Help = () => {
   };
 
   const handleSend = async (newMessages = [], type = "sent") => {
-    console.log("Sending message:", newMessages);
     if (newMessages.length === 0) return;
 
     const userMessagesRef = ref(db, `messages-query/${userData._id}/${type}`);
@@ -206,13 +204,10 @@ const Help = () => {
       let imageUrl = null;
 
       if (selectedImage && !imageFromRoute) {
-        console.log("Uploading image...");
         imageUrl = await uploadImage(selectedImage);
-        console.log("Image uploaded:", imageUrl);
       }
 
       try {
-        console.log("Pushing to Firebase...");
         await push(userMessagesRef, {
           _id: uuid.v4(),
           text: `${text}${prefilledMessage ? `\n\n${prefilledMessage}` : ""}`,
@@ -225,8 +220,6 @@ const Help = () => {
           image: itemImage || imageUrl,
           read: false,
         });
-
-        console.log("Message successfully pushed to Firebase");
       } catch (error) {
         console.error("Error pushing message to database:", error);
       }
