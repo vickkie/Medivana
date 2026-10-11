@@ -56,8 +56,6 @@ const VerificationCode = ({ navigation }) => {
   const handleVerify = async (values) => {
     setLoader(true);
     try {
-      console.log("Requesting code for:", values.code);
-
       const code = values.code;
       // console.log(email, code);
 
