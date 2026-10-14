@@ -35,6 +35,34 @@ import {
   AwardIcon,
 } from "lucide-react-native";
 
+// Hoisted: hooks inside a plain render helper violate rules-of-hooks.
+const ProfilePicture = ({ userLogin, userData }) => {
+  const [loading, setLoading] = useState(true);
+
+  if (!userLogin || !userData?.profilePicture) {
+    return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
+  }
+
+  return (
+    <View style={{ position: "relative" }}>
+      {loading && (
+        <ActivityIndicator
+          size="small"
+          color={COLORS.themew}
+          style={{ position: "absolute", alignSelf: "center", top: "50%" }}
+        />
+      )}
+      <Image
+        source={{ uri: userData.profilePicture }}
+        style={styles.profile}
+        onLoadStart={() => setLoading(true)}
+        onLoad={() => setLoading(false)}
+        onError={() => setLoading(false)} // Hide loader if error occurs
+      />
+    </View>
+  );
+};
+
 const Profile = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
@@ -204,39 +232,7 @@ const Profile = () => {
     }
   };
 
-  const renderProfilePicture = () => {
-    const [loading, setLoading] = useState(true);
-
-    if (!userLogin) {
-      // User not logged in, show default image
-      return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
-    }
-
-    if (userData?.profilePicture) {
-      return (
-        <View style={{ position: "relative" }}>
-          {loading && (
-            <ActivityIndicator
-              size="small"
-              color={COLORS.themew}
-              style={{ position: "absolute", alignSelf: "center", top: "50%" }}
-            />
-          )}
-          <Image
-            source={
-              userData?.profilePicture ? { uri: userData.profilePicture } : require("../assets/images/userDefault.webp")
-            }
-            style={styles.profile}
-            onLoadStart={() => setLoading(true)}
-            onLoad={() => setLoading(false)}
-            onError={() => setLoading(false)} // Hide loader if error occurs
-          />
-        </View>
-      );
-    }
-
-    return <Image source={require("../assets/images/userDefault.webp")} style={styles.profile} />;
-  };
+  const renderProfilePicture = () => <ProfilePicture userLogin={userLogin} userData={userData} />;
 
   return (
     <ScrollView>
