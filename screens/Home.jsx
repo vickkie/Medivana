@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
-import { Text, TouchableOpacity, View, ScrollView, Image, StatusBar, StyleSheet, Animated } from "react-native";
+import { Text, TouchableOpacity, View, Image, StatusBar, StyleSheet, Animated } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation, useRoute } from "@react-navigation/native";
 import { Welcome } from "../components/home";
@@ -9,23 +9,81 @@ import { AuthContext } from "../components/auth/AuthContext";
 import HomeMenu from "../components/bottomsheets/HomeMenu";
 import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
 import { COLORS, SIZES } from "../constants";
-import { RefreshControl } from "react-native-gesture-handler";
 import DoctorsList from "../components/home/DoctorsList";
 import useFetch from "../hook/useFetch";
+
+// Hoisted so they don't remount on every Home render
+const NotificationBadge = ({ count = 0 }) => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(animatedValue, {
+      toValue: 1,
+      useNativeDriver: true,
+      tension: 100,
+      friction: 8,
+    }).start();
+  }, [count]);
+
+  const scale = animatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0.9, 1],
+  });
+
+  return (
+    <Animated.View
+      style={{
+        position: "absolute",
+        top: -6,
+        right: -6,
+        backgroundColor: "#fff",
+        borderRadius: 10,
+        paddingHorizontal: 5,
+        minWidth: 18,
+        height: 18,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: count > 0 ? "red" : COLORS.themey,
+        transform: [{ scale }],
+      }}
+    >
+      <Text
+        style={{
+          color: count > 0 ? "red" : COLORS.themey,
+          fontWeight: "bold",
+          fontSize: 12,
+          textAlign: "center",
+        }}
+        numberOfLines={1}
+      >
+        {count > 99 ? "99+" : count}
+      </Text>
+    </Animated.View>
+  );
+};
+
+const NotificationBell = ({ count }) => {
+  return (
+    <View style={{ borderRadius: 40 }}>
+      <Icon name="bellfilled" size={24} color="#fff" />
+      <NotificationBadge count={count} />
+    </View>
+  );
+};
 
 const Home = () => {
   const { userData, userLogin } = useContext(AuthContext);
   const navigation = useNavigation();
   const route = useRoute();
-  const { data, refetch, statusCode, isLoading, errorMessage } = useFetch(`notification/user/unread/${userData?._id}`);
+  const { data, refetch } = useFetch(
+    userData?._id ? `notification/user/unread/${userData._id}` : null
+  );
 
-  const [refreshList, setRefreshList] = useState(false);
+  const [catRefreshTick, setCatRefreshTick] = useState(0);
   const [selectedCat, setSelectedCat] = useState("");
   const [doctorCount, setDoctorCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-
-  // Ref to manually trigger pagination in DoctorsList
-  const loadMoreRef = useRef(null);
 
   useEffect(() => {
     if (route.name !== "Bottom Navigation") {
@@ -47,15 +105,6 @@ const Home = () => {
   const BottomSheetRef = useRef(null);
   const openMenu = () => BottomSheetRef.current?.present();
 
-  const NotificationBell = ({ count }) => {
-    return (
-      <View style={{ borderRadius: 40 }}>
-        <Icon name="bellfilled" size={24} color="#fff" />
-        <NotificationBadge count={count} />
-      </View>
-    );
-  };
-
   const refetchData = useCallback(() => {
     refetch();
   }, []); // stable
@@ -66,55 +115,19 @@ const Home = () => {
     }, [refetchData])
   );
 
-  const NotificationBadge = ({ count = 0 }) => {
-    const animatedValue = useRef(new Animated.Value(0)).current;
-
-    useEffect(() => {
-      Animated.spring(animatedValue, {
-        toValue: 1,
-        useNativeDriver: true,
-        tension: 100,
-        friction: 8,
-      }).start();
-    }, [count]);
-
-    const scale = animatedValue.interpolate({
-      inputRange: [0, 1],
-      outputRange: [0.9, 1],
-    });
-
-    return (
-      <Animated.View
-        style={{
-          position: "absolute",
-          top: -6,
-          right: -6,
-          backgroundColor: "#fff",
-          borderRadius: 10,
-          paddingHorizontal: 5,
-          minWidth: 18,
-          height: 18,
-          justifyContent: "center",
-          alignItems: "center",
-          borderWidth: 1,
-          borderColor: count > 0 ? "red" : COLORS.themey,
-          transform: [{ scale }],
-        }}
-      >
-        <Text
-          style={{
-            color: count > 0 ? "red" : COLORS.themey,
-            fontWeight: "bold",
-            fontSize: 12,
-            textAlign: "center",
-          }}
-          numberOfLines={1}
-        >
-          {count > 99 ? "99+" : count}
-        </Text>
-      </Animated.View>
-    );
-  };
+  const listHeader = (
+    <View style={styles.lowerWelcomeWrapper}>
+      <View style={styles.lowerWelcome}>
+        <Headings heading={"Doctors Categories"} />
+        <DoctorsCategoriesRow
+          refreshSignal={catRefreshTick}
+          backColor={COLORS.themeg}
+          setSelectedCat={setSelectedCat}
+        />
+        <Headings heading={selectedCat || "Popular Doctors"} />
+      </View>
+    </View>
+  );
 
   return (
     <SafeAreaView style={styles.topSafeview}>
@@ -146,48 +159,15 @@ const Home = () => {
       </View>
 
       <View style={{ flex: 1, borderRadius: 45, marginBottom: 30 }}>
-        <ScrollView
-          onScroll={({ nativeEvent }) => {
-            const paddingToBottom = 20;
-            const isEnd =
-              nativeEvent.layoutMeasurement.height + nativeEvent.contentOffset.y >=
-              nativeEvent.contentSize.height - paddingToBottom;
-
-            if (isEnd && loadMoreRef.current) {
-              // console.log("🔹 Parent scroll hit bottom → loading more");
-              loadMoreRef.current(); // 🔥 call DoctorList’s load more
-            }
-          }}
-          scrollEventThrottle={16}
-          refreshControl={<RefreshControl onRefresh={() => setRefreshList(true)} refreshing={refreshList} />}
-        >
-          <View style={styles.lowerWelcomeWrapper}>
-            <View style={styles.lowerWelcome}>
-              <Headings heading={"Doctors Categories"} />
-              <DoctorsCategoriesRow
-                refreshList={refreshList}
-                setRefreshList={setRefreshList}
-                backColor={COLORS.themeg}
-                setSelectedCat={setSelectedCat}
-              />
-
-              <Headings heading={selectedCat || "Popular Doctors"} />
-
-              {/* 👇 We pass the callback setter down */}
-              <DoctorsList
-                refreshList={refreshList}
-                setRefreshList={setRefreshList}
-                limit={8}
-                field="medic"
-                speciality={selectedCat}
-                setDoctorCount={setDoctorCount}
-                searchQuery={searchQuery}
-                scrollEnabled={false}
-                externalLoadMore={(cb) => (loadMoreRef.current = cb)}
-              />
-            </View>
-          </View>
-        </ScrollView>
+        <DoctorsList
+          onRefresh={() => setCatRefreshTick((t) => t + 1)}
+          limit={8}
+          field="medic"
+          speciality={selectedCat}
+          setDoctorCount={setDoctorCount}
+          searchQuery={searchQuery}
+          ListHeaderComponent={listHeader}
+        />
       </View>
     </SafeAreaView>
   );

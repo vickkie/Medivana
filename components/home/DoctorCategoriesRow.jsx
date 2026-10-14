@@ -52,7 +52,7 @@ const DoctorCategoryCard = ({ item, backColor, isSelected, onSelect }) => {
 };
 
 // === Main Component ===
-const DoctorsCategoriesRow = ({ refreshList, setRefreshList, backColor = "#F0F5F9", setSelectedCat }) => {
+const DoctorsCategoriesRow = ({ refreshSignal = 0, backColor = "#F0F5F9", setSelectedCat }) => {
   const { data, isLoading, error, refetch } = useFetch("specialization");
 
   const [categories, setCategories] = useState([]);
@@ -101,13 +101,10 @@ const DoctorsCategoriesRow = ({ refreshList, setRefreshList, backColor = "#F0F5F
     );
   }, [data]);
 
-  // Trigger refetch if external refresh is requested
+  // Refetch when a parent pull-refresh bumps the signal
   useEffect(() => {
-    if (refreshList) {
-      refetch();
-      setRefreshList(false);
-    }
-  }, [refreshList]);
+    if (refreshSignal > 0) refetch();
+  }, [refreshSignal]);
 
   // Handle pull-to-refresh
   const onRefresh = useCallback(() => {

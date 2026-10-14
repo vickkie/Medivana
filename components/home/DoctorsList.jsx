@@ -11,15 +11,13 @@ import { RefreshCcw } from "lucide-react-native";
 const CACHE_KEY = "cached_doctors";
 
 const DoctorsList = ({
-  refreshList,
-  setRefreshList,
+  onRefresh: onExternalRefresh,
   field = "medic",
   limit = 8,
   speciality = "",
   setDoctorCount,
   searchQuery = "",
-  scrollEnabled = true,
-  externalLoadMore,
+  ListHeaderComponent,
 }) => {
   const [offset, setOffset] = useState(0);
   const [endReached, setEndReached] = useState(false);
@@ -83,7 +81,10 @@ const DoctorsList = ({
     } finally {
       setRefreshing(false);
     }
-  }, [refetch]);
+
+    // Let the parent refresh sibling sections (e.g. categories row)
+    onExternalRefresh?.();
+  }, [refetch, onExternalRefresh]);
 
   // 🧰 Load cached data ONLY when API fails completely
   useEffect(() => {
@@ -104,31 +105,12 @@ const DoctorsList = ({
     loadCache();
   }, [error, offset]);
 
-  // 🌐 External refresh trigger from parent
-  useEffect(() => {
-    if (refreshList) {
-      onRefresh();
-      setRefreshList(false);
-    }
-  }, [refreshList, onRefresh, setRefreshList]);
-
   // 📜 Pagination handler
   const handleEndReached = useCallback(() => {
     if (!isLoading && !endReached) {
       setOffset((prev) => prev + limit);
     }
   }, [isLoading, endReached, limit]);
-
-  // 🧩 Allow parent manual load-more when scrolling disabled
-  useEffect(() => {
-    if (!scrollEnabled && typeof externalLoadMore === "function") {
-      externalLoadMore(() => {
-        if (!isLoading && !endReached) {
-          setOffset((prev) => prev + limit);
-        }
-      });
-    }
-  }, [externalLoadMore, scrollEnabled, isLoading, endReached, limit]);
 
   // 🧱 Render doctor item
   const renderItem = useCallback(({ item }) => <DoctorCard doctor={item} showBook />, []);
@@ -163,12 +145,12 @@ const DoctorsList = ({
           data={doctors}
           keyExtractor={keyExtractor}
           renderItem={renderItem}
-          scrollEnabled={scrollEnabled}
+          ListHeaderComponent={ListHeaderComponent}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={COLORS.primary} />}
           onEndReachedThreshold={0.5}
-          onEndReached={scrollEnabled ? handleEndReached : null}
+          onEndReached={handleEndReached}
           ListFooterComponent={renderFooter}
           initialNumToRender={6}
           maxToRenderPerBatch={8}

@@ -16,7 +16,7 @@ import DoctorsList from "../components/home/DoctorsList";
 const Categories = () => {
   const navigation = useNavigation();
   const [doctorCount, setDoctorCount] = useState(3);
-  const [refreshList, setRefreshList] = useState(false);
+  const [catRefreshTick, setCatRefreshTick] = useState(0);
   const [selectedCat, setSelectedCat] = useState("");
 
   return (
@@ -45,8 +45,7 @@ const Categories = () => {
         </View>
         <View style={styles.docRow}>
           <DoctorsCategoriesRow
-            refreshList={refreshList}
-            setRefreshList={setRefreshList}
+            refreshSignal={catRefreshTick}
             backColor={COLORS.themeg}
             setSelectedCat={setSelectedCat}
           />
@@ -55,8 +54,7 @@ const Categories = () => {
         <Text style={styles.listHeader}>{selectedCat || "Category Doctor"}</Text>
 
         <DoctorsList
-          refreshList={refreshList}
-          setRefreshList={setRefreshList}
+          onRefresh={() => setCatRefreshTick((t) => t + 1)}
           field="medic"
           limit={100}
           speciality={selectedCat}
@@ -139,7 +137,7 @@ const styles = StyleSheet.create({
     // backgroundColor: COLORS.themeg,
   },
   listHeader: {
-    fontFamily: "lufgaMedium",
+    fontFamily: "medium",
     marginStart: 15,
   },
 });
