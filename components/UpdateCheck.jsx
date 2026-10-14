@@ -7,7 +7,6 @@ import { BACKEND_PORT } from "@env";
 
 const CHECK_UPDATE_URL = `${BACKEND_PORT}/api/version/latest`;
 const SKIPPED_VERSION_KEY = "skipped_version";
-const CHECK_INTERVAL = 120000;
 
 export default function UpdateCheck() {
   const [updateUrl, setUpdateUrl] = useState("");
@@ -19,10 +18,10 @@ export default function UpdateCheck() {
   const currentVersion = Application.nativeApplicationVersion || "dev";
   const applicationName = Application.applicationName;
 
+  // Check once per launch - polling every 2 minutes wastes battery/network
+  // and would re-alert a user who already dismissed the prompt.
   useEffect(() => {
     checkForUpdates();
-    const interval = setInterval(checkForUpdates, CHECK_INTERVAL);
-    return () => clearInterval(interval);
   }, []);
 
   // Function to compare versions
@@ -41,10 +40,7 @@ export default function UpdateCheck() {
     setIsChecking(true);
     try {
       const { isConnected } = await NetInfo.fetch();
-      if (!isConnected) {
-        console.log("No internet connection, skipping update check.");
-        return;
-      }
+      if (!isConnected) return;
 
       const response = await fetch(CHECK_UPDATE_URL);
       const data = await response.json();
