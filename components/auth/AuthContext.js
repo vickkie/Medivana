@@ -1,7 +1,9 @@
-import React, { createContext, useState, useEffect, useCallback, useMemo } from "react";
+import React, { createContext, useState, useEffect, useCallback, useMemo, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { TOKEN_KEY, setUnauthorizedHandler } from "../../utils/api";
 
 import { Buffer } from "buffer";
 // import { startPermissionCheck } from "./registerPushNotification";
@@ -16,40 +18,47 @@ const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
 
+  const userDataRef = useRef(userData);
+  useEffect(() => {
+    userDataRef.current = userData;
+  }, [userData]);
+
   useEffect(() => {
     checkExistingUser();
   }, []);
 
-  useEffect(() => {
-    if (userData?._id) {
-      // startPermissionCheck(userData?._id);
-    }
-  }, [userData]);
-
-  // console.log("data", AsyncStorage.getItem("id"));
-
   const checkExistingUser = useCallback(async () => {
     try {
       const id = await AsyncStorage.getItem("id");
-      if (id) {
-        const userId = `user${JSON.parse(id)}`;
-        const currentUser = await AsyncStorage.getItem(userId);
-        if (currentUser) {
-          const parsedData = JSON.parse(currentUser);
-          setUserData(parsedData);
-          setUserLogin(true);
+      if (!id) return;
 
-          axios.defaults.headers.common["Authorization"] = `Bearer ${parsedData?.TOKEN}`;
-        } else {
-          if (__DEV__) console.log("User data not available");
-        }
+      const userId = `user${JSON.parse(id)}`;
+      const currentUser = await AsyncStorage.getItem(userId);
+      if (!currentUser) {
+        if (__DEV__) console.log("User data not available");
+        return;
       }
+
+      const parsedData = JSON.parse(currentUser);
+
+      // Token lives in SecureStore. Migrate any legacy token stored inside
+      // the AsyncStorage profile blob and re-save the sanitized profile.
+      let token = await SecureStore.getItemAsync(TOKEN_KEY);
+      if (!token && parsedData?.TOKEN) {
+        token = parsedData.TOKEN;
+        await SecureStore.setItemAsync(TOKEN_KEY, token);
+        const { TOKEN, ...profile } = parsedData;
+        await AsyncStorage.setItem(userId, JSON.stringify(profile));
+      }
+
+      setUserData({ ...parsedData, TOKEN: token });
+      setUserLogin(true);
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } catch (error) {
       if (__DEV__) console.log("Error retrieving data:", error);
     }
   }, []);
 
-  // AsyncStorage.clear();
   const login = useCallback(async (data) => {
     await AsyncStorage.removeItem("id");
 
@@ -57,22 +66,52 @@ const AuthProvider = ({ children }) => {
     setUserLogin(true);
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${data?.TOKEN}`;
+    if (data?.TOKEN) await SecureStore.setItemAsync(TOKEN_KEY, data.TOKEN);
 
     await AsyncStorage.setItem("id", JSON.stringify(data?._id));
 
-    await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(data));
+    // Persist the profile without the token - the token lives in SecureStore.
+    const { TOKEN, ...profile } = data;
+    await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(profile));
   }, []);
+
   const logout = useCallback(async () => {
     setUserData(null);
     setUserLogin(false);
 
     delete axios.defaults.headers.common["Authorization"];
-    await AsyncStorage.removeItem("id");
-    await AsyncStorage.removeItem(`user${userData?._id}`);
-  }, [userData?._id]);
+    await SecureStore.deleteItemAsync(TOKEN_KEY);
+
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const staleUserKeys = keys.filter((k) => k.startsWith("user"));
+      await AsyncStorage.multiRemove([
+        "id",
+        "cart",
+        "wishlist",
+        "profileCompletion",
+        "lastExpoPushToken",
+        "cachedFaqs",
+        "cached_doctors",
+        "cached_specializations",
+        "reset-email",
+        ...staleUserKeys,
+      ]);
+    } catch (error) {
+      if (__DEV__) console.error("Error clearing storage on logout:", error);
+    }
+  }, []);
 
   const userLogout = useCallback(() => {
     logout();
+  }, [logout]);
+
+  // Force logout when any request hits a 401 (expired/invalid session)
+  useEffect(() => {
+    setUnauthorizedHandler(() => {
+      if (userDataRef.current?._id) logout();
+    });
+    return () => setUnauthorizedHandler(null);
   }, [logout]);
 
   const updateUserData = useCallback(async (updatedData) => {
@@ -84,8 +123,9 @@ const AuthProvider = ({ children }) => {
     setUserData(updatedData);
 
     try {
-      const stringifiedData = JSON.stringify(updatedData);
-      await AsyncStorage.setItem(`user${updatedData._id}`, stringifiedData);
+      if (updatedData.TOKEN) await SecureStore.setItemAsync(TOKEN_KEY, updatedData.TOKEN);
+      const { TOKEN, ...profile } = updatedData;
+      await AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(profile));
     } catch (error) {
       if (__DEV__) console.error("Error saving user data to AsyncStorage:", error);
     }
