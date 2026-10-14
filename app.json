@@ -67,7 +67,8 @@
           "androidMode": "default",
           "androidCollapsedTitle": "Medivana"
         }
-      ]
+      ],
+      "expo-secure-store"
     ]
   }
 }
