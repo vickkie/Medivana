@@ -9,7 +9,7 @@ import {
   SectionList,
   StyleSheet,
 } from "react-native";
-import moment from "moment";
+
 import { AuthContext } from "../components/auth/AuthContext";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS, SIZES } from "../constants";
@@ -75,7 +75,8 @@ const HelpListScreen = () => {
           const grouped = {};
 
           filtered.forEach((msg) => {
-            const dateKey = moment(msg.createdAt).startOf("day").format();
+            const d = new Date(msg.createdAt);
+            const dateKey = new Date(d.getFullYear(), d.getMonth(), d.getDate()).toDateString();
             if (!grouped[dateKey]) grouped[dateKey] = [];
             grouped[dateKey].push(msg);
           });
@@ -102,10 +103,13 @@ const HelpListScreen = () => {
   }, [searchQuery]);
 
   const formatSectionHeader = (dateStr) => {
-    const date = moment(dateStr);
-    if (date.isSame(moment(), "day")) return "Today";
-    if (date.isSame(moment().subtract(1, "day"), "day")) return "Yesterday";
-    return date.format("MMM DD, YYYY");
+    const date = new Date(dateStr);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    if (date.toDateString() === today.toDateString()) return "Today";
+    if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+    return date.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
   };
 
   const startChat = (user) => {
