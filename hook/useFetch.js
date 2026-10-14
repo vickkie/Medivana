@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
-import { BACKEND_PORT } from "@env";
+import api from "../utils/api";
 
 const useFetch = (endpoint, requiresAuth = false, token = null) => {
   const [data, setData] = useState([]);
@@ -21,7 +21,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
       setIsLoading(true);
       setError(null);
 
-      const url = `${BACKEND_PORT}/api/${endpoint}`;
+      const url = `/api/${endpoint}`;
       const headers = {};
 
       if (requiresAuth && token) {
@@ -32,7 +32,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
         headers["X-Skip-Cache"] = "true";
       }
 
-      axios
+      api
         .get(url, { headers, signal: controller.signal })
         .then((response) => {
           setData(response.data);
