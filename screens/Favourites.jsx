@@ -5,14 +5,13 @@ import Icon from "../constants/icons";
 import FavouritesList from "../components/favourites/FavouritesList";
 import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
-import { useCart } from "../contexts/CartContext";
+
 import { useWish } from "../contexts/WishContext";
 import { COLORS, SIZES } from "../constants";
 
 const Favourites = () => {
   const navigation = useNavigation();
   const { userLogin, userData } = useContext(AuthContext);
-  const { cartCount } = useCart();
   const { wishCount, wishlist } = useWish();
 
   return (

@@ -12,7 +12,7 @@ import * as FileSystem from "expo-file-system";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useDelete from "../hook/useDelete2";
 import { VERSION_LONG, VERSION_SHORT, BACKEND_PORT } from "@env";
-import { useCart } from "../contexts/CartContext";
+
 import { useWish } from "../contexts/WishContext";
 import WebView from "react-native-webview";
 import { LinearGradient } from "expo-linear-gradient";
@@ -39,7 +39,6 @@ const Profile = () => {
   const navigation = useNavigation();
   const { userData, userLogout, userLogin } = useContext(AuthContext);
   const [deleting, setDEleting] = useState(false);
-  const { clearCart } = useCart();
   const { clearWishlist } = useWish();
 
   const [userId, setUserId] = useState(null);
@@ -57,7 +56,6 @@ const Profile = () => {
     try {
       //clear cart and wishCount
       clearWishlist();
-      clearCart();
 
       // Clear FileSystem cache
       const files = await FileSystem.readDirectoryAsync(FileSystem.documentDirectory);

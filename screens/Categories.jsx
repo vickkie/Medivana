@@ -7,7 +7,7 @@ import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from "react-nati
 import CategoriesList from "../components/products/CategoriesList";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
-import { useCart } from "../contexts/CartContext";
+
 import DoctorsCategoriesRow from "../components/home/DoctorCategoriesRow";
 import { Cross } from "lucide-react-native";
 import Headings from "../components/home/Headings";

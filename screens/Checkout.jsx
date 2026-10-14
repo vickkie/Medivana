@@ -15,7 +15,7 @@ import {
 import { useRoute, useNavigation } from "@react-navigation/native";
 import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
-import { useCart } from "../contexts/CartContext";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
 import * as Yup from "yup";

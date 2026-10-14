@@ -2,10 +2,6 @@
 import Search from "./Search";
 import Profile from "./Profile";
 import Home from "./Home";
-// import Cart from "./Cart";
-// import ProductDetails from "../components/products/ProductDetails";
-// import Products from "./Products";
-// import ProductList from "../components/products/ProductList";
 import LoginPage from "./LoginPage";
 import Orders from "./Appointments";
 import Favourites from "./Favourites";
@@ -15,7 +11,6 @@ import Register from "./Register";
 import Categories from "./Categories";
 import Checkout from "./Checkout";
 import UserDetails from "./UserDetails";
-import LatestProducts from "../components/products/LatestProducts";
 import MessageCenter from "./MessageCenter";
 import Help from "./Help";
 import About from "./About";
@@ -24,7 +19,6 @@ import SystemMessages from "./SystemMessages";
 import OrderSuccess from "./OrderSuccess";
 import OrderDetails from "./AppointmentDetails";
 import AboutUs from "./AboutUs";
-import SupplierRegister from "./SupplierRegister";
 import ChatScreen from "./ChatScreen";
 import ChatListScreen from "./ChatListScreen";
 import HelpListScreen from "./HelpListScreen";
@@ -38,7 +32,6 @@ import DoctorBook from "../components/DoctorDetails/DoctorBook";
 import AppointmentDetails from "./AppointmentDetails";
 import Appointments from "./Appointments";
 import ProfileDetails from "../components/Profile/ProfileProfile";
-Appointments;
 import SecurityDetails from "../components/Profile/SecurityDetails";
 import MedicalDetails from "../components/Profile/MedicalDetails";
 import NotificationSettings from "../components/Profile/NotificationSettings";
@@ -61,10 +54,6 @@ export {
   Search,
   OrderSuccess,
   Profile,
-  // Cart,
-  // ProductDetails,
-  // Products,
-  // ProductList,
   LoginPage,
   Favourites,
   Orders,
@@ -74,14 +63,12 @@ export {
   Categories,
   Checkout,
   UserDetails,
-  LatestProducts,
   MessageCenter,
   Help,
   About,
   AboutUs,
   Faqs,
   SystemMessages,
-  SupplierRegister,
   HelpListScreen,
   HelpAgentChatScreen,
   Onboarding,

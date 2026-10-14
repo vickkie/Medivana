@@ -12,7 +12,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import ErrorBoundary2 from "./screens_options/ErrorBoundary";
 import { AuthProvider } from "./components/auth/AuthContext";
 import { useAuthLoader } from "./components/auth/useAuthLoader";
-import { CartProvider } from "./contexts/CartContext";
+
 import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionContext";
 import { WishProvider } from "./contexts/WishContext";
 // Paystack integration - no SDK provider needed, uses WebView for checkout
@@ -98,24 +98,22 @@ export default function App() {
         <BottomSheetModalProvider>
           <AuthProvider>
             <ProfileCompletionProvider>
-              <CartProvider>
-                <WishProvider>
-                  <NavigationContainer theme={MyTheme}>
-                    <PushNotification />
-                    <Stack.Navigator initialRouteName={initialRoute}>
-                      {SCREEN_LIST.map((screen, i) => (
-                        <Stack.Screen
-                          key={i}
-                          name={screen.name}
-                          component={screen.component}
-                          options={screen.options}
-                        />
-                      ))}
-                    </Stack.Navigator>
-                    <Toast />
-                  </NavigationContainer>
-                </WishProvider>
-              </CartProvider>
+              <WishProvider>
+                <NavigationContainer theme={MyTheme}>
+                  <PushNotification />
+                  <Stack.Navigator initialRouteName={initialRoute}>
+                    {SCREEN_LIST.map((screen, i) => (
+                      <Stack.Screen
+                        key={i}
+                        name={screen.name}
+                        component={screen.component}
+                        options={screen.options}
+                      />
+                    ))}
+                  </Stack.Navigator>
+                  <Toast />
+                </NavigationContainer>
+              </WishProvider>
             </ProfileCompletionProvider>
           </AuthProvider>
         </BottomSheetModalProvider>
