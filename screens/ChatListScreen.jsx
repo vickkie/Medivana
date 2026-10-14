@@ -23,19 +23,27 @@ const ChatListScreen = () => {
   const [unreadCounts, setUnreadCounts] = useState({});
   const navigation = useNavigation();
 
-  if (!userData || !userLogin) {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{ name: "Login" }],
-      })
-    );
-    return;
-  }
-
+  // Redirect on missing auth from an effect - dispatching during render
+  // fires a setState on the navigator mid-render.
   useEffect(() => {
-    fetchUsers();
-  }, [searchQuery]);
+    if (!userData || !userLogin) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "Login" }],
+        })
+      );
+    }
+  }, [userData, userLogin, navigation]);
+
+  // Debounce search so we don't hit /chat-users on every keystroke
+  useEffect(() => {
+    if (!userData) return;
+    const t = setTimeout(fetchUsers, 400);
+    return () => clearTimeout(t);
+  }, [searchQuery, userData]);
+
+  if (!userData || !userLogin) return null;
 
   const fetchUsers = async () => {
     try {
