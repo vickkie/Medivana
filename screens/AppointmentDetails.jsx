@@ -35,11 +35,7 @@ import LottieView from "lottie-react-native";
 const AppointmentDetails = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  if (!route?.params?.id) {
-    console.warn("No appointment ID passed to this screen");
-    return null;
-  }
-  const appointmentId = route.params.id;
+  const appointmentId = route?.params?.id;
   const { userData, userLogin } = useContext(AuthContext);
 
   const [appointment, setAppointment] = useState(null);
@@ -48,6 +44,11 @@ const AppointmentDetails = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
+    if (!appointmentId) {
+      console.warn("No appointment ID passed to this screen");
+      setIsLoading(false);
+      return;
+    }
     if (!userLogin) {
       navigation.navigate("Login");
       return;
