@@ -7,9 +7,9 @@
 | Expo compatibility | `npx expo-doctor` | ✅ **17/17 pass** |
 | Dependency versions | `npx expo install --check` | ✅ all up to date (for SDK 51) |
 | Vulnerability scan | `npm audit` | ⚠️ 105 vulns — see `dependencies.md` |
-| Lint | `.eslintrc.js` exists | ❌ **cannot run** — `eslint` + `eslint-plugin-react` not installed, no `lint` script |
+| Lint | `.eslintrc.js` exists | ✅ **now wired** — `eslint@8` + `eslint-config-expo` + `prettier`, `npm run lint` runs. Baseline: **38 errors / 288 warnings** (mostly react-hooks deps + conditional hooks — tracked as remaining debt) |
 | Typecheck | none (JS project) | ❌ n/a — no tsconfig |
-| Unit tests | none | ❌ **0 tests** — no jest, no `__tests__`, no test script; `screens/tests.jsx` is a misnamed dead chat screen, not a test |
+| Unit tests | jest-expo + react-test-renderer | ✅ **9/9 pass** — `utils/__tests__/` covers urlSafety, html esc, storage helpers; `screens/tests.jsx` deleted (dead chat screen) |
 | E2E | none | ❌ no Detox/Maestro |
 | CI | none | ❌ no `.github/` or CI config in repo |
 | Crash reporting | `react-native-error-boundary` mounted | ⚠️ UI fallback only — no Sentry/Crashlytics |

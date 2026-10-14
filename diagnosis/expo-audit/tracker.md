@@ -31,18 +31,18 @@ Status legend: `confirmed` (verified in source/tooling) · `suspected` (strong e
 
 | # | Finding | Sev | Evidence | Fix sketch | Verify by | Status |
 |---|---|---|---|---|---|---|
-| 16 | FlatList inside ScrollView on Home | High | `Home.jsx:149-190` | `ListHeaderComponent` restructure | Scroll long doctors list; no nested-list warning; pagination still works | confirmed |
+| 16 | FlatList inside ScrollView on Home | High | `Home.jsx:149-190` | `ListHeaderComponent` restructure | Scroll long doctors list; no nested-list warning; pagination still works | **fixed** (`e3844b5`) |
 | 17 | Dead deps: stripe, date-picker, keyboard-controller | High | `package.json:22,54,61`, zero imports | `npm uninstall` after dead-code pass | `expo-doctor` pass; app boots; keyboard behavior unchanged | **fixed** (`f0f4893`; keyboard-controller remains via gifted-chat peer) |
 | 18 | Dead screens/files ~3,500 lines + `.backup` files | Medium | code-quality.md CQ-04/05 | Delete checkout2, tests, SupplierRegister, UserProfileCompletion, Cart, Products, backups; prune index.js | `grep` imports clean; build succeeds | **fixed** (`be8d7a0`, `c39473f`) — 32 files, incl. CVV-sending checkout2 |
-| 19 | Dead nav targets in product flow | Medium | CQ-01 list | Remove navigations with the dead screens | No `navigate` literals to unregistered names | confirmed |
+| 19 | Dead nav targets in product flow | Medium | CQ-01 list | Remove navigations with the dead screens | No `navigate` literals to unregistered names | **mostly fixed** — Search registered; `CategoryCardView` still targets dead `ProductList` (dead-endpoint tab, unreachable in practice) |
 | 20 | UpdateCheck 120-s polling | Medium | `UpdateCheck.jsx:22-26` | Check on launch/foreground only | Interval gone; update prompt still appears | **fixed** (`a7630ca`) |
-| 21 | Barrel import of all 37 screens | Medium | `App.js:24` | Prune dead screens first, then lazy/split stacks | Cold start improved (Flipper trace) | confirmed |
-| 22 | `moment` for one screen | Medium | `HelpListScreen.jsx:12` | `Intl`/native Date formatting | Same date labels render | confirmed |
-| 23 | `axiosRetry(axios)` stacked ×7 | Medium | 7 files at module scope | Central instance, configure once | Only one retry interceptor registered | confirmed |
-| 24 | Asset bloat: 19 MB, `assetBundlePatterns:"**/*"` | Medium | `du`, `app.json:13` | Delete unused fonts/lotties/PNGs; narrow patterns | APK/IPA size before/after | confirmed |
-| 25 | ChatListScreen: per-keystroke fetch, N listeners, dispatch-in-render | Medium | `ChatListScreen.jsx:27-38,65-101` | Debounce; single unread listener; effect-based dispatch | Type in search → 1 request; no warning | confirmed |
-| 26 | No expo-image caching | Medium | ~150 RN `Image` | Adopt `expo-image` for remote URIs | Cached avatars (Flipper/network) | confirmed |
-| 27 | Misc: `useAuthLoader` dup bootstrap (PERF-04), Home `undefined` fetch (PERF-11), in-render components (PERF-12), unmemoized ProfileCompletion value (PERF-13), interval cleanup (PERF-14), chat image quality (PERF-16), font mismatch "lufgaBold" (CQ-10) | Low | performance.md/code-quality.md | As listed | Each: render/network/console check | confirmed |
+| 21 | Barrel import of all 37 screens | Medium | `App.js:24` | Prune dead screens first, then lazy/split stacks | Cold start improved (Flipper trace) | **partially fixed** — dead screens pruned; lazy/split still open |
+| 22 | `moment` for one screen | Medium | `HelpListScreen.jsx:12` | `Intl`/native Date formatting | Same date labels render | **fixed** (`5405ec8`, dep removed) |
+| 23 | `axiosRetry(axios)` stacked ×7 | Medium | 7 files at module scope | Central instance, configure once | Only one retry interceptor registered | **fixed** (`e952b31`) |
+| 24 | Asset bloat: 19 MB, `assetBundlePatterns:"**/*"` | Medium | `du`, `app.json:13` | Delete unused fonts/lotties/PNGs; narrow patterns | APK/IPA size before/after | **fixed** — 138 files removed, 19MB→6.6MB (in `e3844b5`) |
+| 25 | ChatListScreen: per-keystroke fetch, N listeners, dispatch-in-render | Medium | `ChatListScreen.jsx:27-38,65-101` | Debounce; single unread listener; effect-based dispatch | Type in search → 1 request; no warning | **partially fixed** (`ea91471` debounce + effect dispatch; N-listener consolidation still open) |
+| 26 | No expo-image caching | Medium | ~150 RN `Image` | Adopt `expo-image` for remote URIs | Cached avatars (Flipper/network) | **open** |
+| 27 | Misc fixes | Low | performance.md/code-quality.md | As listed | Each: render/network/console check | **mostly fixed** — PERF-11/12/13/14/16, CQ-10 done; PERF-04 useAuthLoader dedupe open |
 
 ## P3 — dependency/platform upgrades (evaluate each)
 
