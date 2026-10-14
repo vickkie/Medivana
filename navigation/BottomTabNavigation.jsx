@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
 import { BlurView } from "expo-blur";
 import Animated, { FadeIn, FadeOut, Layout } from "react-native-reanimated";
-import { Home, Search, Profile, Categories, Products, Orders } from "../screens";
+import { Home, Search, Profile, Categories, Orders } from "../screens";
 import { COLORS } from "../constants";
 import { LucideHome as HomeIcon, List, User, Circle, CalendarDays } from "lucide-react-native";
 
