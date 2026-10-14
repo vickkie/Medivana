@@ -1,6 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
-import { BACKEND_PORT } from "@env"; // Import the env variable in react native defined in babel.conf
+import api from "../utils/api";
 
 
 
@@ -16,7 +15,7 @@ const useDelete = (baseEndpoint) => {
 
     try {
       // console.log(`${baseEndpoint}/${id}`);
-      const response = await axios.delete(`${BACKEND_PORT}/api/${baseEndpoint}/${id}`); // Use the environment variable
+      const response = await api.delete(`/api/${baseEndpoint}/${id}`); // Use the environment variable
 
       setDeleteStatus(response.status);
       if (onSuccessCallback) {
