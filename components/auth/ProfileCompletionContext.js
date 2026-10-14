@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from "react";
+import React, { createContext, useState, useEffect, useContext, useMemo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "./AuthContext";
 import { BACKEND_PORT } from "@env";
@@ -144,20 +144,19 @@ const ProfileCompletionProvider = ({ children }) => {
     }
   };
 
-  return (
-    <ProfileCompletionContext.Provider
-      value={{
-        completionPercentage,
-        missingFields,
-        message,
-        isComplete,
-        refreshProfileCompletion,
-        syncProfileCompletionFromServer,
-      }}
-    >
-      {children}
-    </ProfileCompletionContext.Provider>
+  const value = useMemo(
+    () => ({
+      completionPercentage,
+      missingFields,
+      message,
+      isComplete,
+      refreshProfileCompletion,
+      syncProfileCompletionFromServer,
+    }),
+    [completionPercentage, missingFields, message, isComplete]
   );
+
+  return <ProfileCompletionContext.Provider value={value}>{children}</ProfileCompletionContext.Provider>;
 };
 
 export { ProfileCompletionContext, ProfileCompletionProvider };
