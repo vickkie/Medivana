@@ -10,7 +10,8 @@ import { ScrollView, FlatList } from "react-native-gesture-handler";
 const ChangeLogMenu = forwardRef((props, ref) => {
   const snapPoints = useMemo(() => ["70%", "75%", "80%"], []);
   const navigation = useNavigation();
-  const bottomSheetRef = ref || useRef(null);
+  const internalRef = useRef(null);
+  const bottomSheetRef = ref || internalRef;
 
   const [changelogData, setChangelogData] = useState([]);
 
