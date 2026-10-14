@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from "react";
 import { setItem, getItem } from "../utils/storage";
+import { AuthContext } from "../components/auth/AuthContext";
 import Toast from "react-native-toast-message";
 
 const WishContext = createContext();
 
 export const WishProvider = ({ children }) => {
   const [wishlist, setWishlist] = useState([]);
+  const { userLogin } = useContext(AuthContext);
 
   const showToast = useCallback((type, text1, text2) => {
     Toast.show({
@@ -27,6 +29,12 @@ export const WishProvider = ({ children }) => {
     };
     loadWishlist();
   }, []);
+
+  // Drop in-memory state on logout so the debounced save can't
+  // resurrect the purged "wishlist" key for the next user.
+  useEffect(() => {
+    if (!userLogin) setWishlist([]);
+  }, [userLogin]);
 
   // Save wishlist on change with a debounce
   useEffect(() => {
