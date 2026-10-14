@@ -21,7 +21,7 @@ import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
-import { BACKEND_PORT } from "@env";
+import api from "../utils/api";
 
 const Help = () => {
   const [messages, setMessages] = useState([]);
@@ -183,14 +183,8 @@ const Help = () => {
           type: "image/jpeg",
         });
 
-        const response = await fetch(`${BACKEND_PORT}/upload`, {
-          method: "POST",
-          body: formData,
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-
-        const result = await response.json();
-        return result.fileUrl || null;
+        const response = await api.post("/upload", formData);
+        return response.data.fileUrl || null;
       } catch (error) {
         console.error("Error uploading image:", error);
         return null;
