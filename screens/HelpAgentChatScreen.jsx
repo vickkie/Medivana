@@ -123,7 +123,7 @@ const HelpAgentChatScreen = () => {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
-        quality: 1,
+        quality: 0.7,
       });
       if (!result.canceled && result.assets.length > 0 && result.assets[0].uri) {
         setSelectedImage(result.assets[0].uri);
