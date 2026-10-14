@@ -13,6 +13,15 @@ import Toast from "react-native-toast-message";
 
 const LOGO = "https://res.cloudinary.com/drsuclnkw/image/upload/v1760445395/medivana-splash-light_gqzjqa.png";
 
+// Server-provided fields are interpolated into HTML - always escape them.
+const esc = (v) =>
+  String(v ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
 const ReceiptScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -54,11 +63,12 @@ const ReceiptScreen = () => {
       tx.bookingId || tx.transaction || tx._id || ""
     )}`;
 
-    const userFull = tx.user?.fullname || tx.user?.username || "Valued Customer";
-    const doctorFull =
+    const userFull = esc(tx.user?.fullname || tx.user?.username || "Valued Customer");
+    const doctorFull = esc(
       (tx.doctor?.title2 ?? tx.doctor?.title ?? "") +
-      " " +
-      (tx.doctor?.fullName ?? `${tx.doctor?.firstname ?? ""} ${tx.doctor?.lastname ?? ""}`.trim());
+        " " +
+        (tx.doctor?.fullName ?? `${tx.doctor?.firstname ?? ""} ${tx.doctor?.lastname ?? ""}`.trim())
+    );
 
     return `
     <html>
@@ -122,8 +132,8 @@ const ReceiptScreen = () => {
         <div class="accent"></div>
         <div class="body">
           <div class="statusRow">
-            <div class="badge">${tx?.transaction?.status || "Unverified"}</div>
-            <div class="txid">REF: ${tx.bookingId || "-"}</div>
+            <div class="badge">${esc(tx?.transaction?.status || "Unverified")}</div>
+            <div class="txid">REF: ${esc(tx.bookingId || "-")}</div>
           </div>
 
           <div class="grid">
@@ -147,8 +157,8 @@ const ReceiptScreen = () => {
                     } else if (method === "mpesa") {
                       return `<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/512px-M-PESA_LOGO-01.svg.png?20191120100524" alt="M-Pesa" style="width:50px;height:40px;vertical-align:middle;object-fit:contain;background:#fff;border-radius:3px;"/> M-Pesa`;
                     } else if (method) {
-                      // fallback: just show method
-                      return method.charAt(0).toUpperCase() + method.slice(1);
+                      // fallback: just show method (escaped - server-provided)
+                      return esc(method.charAt(0).toUpperCase() + method.slice(1));
                     } else {
                       return "-";
                     }
@@ -181,8 +191,8 @@ const ReceiptScreen = () => {
               <div class="sectionTitle">Patient</div>
               <div class="customerCard">
                 <h3>${userFull}</h3>
-                <div class="small">Name: ${tx.user?.username || "-"}</div>
-                <div class="small">Phone Number: ${tx.transaction?.phoneNumber || "-"}</div>
+                <div class="small">Name: ${esc(tx.user?.username || "-")}</div>
+                <div class="small">Phone Number: ${esc(tx.transaction?.phoneNumber || "-")}</div>
               
                 <img src="${qrUrl}" class="qr" />
               </div>
@@ -193,7 +203,7 @@ const ReceiptScreen = () => {
             <h4>Appointment Information</h4>
             <div style="display:flex;justify-content:space-between;padding:6px 0;">
               <div class="label">Booking ID</div>
-              <div class="value">${tx.bookingId || "-"}</div>
+              <div class="value">${esc(tx.bookingId || "-")}</div>
             </div>
 
             <div style="display:flex;justify-content:space-between;padding:6px 0;">
@@ -208,7 +218,7 @@ const ReceiptScreen = () => {
 
             <div style="display:flex;justify-content:space-between;padding:6px 0;">
               <div class="label">Appointment Time</div>
-              <div class="value">${tx.appointmentTime || "-"}</div>
+              <div class="value">${esc(tx.appointmentTime || "-")}</div>
             </div>
           </div>
 
@@ -363,7 +373,7 @@ const ReceiptScreen = () => {
             source={{ html: generateReceiptHTML(transaction) }}
             style={{ height: 980, borderRadius: 10, overflow: "hidden" }}
             scalesPageToFit
-            javaScriptEnabled
+            javaScriptEnabled={false}
             useWebKit
           />
         </View>
