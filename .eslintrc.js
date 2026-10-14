@@ -4,4 +4,5 @@ module.exports = {
   rules: {
     "import/no-unresolved": ["error", { ignore: ["^@env$"] }],
   },
+  overrides: [{ files: ["scripts/**/*.js"], env: { node: true } }],
 };
