@@ -4,18 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Application from "expo-application";
 import NetInfo from "@react-native-community/netinfo";
 import { BACKEND_PORT } from "@env";
+import { isTrustedUpdateUrl } from "../utils/urlSafety";
 
 const CHECK_UPDATE_URL = `${BACKEND_PORT}/api/version/latest`;
 const SKIPPED_VERSION_KEY = "skipped_version";
-// Server supplies downloadUrl - only ever open trusted hosts.
-const ALLOWED_UPDATE_HOSTS = ["github.com", "play.google.com"];
-
-const isTrustedUpdateUrl = (url) => {
-  const m = /^https:\/\/([^/?#]+)/i.exec(url || "");
-  if (!m) return false;
-  const host = m[1].toLowerCase();
-  return ALLOWED_UPDATE_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
-};
 
 export default function UpdateCheck() {
   const [updateUrl, setUpdateUrl] = useState("");
