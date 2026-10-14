@@ -43,8 +43,6 @@ const ChatListScreen = () => {
     return () => clearTimeout(t);
   }, [searchQuery, userData]);
 
-  if (!userData || !userLogin) return null;
-
   const fetchUsers = async () => {
     try {
       const userRole = userData?.role || userData?.role || "user";
@@ -71,6 +69,7 @@ const ChatListScreen = () => {
 
   // For each chat conversation, listen for unread messages in Firebase
   useEffect(() => {
+    if (!userData?._id) return;
     // Array to store unsubscribe functions
     const listeners = [];
 
@@ -130,6 +129,8 @@ const ChatListScreen = () => {
     }
   };
   const capitalize = (str) => (str ? str.replace(/\b\w/g, (char) => char.toUpperCase()) : "");
+
+  if (!userData || !userLogin) return null;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -289,7 +290,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.themey,
   },
   cartWrapper: {
-    zIndex: 11,
     backgroundColor: COLORS.themey,
     justifyContent: "center",
     padding: 10,
@@ -298,13 +298,6 @@ const styles = StyleSheet.create({
     right: 40,
     top: 4,
     zIndex: 77,
-    alignItems: "center",
-  },
-  buttonWrap: {
-    backgroundColor: COLORS.hyperlight,
-    padding: 15,
-    borderRadius: 100,
-    justifyContent: "center",
     alignItems: "center",
   },
   buttonWrap2: {
