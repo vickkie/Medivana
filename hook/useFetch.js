@@ -12,6 +12,7 @@ const useFetch = (endpoint, requiresAuth = false, token = null) => {
 
   const fetchData = useCallback(
     (skipCache = false) => {
+      if (!endpoint) return;
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
