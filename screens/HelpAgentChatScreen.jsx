@@ -11,7 +11,7 @@ import Icon from "../constants/icons";
 import { COLORS, SIZES } from "../constants";
 import "react-native-get-random-values";
 import uuid from "react-native-uuid";
-import { BACKEND_PORT } from "@env";
+import api from "../utils/api";
 
 const HelpAgentChatScreen = () => {
   const [messages, setMessages] = useState([]);
@@ -141,13 +141,8 @@ const HelpAgentChatScreen = () => {
         name: `image_${Date.now()}.jpg`,
         type: "image/jpeg",
       });
-      const res = await fetch(`${BACKEND_PORT}/upload`, {
-        method: "POST",
-        body: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      const json = await res.json();
-      return json.fileUrl || null;
+      const res = await api.post("/upload", formData);
+      return res.data.fileUrl || null;
     } catch (err) {
       console.error("Upload error:", err);
       return null;
