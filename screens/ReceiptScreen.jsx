@@ -10,17 +10,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
 import Toast from "react-native-toast-message";
+import { esc } from "../utils/html";
 
 const LOGO = "https://res.cloudinary.com/drsuclnkw/image/upload/v1760445395/medivana-splash-light_gqzjqa.png";
-
-// Server-provided fields are interpolated into HTML - always escape them.
-const esc = (v) =>
-  String(v ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 
 const ReceiptScreen = () => {
   const route = useRoute();
@@ -28,16 +20,12 @@ const ReceiptScreen = () => {
   const transaction = route.params?.appointment;
   // console.log(transaction?.transaction);
 
-  if (!transaction || !transaction?.doctor) {
-    return <Text>No appointment details</Text>;
-  }
-
   const [pdfUri, setPdfUri] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
     // auto-generate preview PDF uri on mount (non-blocking)
-    generatePDFPreview();
+    if (transaction?.doctor) generatePDFPreview();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -59,6 +47,7 @@ const ReceiptScreen = () => {
   };
 
   const generateReceiptHTML = (tx) => {
+    if (!tx?.doctor) return "";
     const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
       tx.bookingId || tx.transaction || tx._id || ""
     )}`;
@@ -300,7 +289,7 @@ const ReceiptScreen = () => {
         Alert.alert("Cancelled", "No folder selected");
         return;
       }
-      const fileName = `Receipt-${transaction.bookingId || transaction._id || Date.now()}.pdf`;
+      const fileName = `Receipt-${transaction?.bookingId || transaction?._id || Date.now()}.pdf`;
       const newFileUri = await FileSystem.StorageAccessFramework.createFileAsync(
         folderUri,
         fileName,
@@ -338,6 +327,10 @@ const ReceiptScreen = () => {
       Alert.alert("Error", "Could not share file");
     }
   };
+
+  if (!transaction || !transaction?.doctor) {
+    return <Text>No appointment details</Text>;
+  }
 
   return (
     <SafeAreaView style={localStyles.safe}>
