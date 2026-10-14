@@ -201,7 +201,7 @@ const LoginPage = ({ navigation }) => {
                 <CustomButton
                   loader={loader}
                   title={"Login"}
-                  titleStyle={{ fontFamily: "lufgaMedium" }}
+                  titleStyle={{ fontFamily: "medium" }}
                   onPress={isValid ? handleSubmit : inValidForm}
                   isValid={isValid}
                 />

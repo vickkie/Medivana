@@ -367,7 +367,7 @@ const styles = StyleSheet.create({
     marginBottom: SIZES.small,
   },
   toggleTextContainer: { flex: 1, marginRight: SIZES.medium },
-  toggleLabel: { fontSize: SIZES.small + 3, fontFamily: "lufgaMedium", color: COLORS.gray },
+  toggleLabel: { fontSize: SIZES.small + 3, fontFamily: "medium", color: COLORS.gray },
   toggleDescription: { fontSize: SIZES.small + 3, fontFamily: "regular", color: COLORS.gray2 },
   toggleSwitch: {
     width: 50,

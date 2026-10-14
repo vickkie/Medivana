@@ -327,7 +327,7 @@ const Register = ({ navigation }) => {
                 <CustomButton
                   title={"Sign up"}
                   onPress={isValid ? handleSubmit : inValidForm}
-                  titleStyle={{ fontFamily: "lufgaMedium" }}
+                  titleStyle={{ fontFamily: "medium" }}
                   isValid={isValid}
                   loader={loader}
                 />

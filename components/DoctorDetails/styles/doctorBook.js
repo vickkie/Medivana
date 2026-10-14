@@ -81,7 +81,7 @@ export default StyleSheet.create({
   doctorSpecialty: {
     color: COLORS.themew,
     fontSize: 14,
-    fontFamily: "lufgaBold",
+    fontFamily: "bold",
   },
   wholeCardView: {
     backgroundColor: COLORS.themeg,
@@ -289,7 +289,7 @@ export default StyleSheet.create({
     // backgroundColor: "red",
   },
   timeslot: {
-    fontFamily: "lufgaSemiBold",
+    fontFamily: "semibold",
   },
   backgroundLoader: {
     position: "absolute",
@@ -405,13 +405,13 @@ export default StyleSheet.create({
   },
   timeslotH: {
     fontSize: 16,
-    fontFamily: "lufgaBold",
+    fontFamily: "bold",
     color: COLORS.themeb,
   },
   timeslotH2: {
     fontSize: 16,
     color: COLORS.red,
-    fontFamily: "lufgaBold",
+    fontFamily: "bold",
     textAlign: "center",
   },
   slotsHolderH: {

@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   label: {
     marginLeft: 8,
     fontWeight: "500",
-    fontFamily: "lufgaBold",
+    fontFamily: "bold",
     color: COLORS.themey,
   },
 });

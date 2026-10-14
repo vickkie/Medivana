@@ -138,7 +138,7 @@ const VerificationCode = ({ navigation }) => {
               <CustomButton
                 loader={loader}
                 title="Verify"
-                titleStyle={{ fontFamily: "lufgaMedium" }}
+                titleStyle={{ fontFamily: "medium" }}
                 onPress={handleSubmit}
                 isValid={values.code.length === 5}
               />

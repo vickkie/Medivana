@@ -241,7 +241,7 @@ export default StyleSheet.create({
   },
   buttonText: {
     color: COLORS.lightWhite,
-    fontFamily: "lufgaBold",
+    fontFamily: "bold",
     fontSize: SIZES.medium,
   },
   error: { color: "red", marginBottom: 10, marginStart: 10, marginTop: 20 },

@@ -100,7 +100,7 @@ const RequestCode = ({ navigation }) => {
               <CustomButton
                 loader={loader}
                 title="Send Code"
-                titleStyle={{ fontFamily: "lufgaMedium" }}
+                titleStyle={{ fontFamily: "medium" }}
                 onPress={handleSubmit}
                 isValid={!errors.email && values.email}
               />

@@ -619,7 +619,7 @@ const styles = StyleSheet.create({
     color: COLORS.themew,
     marginLeft: 30,
     alignSelf: "center",
-    fontFamily: "lufgaMedium",
+    fontFamily: "medium",
     fontSize: SIZES.large,
   },
   buttonWrap: {

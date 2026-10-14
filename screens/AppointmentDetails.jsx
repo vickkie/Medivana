@@ -516,7 +516,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   stepstext: {
-    fontFamily: "lufgaLight",
+    fontFamily: "light",
     color: COLORS.gray2,
     fontSize: SIZES.small + 4,
   },
