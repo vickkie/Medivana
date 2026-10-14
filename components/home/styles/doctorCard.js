@@ -5,7 +5,6 @@ export default StyleSheet.create({
   card: {
     flexDirection: "row",
     backgroundColor: COLORS.themeg,
-    borderRadius: SIZES.radius,
     padding: SIZES.xSmall - 5,
     marginBottom: SIZES.medium,
     alignItems: "center",
@@ -23,10 +22,6 @@ export default StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-  },
-  speciality: {
-    fontFamily: "light",
-    color: COLORS.gray,
   },
   avatarImage: {
     width: 160,

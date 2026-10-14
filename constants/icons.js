@@ -128,7 +128,6 @@ import doubleforward from "../assets/svg/double-arrow.svg";
 const iconMap = {
   doubleforward: doubleforward,
   stethoscope: stethoscope,
-  doctor: doctor,
   heart: heart,
   brain: brain,
   tooth: tooth,

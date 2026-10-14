@@ -69,7 +69,6 @@ export default StyleSheet.create({
   },
   doctorInfo: {
     backgroundColor: COLORS.themew,
-    justifyContent: "flex-start",
     padding: 3,
     paddingHorizontal: 10,
     justifyContent: "center",

@@ -235,12 +235,6 @@ export default StyleSheet.create({
     zIndex: 999,
   },
 
-  heading: {
-    color: COLORS.themeb,
-    marginLeft: 5,
-    fontFamily: "italic",
-    fontSize: SIZES.large,
-  },
   buttonWrap: {
     backgroundColor: COLORS.themeg,
     padding: 15,
