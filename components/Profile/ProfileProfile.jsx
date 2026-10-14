@@ -8,7 +8,6 @@ import { AuthContext } from "../auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import axiosRetry from "axios-retry";
 import { BACKEND_PORT } from "@env";
 import ButtonMain from "../ButtonMain";
 import Toast from "react-native-toast-message";
@@ -16,7 +15,6 @@ import { ProfileCompletionContext } from "../auth/ProfileCompletionContext";
 import { Pencil } from "lucide-react-native";
 
 // Global axios-retry
-axiosRetry(axios, { retries: 3 });
 
 const ProfileDetails = () => {
   const navigation = useNavigation();
@@ -548,7 +546,7 @@ const styles = StyleSheet.create({
 
   label: {
     fontSize: SIZES.small + 3,
-    fontFamily: "lufgaMedium",
+    fontFamily: "medium",
     marginBottom: SIZES.xSmall,
     color: COLORS.themey,
     // marginStart: SIZES.large,

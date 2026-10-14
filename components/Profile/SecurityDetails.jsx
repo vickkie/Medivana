@@ -8,7 +8,6 @@ import { AuthContext } from "../auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
@@ -17,7 +16,6 @@ import Toast from "react-native-toast-message";
 import { ProfileCompletionContext } from "../auth/ProfileCompletionContext";
 
 // Global axios-retry
-axiosRetry(axios, { retries: 3 });
 
 const SecurityDetails = () => {
   const navigation = useNavigation();

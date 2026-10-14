@@ -5,9 +5,7 @@ import { Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_PORT, EAS_PROJECT_ID } from "@env";
 import axios from "axios";
-import axiosRetry from "axios-retry";
 
-axiosRetry(axios, { retries: 3 });
 
 export async function registerForPushNotificationsAsync(userId) {
   if (!Device.isDevice) {

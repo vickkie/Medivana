@@ -17,7 +17,6 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../auth/AuthContext";
 import { RefreshControl, ScrollView } from "react-native-gesture-handler";
 import RatingBottomSheet from "../bottomsheets/RatingSheet";
-import axiosRetry from "axios-retry";
 import axios from "axios";
 import { BACKEND_PORT } from "@env";
 import LottieView from "lottie-react-native";
@@ -48,7 +47,6 @@ export default function RatingsList({ filterList, searchQuery1 = "", isSearching
     setError(null);
 
     try {
-      axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 
       const { data } = await axios.get(`${BACKEND_PORT}/api/v1/appointment/completed/all`, {
         headers: {

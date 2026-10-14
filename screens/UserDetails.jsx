@@ -18,7 +18,6 @@ import { AuthContext } from "../components/auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
-import axiosRetry from "axios-retry";
 
 import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
@@ -44,7 +43,6 @@ import { StatusBar } from "expo-status-bar";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 
 // Global axios-retry
-axiosRetry(axios, { retries: 3 });
 
 const UserDetails = () => {
   const navigation = useNavigation();
@@ -163,7 +161,7 @@ const UserDetails = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
-      quality: 1,
+      quality: 0.7,
     });
 
     if (!pickerResult.canceled && pickerResult.assets && pickerResult.assets.length > 0) {

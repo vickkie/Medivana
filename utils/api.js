@@ -45,8 +45,9 @@ attachInterceptors(api);
 axiosRetry(api, { retries: 2, retryDelay: axiosRetry.exponentialDelay });
 
 // Give legacy call sites the same auth/timeout/401 behavior without migrating:
-// the default axios instance gets the interceptors and a real timeout too.
+// the default axios instance gets the interceptors, retries, and a real timeout.
 attachInterceptors(axios);
+axiosRetry(axios, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
 axios.defaults.timeout = 15000;
 
 export default api;
