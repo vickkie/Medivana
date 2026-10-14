@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { BACKEND_PORT } from "@env";
+import api from "../utils/api";
 
 const usePost2 = (endpoint, requiresAuth = false, token = null) => {
-  const backendUrl = BACKEND_PORT;
   let [updateStatus, setUpdateStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
@@ -13,7 +11,7 @@ const usePost2 = (endpoint, requiresAuth = false, token = null) => {
   const isDevelopment = process.env.NODE_ENV === "development";
 
   const handleApiCall = () => {
-    const url = `${backendUrl}/api/${endpoint}`;
+    const url = `/api/${endpoint}`;
     // Create a headers object
     const headers = {};
     // console.log(url);
@@ -25,7 +23,7 @@ const usePost2 = (endpoint, requiresAuth = false, token = null) => {
       // console.warn("Authorization is required but no token was provided.");
     }
 
-    return axios.post(url, data, {
+    return api.post(url, data, {
       headers,
       validateStatus: (status) => status >= 200 && status < 300,
     });
