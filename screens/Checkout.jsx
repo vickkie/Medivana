@@ -241,11 +241,6 @@ const Checkout = () => {
       paymentMethod: paymentInfo.selectedPaymentMethod,
       phoneNumber: paymentInfo.phoneNumber,
       paypalEmail: paymentInfo.email,
-      cardInfo: {
-        cardNumber: paymentInfo.cardNumber,
-        customer: paymentInfo.customer,
-        nameOnCard: paymentInfo.nameOnCard,
-      },
 
       paymentResponse: {},
     };
