@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackBtn from "../components/BackBtn";
 import { Image } from "react-native";
@@ -32,6 +32,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const Register = ({ navigation }) => {
+  const phoneInput = useRef(null);
   const [loader, setLoader] = useState(false);
   const [obsecureText, setObsecureText] = useState(true);
 
@@ -151,7 +152,7 @@ const Register = ({ navigation }) => {
             <TouchableOpacity
               style={styles.closeButton}
               onPress={() => {
-                this.phoneInput.hideModal();
+                phoneInput.current?.hideModal();
                 setFilteredCountries(countries);
               }}
             >
@@ -246,7 +247,7 @@ const Register = ({ navigation }) => {
                 <View style={styles.wrapper2}>
                   <View style={[styles.input2, phoneError ? styles.errorb : styles.successb]}>
                     <IntlPhoneInput
-                      ref={(ref) => (phoneInput = ref)}
+                      ref={phoneInput}
                       customModal={renderCustomModal}
                       defaultCountry="KE"
                       lang="EN"
@@ -378,7 +379,6 @@ const styles = StyleSheet.create({
   },
 
   wrapper2: {
-    backgroundColor: COLORS.red,
     padding: 2,
     borderColor: COLORS.lightWhite,
     backgroundColor: COLORS.lightWhite,
