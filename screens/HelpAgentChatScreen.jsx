@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useContext, useMemo } from "react";
-import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text } from "react-native";
+import { StyleSheet, View, ImageBackground, TouchableOpacity, Image, Text, Platform } from "react-native";
 import { Animated, Easing } from "react-native";
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -25,14 +25,11 @@ const HelpAgentChatScreen = () => {
   const customerId = route.params?.chatWith?._id;
   const chatWith = route.params?.chatWith;
 
-  if (!customerId) {
-    return <Text>No customer selected</Text>;
-  }
-
   const sentRef = useMemo(() => ref(db, `medivana/messages-query/${customerId}/sent`), [customerId]);
   const receivedRef = useMemo(() => ref(db, `medivana/messages-query/${customerId}/received`), [customerId]);
 
   useEffect(() => {
+    if (!customerId) return;
     const handleDataChange = (snapshot, type) => {
       const data = snapshot.val();
       const newMessages = data
@@ -112,6 +109,10 @@ const HelpAgentChatScreen = () => {
     inputRange: [0, 1],
     outputRange: ["0deg", "360deg"],
   });
+
+  if (!customerId) {
+    return <Text>No customer selected</Text>;
+  }
 
   const pickImage = async () => {
     try {
