@@ -1,11 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { setItem, getItem } from "../utils/storage";
+import { AuthContext } from "../components/auth/AuthContext";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
   const saveTimeout = useRef(null);
+  const { userLogin } = useContext(AuthContext);
 
   useEffect(() => {
     const loadCart = async () => {
@@ -21,6 +23,12 @@ export const CartProvider = ({ children }) => {
 
     loadCart();
   }, []);
+
+  // Drop in-memory state on logout so the debounced save can't
+  // resurrect the purged "cart" key for the next user.
+  useEffect(() => {
+    if (!userLogin) setCart([]);
+  }, [userLogin]);
 
   useEffect(() => {
     if (saveTimeout.current) clearTimeout(saveTimeout.current);
