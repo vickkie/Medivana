@@ -2,7 +2,7 @@ import "react-native-gesture-handler";
 import { enableScreens } from "react-native-screens";
 import { NavigationContainer, DefaultTheme } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useContext } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import Toast from "react-native-toast-message";
@@ -10,8 +10,7 @@ import Toast from "react-native-toast-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import ErrorBoundary2 from "./screens_options/ErrorBoundary";
-import { AuthProvider } from "./components/auth/AuthContext";
-import { useAuthLoader } from "./components/auth/useAuthLoader";
+import { AuthContext, AuthProvider } from "./components/auth/AuthContext";
 
 import { ProfileCompletionProvider } from "./components/auth/ProfileCompletionContext";
 import { WishProvider } from "./contexts/WishContext";
@@ -23,6 +22,7 @@ import PushNotification from "./components/auth/pushNotification";
 
 import * as Screens from "./screens";
 
+SplashScreen.preventAutoHideAsync();
 enableScreens();
 const Stack = createNativeStackNavigator();
 const MyTheme = { ...DefaultTheme, colors: { ...DefaultTheme.colors, background: "#fff" } };
@@ -67,7 +67,9 @@ const SCREEN_LIST = [
   { name: "ReceiptScreen", component: Screens.ReceiptScreen, options: { headerShown: false } },
 ];
 
-export default function App() {
+function RootNavigator() {
+  const { authReady, userData } = useContext(AuthContext);
+
   const [fontsLoaded] = useFonts({
     bold: require("./assets/fonts/Urbanist/static/Urbanist-Bold.ttf"),
     extrabold: require("./assets/fonts/Urbanist/static/Urbanist-ExtraBold.ttf"),
@@ -79,18 +81,35 @@ export default function App() {
     italic: require("./assets/fonts/Urbanist/static/Urbanist-Italic.ttf"),
   });
 
-  const { userData, authLoading } = useAuthLoader();
-
   useEffect(() => {
-    if (!authLoading) SplashScreen.hideAsync();
-  }, [fontsLoaded, authLoading]);
+    if (authReady && fontsLoaded) SplashScreen.hideAsync();
+  }, [authReady, fontsLoaded]);
 
-  if (authLoading) {
+  if (!authReady || !fontsLoaded) {
     return null;
   }
 
   const initialRoute = userData ? "Bottom Navigation" : "Onboarding";
 
+  return (
+    <NavigationContainer theme={MyTheme}>
+      <PushNotification />
+      <Stack.Navigator initialRouteName={initialRoute}>
+        {SCREEN_LIST.map((screen, i) => (
+          <Stack.Screen
+            key={i}
+            name={screen.name}
+            component={screen.component}
+            options={screen.options}
+          />
+        ))}
+      </Stack.Navigator>
+      <Toast />
+    </NavigationContainer>
+  );
+}
+
+export default function App() {
   return (
     <ErrorBoundary2>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -99,20 +118,7 @@ export default function App() {
           <AuthProvider>
             <ProfileCompletionProvider>
               <WishProvider>
-                <NavigationContainer theme={MyTheme}>
-                  <PushNotification />
-                  <Stack.Navigator initialRouteName={initialRoute}>
-                    {SCREEN_LIST.map((screen, i) => (
-                      <Stack.Screen
-                        key={i}
-                        name={screen.name}
-                        component={screen.component}
-                        options={screen.options}
-                      />
-                    ))}
-                  </Stack.Navigator>
-                  <Toast />
-                </NavigationContainer>
+                <RootNavigator />
               </WishProvider>
             </ProfileCompletionProvider>
           </AuthProvider>

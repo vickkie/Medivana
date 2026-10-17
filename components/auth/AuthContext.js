@@ -17,6 +17,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [userLogin, setUserLogin] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
 
   const userDataRef = useRef(userData);
   useEffect(() => {
@@ -25,7 +26,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkExistingUser();
-  }, []);
+  }, [checkExistingUser]);
 
   const checkExistingUser = useCallback(async () => {
     try {
@@ -56,6 +57,8 @@ const AuthProvider = ({ children }) => {
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     } catch (error) {
       if (__DEV__) console.log("Error retrieving data:", error);
+    } finally {
+      setAuthReady(true);
     }
   }, []);
 
@@ -175,8 +178,9 @@ const AuthProvider = ({ children }) => {
       updateUserData,
       hasRole,
       getRole,
+      authReady,
     }),
-    [userData, userLogin, userLogout, login, logout, updateUserData, hasRole, getRole],
+    [userData, userLogin, userLogout, login, logout, updateUserData, hasRole, getRole, authReady],
   );
 
   return <AuthContext.Provider value={authContextValue}>{children}</AuthContext.Provider>;
