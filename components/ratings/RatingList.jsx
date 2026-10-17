@@ -149,7 +149,14 @@ export default function RatingsList({ filterList, searchQuery1 = "", isSearching
           disabled={!ratingEnabled}
         >
           <View style={styles.card}>
-            <Image source={{ uri: item.doctor?.profilePicture }} style={styles.avatar} />
+            <Image
+              source={
+                item.doctor?.profilePicture
+                  ? { uri: item.doctor.profilePicture }
+                  : require("../../assets/images/userDefault.webp")
+              }
+              style={styles.avatar}
+            />
             <View style={styles.info}>
               <View style={styles.anonyFlex}>
                 <Text style={styles.name}>
