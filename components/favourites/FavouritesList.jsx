@@ -15,7 +15,14 @@ const FavouritesList = ({ wishlist }) => {
       style={styles.doctorCard}
       onPress={() => navigation.navigate("DoctorDetails", { doctor: doctor })}
     >
-      <Image source={{ uri: doctor.profilePicture }} style={styles.doctorImage} />
+      <Image
+        source={
+          doctor.profilePicture
+            ? { uri: doctor.profilePicture }
+            : require("../../assets/images/userDefault.webp")
+        }
+        style={styles.doctorImage}
+      />
       <View style={styles.doctorInfo}>
         <Text style={styles.doctorName}>{doctor.fullName}</Text>
         <Text style={styles.doctorSpecialization}>{doctor.specialization?.name}</Text>
