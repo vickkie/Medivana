@@ -1,6 +1,6 @@
 {
   "name": "medivana-app",
-  "version": "2.3.0",
+  "version": "3.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "eas-build-pre-install": "node scripts/unpack-google-services.js",
@@ -74,6 +74,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-preset-expo": "~11.0.0",
     "eslint": "^8.57.1",
     "eslint-config-expo": "^7.1.2",

@@ -1,8 +1,7 @@
 module.exports = function (api) {
   api.cache(true);
-  const presets = ["babel-preset-expo"];
   return {
-    presets,
+    presets: ["babel-preset-expo"],
     plugins: [
       [
         "module:react-native-dotenv",
@@ -17,5 +16,10 @@ module.exports = function (api) {
       ],
       "react-native-reanimated/plugin",
     ],
+    env: {
+      production: {
+        plugins: ["transform-remove-console"],
+      },
+    },
   };
 };
