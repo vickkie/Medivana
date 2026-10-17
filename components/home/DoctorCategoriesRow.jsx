@@ -40,7 +40,7 @@ const DoctorCategoryCard = ({ item, backColor, isSelected, onSelect }) => {
             ]}
           >
             <Icon name={formatIconName(item.bodypart)} size={24} color={COLORS.white} />
-            <Image source={{ uri: item.icon }} style={styles.icon} />
+            {item.icon ? <Image source={{ uri: item.icon }} style={styles.icon} /> : null}
           </View>
           <Text style={[styles.title, isActive && { color: COLORS.themey }]}>
             {item.bodypart.charAt(0).toUpperCase() + item.bodypart.slice(1).toLowerCase()}
