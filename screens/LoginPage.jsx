@@ -5,13 +5,24 @@ import { Buffer } from "buffer";
 global.atob = (input) => Buffer.from(input, "base64").toString("utf-8");
 global.btoa = (input) => Buffer.from(input, "utf-8").toString("base64");
 
-import { View, Text, ScrollView, TouchableOpacity, TextInput, Alert, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  TextInput,
+  Alert,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Formik } from "formik";
 import * as Yup from "yup";
 
 import axios from "axios";
 import { AuthContext } from "../components/auth/AuthContext";
+import useGoogleLogin from "../components/auth/useGoogleLogin";
 import BackBtn from "../components/BackBtn";
 import CustomButton from "../components/Button";
 
@@ -32,6 +43,7 @@ const validationSchema = Yup.object().shape({
 
 const LoginPage = ({ navigation }) => {
   const { login, getRole, hasRole } = useContext(AuthContext);
+  const { handleGoogleLogin, googleLoading, googleEnabled } = useGoogleLogin();
   const [loader, setLoader] = useState(false);
   const [userType, setUserType] = useState("customer");
   const [rememberMe, setRememberMe] = useState(true);
@@ -216,9 +228,19 @@ const LoginPage = ({ navigation }) => {
                 </View>
 
                 <View style={styles.socialLogin}>
-                  <TouchableOpacity style={styles.socialLoginItem}>
-                    <Icon name="google" size={20} color={COLORS.gray} />
-                  </TouchableOpacity>
+                  {googleEnabled !== false && (
+                    <TouchableOpacity
+                      style={styles.socialLoginItem}
+                      onPress={handleGoogleLogin}
+                      disabled={googleLoading}
+                    >
+                      {googleLoading ? (
+                        <ActivityIndicator size={20} color={COLORS.gray} />
+                      ) : (
+                        <Icon name="google" size={20} color={COLORS.gray} />
+                      )}
+                    </TouchableOpacity>
+                  )}
 
                   <TouchableOpacity style={styles.socialLoginItem}>
                     <Icon name="apple" size={20} color={COLORS.gray} />
