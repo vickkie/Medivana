@@ -11,7 +11,8 @@
     "web": "expo start --web",
     "lint": "eslint .",
     "test": "jest",
-    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install"
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install",
+    "postinstall": "patch-package"
   },
   "jest": {
     "preset": "jest-expo"
@@ -81,6 +82,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-unused-imports": "^4.3.0",
     "jest-expo": "^51.0.4",
+    "patch-package": "^8.0.1",
     "prettier": "^3.9.10",
     "react-native-svg-transformer": "^1.5.0",
     "react-test-renderer": "^18.2.0"

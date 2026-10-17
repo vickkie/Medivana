@@ -1,0 +1,17 @@
+diff --git a/node_modules/react-native-reanimated/src/reanimated2/shareables.ts b/node_modules/react-native-reanimated/src/reanimated2/shareables.ts
+index 51139ce..224b10c 100644
+--- a/node_modules/react-native-reanimated/src/reanimated2/shareables.ts
++++ b/node_modules/react-native-reanimated/src/reanimated2/shareables.ts
+@@ -262,7 +262,11 @@ Offending code was: \`${getWorkletCode(value)}\``);
+         // code expecting that the updates are going to automatically populate to
+         // the object sent to the UI thread. If the user really wants some objects
+         // to be mutable they should use shared values instead.
+-        Object.freeze(value);
++        // Ref-like objects ({current: ...}) must stay writable — components
++        // (e.g. animated wrappers) attach native refs by assigning .current.
++        const keys = Object.keys(value);
++        const isRefLike = keys.length === 1 && keys[0] === 'current';
++        if (!isRefLike) Object.freeze(value);
+       }
+       const adopted = NativeReanimatedModule.makeShareableClone(
+         toAdapt,
