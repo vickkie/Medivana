@@ -129,7 +129,11 @@ const ProfileDetails = () => {
               onPress={() => !disabled && onGenderSelect(gender.key)}
               disabled={disabled}
             >
-              <Text style={[styles.genderButtonText, selectedGender === gender.key && styles.genderButtonTextSelected]}>
+              <Text
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                style={[styles.genderButtonText, selectedGender === gender.key && styles.genderButtonTextSelected]}
+              >
                 {gender.label}
               </Text>
             </TouchableOpacity>
@@ -571,16 +575,15 @@ const styles = StyleSheet.create({
   },
   genderButtonsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    gap: SIZES.xSmall,
     marginHorizontal: SIZES.large,
   },
   genderButton: {
     flex: 1,
     backgroundColor: COLORS.themeg,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 4,
     borderRadius: SIZES.medium,
-    marginHorizontal: 4,
     borderWidth: 2,
     borderColor: "transparent",
     alignItems: "center",
@@ -595,7 +598,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   genderButtonText: {
-    fontSize: SIZES.small + 4,
+    fontSize: SIZES.small + 2,
     fontFamily: "medium",
     color: COLORS.gray,
   },
