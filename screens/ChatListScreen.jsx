@@ -10,6 +10,7 @@ import LottieView from "lottie-react-native";
 import { db } from "../components/auth/firebase";
 import { ref, onValue } from "firebase/database";
 import axios from "axios";
+import api from "../utils/api";
 
 import { BACKEND_PORT } from "@env";
 import { CommonActions } from "@react-navigation/native";
@@ -109,20 +110,13 @@ const ChatListScreen = () => {
 
   const startChat = async (user) => {
     try {
-      const response = await fetch(`${BACKEND_URL}/api/chat/start-chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          senderId: userData._id,
-          senderRole: userData.role ? "doctor" : "user",
-          receiverId: user._id,
-          receiverRole: user.role ? "doctor" : "user",
-        }),
+      const { data: chat } = await api.post("/api/chat/start-chat", {
+        senderId: userData._id,
+        senderRole: userData.role ? "doctor" : "user",
+        receiverId: user._id,
+        receiverRole: user.role ? "doctor" : "user",
       });
 
-      if (!response.ok) throw new Error("Failed to start chat");
-
-      const chat = await response.json();
       navigation.navigate("ChatScreen", { chatId: chat._id, chatWith: user, userData });
     } catch (error) {
       console.error("Error starting chat:", error);
