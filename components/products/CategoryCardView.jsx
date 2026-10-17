@@ -1,6 +1,5 @@
 import { Text, TouchableOpacity, View, Image } from "react-native";
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import styles from "./categorycardview.style";
 
@@ -33,7 +32,6 @@ const cacheImage = async (uri) => {
 };
 
 const CategoryCardView = ({ item }) => {
-  const navigation = useNavigation();
   const [imageUri, setImageUri] = React.useState(null);
 
   React.useEffect(() => {
@@ -44,16 +42,8 @@ const CategoryCardView = ({ item }) => {
     loadImage();
   }, [item.imageUrl]);
 
-  const routeParam = `products/category/${item?.title}`;
-
-  const category = item?.title;
-
   return (
-    <TouchableOpacity
-      onPress={() => {
-        navigation.navigate("ProductList", { routeParam, category });
-      }}
-    >
+    <TouchableOpacity activeOpacity={1}>
       <View style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
