@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext, useMemo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "./AuthContext";
-import { BACKEND_PORT } from "@env";
+import api from "../../utils/api";
 
 const ProfileCompletionContext = createContext();
 
@@ -96,17 +96,14 @@ const ProfileCompletionProvider = ({ children }) => {
     let endpoint = "";
     // console.log(userData?._id);
     if (staffRoles.includes(userData.position)) {
-      endpoint = `${BACKEND_PORT}/api/staff/v1/incomplete/${userData._id}`;
+      endpoint = `/api/staff/v1/incomplete/${userData._id}`;
     } else {
-      endpoint = `${BACKEND_PORT}/api/user/v1/incomplete/${userData._id}`;
+      endpoint = `/api/user/v1/incomplete/${userData._id}`;
     }
 
     try {
-      const response = await fetch(endpoint);
-      // console.log(response.status);
-      if (response.status === 200) {
-        const data = await response.json();
-        // console.log(data);
+      const { data, status } = await api.get(endpoint);
+      if (status === 200) {
         setCompletionPercentage(data.completionPercentage);
         setMissingFields(data.incompleteFields);
         setMessage(data.message);
