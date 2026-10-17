@@ -56,11 +56,14 @@ const CategoryCardView = ({ item }) => {
     >
       <View style={styles.container}>
         <View style={styles.imageContainer}>
-          {imageUri ? (
-            <Image source={{ uri: imageUri }} style={styles.image} />
-          ) : (
-            <Image source={{ uri: item.imageUrl }} style={styles.image} />
-          )}
+          <Image
+            source={
+              imageUri || item.imageUrl
+                ? { uri: imageUri || item.imageUrl }
+                : require("../../assets/images/no-found.png")
+            }
+            style={styles.image}
+          />
         </View>
         <View style={styles.details}>
           <Text style={styles.title} numberOfLines={1}>
