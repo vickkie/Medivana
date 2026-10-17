@@ -85,6 +85,9 @@ const Home = () => {
   const [doctorCount, setDoctorCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Greeting shows a single name only
+  const displayName = userData?.personalDetails?.firstname || userData?.username?.split(" ")[0];
+
   useEffect(() => {
     if (route.name !== "Bottom Navigation") {
       navigation.navigate("Bottom Navigation");
@@ -141,8 +144,10 @@ const Home = () => {
               <TouchableOpacity onPress={openMenu} style={styles.buttonWrap2}>
                 {renderProfilePicture()}
               </TouchableOpacity>
-              <View style={{ marginLeft: 7, justifyContent: "center" }}>
-                <Text style={styles.welcomeText2}>Hello, {userData ? userData.username : "There"}</Text>
+              <View style={{ marginLeft: 7, justifyContent: "center", flexShrink: 1 }}>
+                <Text style={styles.welcomeText2} numberOfLines={1} ellipsizeMode="tail">
+                  Hello, {displayName || "There"}
+                </Text>
                 <Text style={styles.welcomeText}>{userData ? "Welcome Back" : "Start journey today"}</Text>
               </View>
             </View>
