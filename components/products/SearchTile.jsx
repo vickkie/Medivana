@@ -19,7 +19,11 @@ const SearchTile = ({ item }) => {
         }}
       >
         <View style={styles.container}>
-          <Image source={{ uri: item.imageUrl }} style={styles.image} sharedTransitionTag={`${item.id}`} />
+          <Image
+            source={item.imageUrl ? { uri: item.imageUrl } : require("../../assets/images/no-found.png")}
+            style={styles.image}
+            sharedTransitionTag={`${item.id}`}
+          />
           <View style={styles.textContainer}>
             <Text style={styles.productTitle}>{item.title}</Text>
           </View>
