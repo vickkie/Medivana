@@ -17,9 +17,8 @@ import { useNavigation } from "@react-navigation/native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import api from "../utils/api";
 
-import { BACKEND_PORT } from "@env";
 import * as ImagePicker from "expo-image-picker";
 import ButtonMain from "../components/ButtonMain";
 import Toast from "react-native-toast-message";
@@ -86,7 +85,7 @@ const UserDetails = () => {
     });
 
     try {
-      const response = await axios.post(`${BACKEND_PORT}/upload`, formData, {
+      const response = await api.post("/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -120,9 +119,7 @@ const UserDetails = () => {
         profilePictureUrl: profilePictureUrl || undefined,
       };
 
-      const endpoint = `${BACKEND_PORT}/api/user/profPic/${userData?._id}`;
-
-      const response = await axios.put(endpoint, userUpdateData, {
+      const response = await api.put(`/api/user/profPic/${userData?._id}`, userUpdateData, {
         headers: {
           "Content-Type": "application/json",
         },
