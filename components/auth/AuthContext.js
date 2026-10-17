@@ -24,10 +24,6 @@ const AuthProvider = ({ children }) => {
     userDataRef.current = userData;
   }, [userData]);
 
-  useEffect(() => {
-    checkExistingUser();
-  }, [checkExistingUser]);
-
   const checkExistingUser = useCallback(async () => {
     try {
       const id = await AsyncStorage.getItem("id");
@@ -61,6 +57,10 @@ const AuthProvider = ({ children }) => {
       setAuthReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    checkExistingUser();
+  }, [checkExistingUser]);
 
   const login = useCallback(async (data) => {
     await AsyncStorage.removeItem("id");

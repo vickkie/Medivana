@@ -70,7 +70,7 @@ const SCREEN_LIST = [
 function RootNavigator() {
   const { authReady, userData } = useContext(AuthContext);
 
-  const [fontsLoaded] = useFonts({
+  const [fontsLoaded, fontError] = useFonts({
     bold: require("./assets/fonts/Urbanist/static/Urbanist-Bold.ttf"),
     extrabold: require("./assets/fonts/Urbanist/static/Urbanist-ExtraBold.ttf"),
     light: require("./assets/fonts/Urbanist/static/Urbanist-Light.ttf"),
@@ -81,11 +81,13 @@ function RootNavigator() {
     italic: require("./assets/fonts/Urbanist/static/Urbanist-Italic.ttf"),
   });
 
-  useEffect(() => {
-    if (authReady && fontsLoaded) SplashScreen.hideAsync();
-  }, [authReady, fontsLoaded]);
+  const fontsReady = fontsLoaded || fontError;
 
-  if (!authReady || !fontsLoaded) {
+  useEffect(() => {
+    if (authReady && fontsReady) SplashScreen.hideAsync();
+  }, [authReady, fontsReady]);
+
+  if (!authReady || !fontsReady) {
     return null;
   }
 
