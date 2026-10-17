@@ -25,9 +25,11 @@ export async function registerForPushNotificationsAsync(userId) {
   }
 
   let { status } = await Notifications.getPermissionsAsync();
+  if (__DEV__) console.log("[push] initial permission status:", JSON.stringify(status));
 
   if (status !== "granted") {
     const { status: newStatus } = await Notifications.requestPermissionsAsync();
+    if (__DEV__) console.log("[push] after request:", JSON.stringify(newStatus));
     status = newStatus;
   }
 
@@ -36,7 +38,11 @@ export async function registerForPushNotificationsAsync(userId) {
     return;
   }
 
-  const lastToken = await AsyncStorage.getItem("lastExpoPushToken");
+  // Dedupe per-user: a shared key would skip re-registration after an
+  // account switch, leaving pushes targeted at the previous account.
+  const lastTokenKey = `lastExpoPushToken_${userId}`;
+  const lastToken = await AsyncStorage.getItem(lastTokenKey);
+  if (__DEV__) console.log("[push] registering for userId:", userId);
   const projectId = Constants.expoConfig?.extra?.eas?.projectId ?? EAS_PROJECT_ID;
 
   if (!projectId) {
@@ -47,7 +53,9 @@ export async function registerForPushNotificationsAsync(userId) {
   let token = null;
 
   try {
+    if (__DEV__) console.log("[push] fetching expo push token, projectId:", projectId);
     const response = await Notifications.getExpoPushTokenAsync({ projectId });
+    if (__DEV__) console.log("[push] token response:", JSON.stringify(response).slice(0, 80));
 
     if (response?.data) {
       token = response.data;
@@ -59,14 +67,19 @@ export async function registerForPushNotificationsAsync(userId) {
     return;
   }
 
-  if (!token || token === lastToken) return;
+  if (!token || token === lastToken) {
+    if (__DEV__) console.log("[push] skipping save — token unchanged");
+    return;
+  }
 
   try {
+    if (__DEV__) console.log("[push] POSTing token to", `${BACKEND_PORT}/api/notification/updatePushToken`);
     await axios.post(`${BACKEND_PORT}/api/notification/updatePushToken`, {
       userId,
       expoPushToken: token,
     });
-    await AsyncStorage.setItem("lastExpoPushToken", token);
+    await AsyncStorage.setItem(lastTokenKey, token);
+    if (__DEV__) console.log("[push] expo push token saved to backend");
   } catch (err) {
     if (__DEV__) console.error("Error updating push token:", err);
   }
