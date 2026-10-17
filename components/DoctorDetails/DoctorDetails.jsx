@@ -368,8 +368,8 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
               </View>
               <View style={styles.slotsHolder}>
                 {availableHours.map((slot, index) => (
-                  <TouchableOpacity style={styles.timeslots}>
-                    <Text key={index} style={styles.timeslot}>
+                  <TouchableOpacity key={index} style={styles.timeslots}>
+                    <Text style={styles.timeslot}>
                       {slot.from} - {slot.to}
                     </Text>
                   </TouchableOpacity>
