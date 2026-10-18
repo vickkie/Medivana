@@ -17,8 +17,7 @@ import Icon from "../constants/icons";
 import { SIZES, COLORS } from "../constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../components/auth/AuthContext";
-import axios from "axios";
-import { BACKEND_PORT } from "@env";
+import api from "../utils/api";
 import {
   Calendar,
   CalendarCogIcon,
@@ -61,12 +60,7 @@ const AppointmentDetails = () => {
       setIsLoading(true);
       setErrorState(false);
 
-      const response = await axios.get(`${BACKEND_PORT}/api/v1/appointment/by/${appointmentId}`, {
-        headers: {
-          Authorization: `Bearer ${userData?.token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await api.get(`/api/v1/appointment/by/${appointmentId}`);
 
       if (response.data.success) {
         // console.log(appointmentId);
@@ -138,16 +132,7 @@ const AppointmentDetails = () => {
   const cancelAppointment = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.patch(
-        `${BACKEND_PORT}/api/v1/appointment/${appointmentId}/cancel`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${userData?.Token}`,
-            "Content-Type": "application/json",
-          },
-        },
-      );
+      const response = await api.patch(`/api/v1/appointment/${appointmentId}/cancel`, {});
 
       if (response.data.success) {
         setAppointment((prev) => ({ ...prev, isCancelled: true }));
