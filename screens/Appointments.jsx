@@ -9,7 +9,7 @@ import { CalendarDays, Search, SlidersHorizontal, ChevronLeft } from "lucide-rea
 const Appointments = () => {
   const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSearch, setShowSearch] = useState(true);
+  const [showWeek, setShowWeek] = useState(false);
 
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
@@ -26,31 +26,30 @@ const Appointments = () => {
         <Text style={styles.title}>APPOINTMENTS</Text>
 
         <TouchableOpacity
-          onPress={() => setShowSearch((v) => !v)}
-          style={styles.circleButton}
+          onPress={() => setShowWeek((v) => !v)}
+          style={[styles.circleButton, showWeek && { borderColor: COLORS.themey, borderWidth: 1.5 }]}
           accessibilityRole="button"
-          accessibilityLabel="Toggle search"
+          accessibilityLabel="Toggle week view"
+          accessibilityState={{ selected: showWeek }}
         >
-          <CalendarDays size={20} color={COLORS.themey} />
+          <CalendarDays size={20} color={showWeek ? COLORS.themey : "#64748B"} />
         </TouchableOpacity>
       </View>
 
-      {showSearch && (
-        <View style={styles.searchBar}>
-          <Search size={18} color="#94A3B8" />
-          <TextInput
-            style={styles.searchInput}
-            placeholder="Search by doctor or specialty…"
-            placeholderTextColor="#94A3B8"
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-          <SlidersHorizontal size={18} color="#94A3B8" />
-        </View>
-      )}
+      <View style={styles.searchBar}>
+        <Search size={18} color="#94A3B8" />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search by doctor or specialty…"
+          placeholderTextColor="#94A3B8"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+        <SlidersHorizontal size={18} color="#94A3B8" />
+      </View>
 
       <View style={styles.listWrapper}>
-        <AppointmentPage searchQuery1={searchQuery} isSearching={showSearch} />
+        <AppointmentPage searchQuery1={searchQuery} showWeek={showWeek} />
       </View>
     </SafeAreaView>
   );
