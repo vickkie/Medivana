@@ -37,11 +37,13 @@ import MedicalDetails from "../components/Profile/MedicalDetails";
 import NotificationSettings from "../components/Profile/NotificationSettings";
 import PrivacyPolicy from "../components/Profile/PrivacyPolicy";
 import Ratings from "./Ratings";
+import DoctorReviews from "./DoctorReviews";
 import ReceiptScreen from "./ReceiptScreen";
 // Export only user screens
 export {
   ReceiptScreen,
   Ratings,
+  DoctorReviews,
   PrivacyPolicy,
   NotificationSettings,
   MedicalDetails,
