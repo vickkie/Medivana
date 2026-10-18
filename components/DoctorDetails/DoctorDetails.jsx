@@ -67,7 +67,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
   const [currentMonth, setCurrentMonth] = useState("");
   const [availableHours, setAvailableHours] = useState([]);
   const [weekOffset, setWeekOffset] = useState(0);
-  const [showAllReviews, setShowAllReviews] = useState(false);
+
 
   useEffect(() => {
     const weekDays = getWeekDays();
@@ -163,12 +163,6 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
         })
       : handleShowLogin();
   };
-
-  useEffect(() => {
-    if (showAllReviews) {
-      setShowAllReviews(false);
-    }
-  }, []);
 
   const isFavorited = isItemInWishlist(doctorData);
 
@@ -317,8 +311,7 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
 
           {/* Availability Calendar */}
 
-          {!showAllReviews && (
-            <View style={styles.availabilitySection}>
+          <View style={styles.availabilitySection}>
               <View style={styles.availabilityHeader}>
                 <Text style={styles.sectionTitle}>Availability</Text>
 
@@ -382,38 +375,33 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                 )}
               </View>
             </View>
-          )}
           <View style={styles.aboutSection}>
-            {!showAllReviews && (
-              <>
-                <Text style={styles.sectionTitle}>About Doctor</Text>
-                <View style={styles.doctorBio}>
-                  <Text style={styles.bioText}>{doctorData?.bio}</Text>
-                </View>
+            <Text style={styles.sectionTitle}>About Doctor</Text>
+            <View style={styles.doctorBio}>
+              <Text style={styles.bioText}>{doctorData?.bio}</Text>
+            </View>
 
-                <View style={styles.doctorQualifications}>
-                  <Text style={styles.sectionTitle}>Qualifications</Text>
-                  <View style={styles.qualificationList}>
-                    {doctorData?.qualifications.map((qual, index) => (
-                      <Text key={index} style={styles.qualificationItem}>
-                        • {qual}
-                      </Text>
-                    ))}
-                  </View>
-                </View>
+            <View style={styles.doctorQualifications}>
+              <Text style={styles.sectionTitle}>Qualifications</Text>
+              <View style={styles.qualificationList}>
+                {doctorData?.qualifications.map((qual, index) => (
+                  <Text key={index} style={styles.qualificationItem}>
+                    • {qual}
+                  </Text>
+                ))}
+              </View>
+            </View>
 
-                <View style={styles.doctorLanguages}>
-                  <Text style={styles.languageTitle}>Languages Spoken</Text>
-                  <View style={styles.languageList}>
-                    {doctorData?.languagesSpoken.map((lang, index) => (
-                      <View key={index} style={styles.languageTag}>
-                        <Text style={styles.languageText}>{lang}</Text>
-                      </View>
-                    ))}
+            <View style={styles.doctorLanguages}>
+              <Text style={styles.languageTitle}>Languages Spoken</Text>
+              <View style={styles.languageList}>
+                {doctorData?.languagesSpoken.map((lang, index) => (
+                  <View key={index} style={styles.languageTag}>
+                    <Text style={styles.languageText}>{lang}</Text>
                   </View>
-                </View>
-              </>
-            )}
+                ))}
+              </View>
+            </View>
 
             {Array.isArray(doctorData?.ratings) && doctorData.ratings.length > 0 && (
               <View style={styles.latestReviewSection}>
@@ -422,7 +410,15 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                     Patient Reviews ({doctorData.ratings.length})
                   </Text>
                   <TouchableOpacity
-                    onPress={() => setShowAllReviews(!showAllReviews)}
+                    onPress={() =>
+                      navigation.navigate("DoctorReviews", {
+                        ratings: doctorData?.ratings || [],
+                        doctorName:
+                          doctorData?.fullName ||
+                          `${doctorData?.firstname || ""} ${doctorData?.lastname || ""}`.trim() ||
+                          "Doctor",
+                      })
+                    }
                     style={{ paddingHorizontal: 10, paddingVertical: 2 }}
                   >
                     <Text
@@ -432,106 +428,56 @@ const DoctorDetails = ({ sendDataToParent, routeParams }) => {
                         fontSize: 14,
                       }}
                     >
-                      {!showAllReviews ? "See all" : "See less"}
+                      See all
                     </Text>
                   </TouchableOpacity>
                 </View>
-                {showAllReviews
-                  ? [...doctorData.ratings]
-                      .sort((a, b) => {
-                        const aDate = new Date(a.date || a.createdAt);
-                        const bDate = new Date(b.date || b.createdAt);
-                        return bDate - aDate;
-                      })
-                      .map((review, idx) => {
-                        const displayName = review.anonymous ? "Anonymous" : review.userId?.username || "Patient";
-                        const reviewDate = review.date
-                          ? new Date(review.date).toLocaleDateString()
-                          : review.createdAt
-                          ? new Date(review.createdAt).toLocaleDateString()
-                          : "";
-                        return (
-                          <View
-                            key={idx}
-                            style={{
-                              backgroundColor: "#F2F5FA",
-                              borderRadius: 10,
-                              padding: 12,
-                              marginBottom: 9,
-                            }}
-                          >
-                            <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-                              <Text style={{ fontFamily: "semibold", fontSize: 15, color: "#242D3B", marginRight: 10 }}>
-                                {displayName}
+                {(() => {
+                  const latestReview = [...doctorData.ratings].sort((a, b) => {
+                    const aDate = new Date(a.date || a.createdAt);
+                    const bDate = new Date(b.date || b.createdAt);
+                    return bDate - aDate;
+                  })[0];
+
+                  if (!latestReview) return null;
+
+                  const displayName = latestReview.anonymous
+                    ? "Anonymous"
+                    : latestReview.userId?.username || latestReview?.userId?.fullName || "Patient";
+                  const reviewDate = latestReview.date
+                    ? new Date(latestReview.date).toLocaleDateString()
+                    : latestReview.createdAt
+                    ? new Date(latestReview.createdAt).toLocaleDateString()
+                    : "";
+
+                  return (
+                    <View style={{ backgroundColor: "#F2F5FA", borderRadius: 10, padding: 12 }}>
+                      <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
+                        <Text style={{ fontFamily: "semibold", fontSize: 15, color: "#242D3B", marginRight: 10 }}>
+                          {displayName}
+                        </Text>
+                        {latestReview.rating && (
+                          <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <Text
+                                key={i}
+                                style={{ color: i < latestReview.rating ? "#FEA900" : "#CCC", fontSize: 14 }}
+                              >
+                                ★
                               </Text>
-                              {review.rating && (
-                                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                  {Array.from({ length: 5 }).map((_, i) => (
-                                    <Text
-                                      key={i}
-                                      style={{ color: i < review.rating ? "#FEA900" : "#CCC", fontSize: 14 }}
-                                    >
-                                      ★
-                                    </Text>
-                                  ))}
-                                </View>
-                              )}
-                              {reviewDate ? (
-                                <Text style={{ marginLeft: 12, fontSize: 12, color: "#8995A2" }}>{reviewDate}</Text>
-                              ) : null}
-                            </View>
-                            <Text style={{ color: "#3F485B", fontFamily: "medium", fontSize: 15 }}>
-                              {review.comment}
-                            </Text>
+                            ))}
                           </View>
-                        );
-                      })
-                  : (() => {
-                      const latestReview = [...doctorData.ratings].sort((a, b) => {
-                        const aDate = new Date(a.date || a.createdAt);
-                        const bDate = new Date(b.date || b.createdAt);
-                        return bDate - aDate;
-                      })[0];
-
-                      if (!latestReview) return null;
-
-                      const displayName = latestReview.anonymous
-                        ? "Anonymous"
-                        : latestReview.userId?.username || latestReview?.userId?.fullName || "Patient";
-                      const reviewDate = latestReview.date
-                        ? new Date(latestReview.date).toLocaleDateString()
-                        : latestReview.createdAt
-                        ? new Date(latestReview.createdAt).toLocaleDateString()
-                        : "";
-
-                      return (
-                        <View style={{ backgroundColor: "#F2F5FA", borderRadius: 10, padding: 12 }}>
-                          <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 4 }}>
-                            <Text style={{ fontFamily: "semibold", fontSize: 15, color: "#242D3B", marginRight: 10 }}>
-                              {displayName}
-                            </Text>
-                            {latestReview.rating && (
-                              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                {Array.from({ length: 5 }).map((_, i) => (
-                                  <Text
-                                    key={i}
-                                    style={{ color: i < latestReview.rating ? "#FEA900" : "#CCC", fontSize: 14 }}
-                                  >
-                                    ★
-                                  </Text>
-                                ))}
-                              </View>
-                            )}
-                            {reviewDate ? (
-                              <Text style={{ marginLeft: 12, fontSize: 12, color: "#8995A2" }}>{reviewDate}</Text>
-                            ) : null}
-                          </View>
-                          <Text style={{ color: "#3F485B", fontFamily: "medium", fontSize: 15 }}>
-                            {latestReview.comment}
-                          </Text>
-                        </View>
-                      );
-                    })()}
+                        )}
+                        {reviewDate ? (
+                          <Text style={{ marginLeft: 12, fontSize: 12, color: "#8995A2" }}>{reviewDate}</Text>
+                        ) : null}
+                      </View>
+                      <Text style={{ color: "#3F485B", fontFamily: "medium", fontSize: 15 }}>
+                        {latestReview.comment}
+                      </Text>
+                    </View>
+                  );
+                })()}
               </View>
             )}
           </View>
