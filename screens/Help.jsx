@@ -274,7 +274,7 @@ const Help = () => {
           >
             <ChevronLeft size={20} color="#334155" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Help</Text>
+          <Text style={styles.headerTitle}>Contact Support</Text>
           <View style={{ width: 38 }} />
         </SafeAreaView>
 
