@@ -64,6 +64,7 @@ const SCREEN_LIST = [
   { name: "NotificationSettings", component: Screens.NotificationSettings, options: { headerShown: true } },
   { name: "PrivacyPolicy", component: Screens.PrivacyPolicy, options: { headerShown: false } },
   { name: "Ratings", component: Screens.Ratings, options: { headerShown: false } },
+  { name: "DoctorReviews", component: Screens.DoctorReviews, options: { headerShown: false } },
   { name: "ReceiptScreen", component: Screens.ReceiptScreen, options: { headerShown: false } },
 ];
 
