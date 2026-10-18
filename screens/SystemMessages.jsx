@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, StyleSheet, ActivityIndicator, ImageBackground, Text, Image } from "react-native";
+import { View, StyleSheet, ActivityIndicator, ImageBackground, Text, Image, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
+import { useNavigation } from "@react-navigation/native";
+import { ChevronLeft } from "lucide-react-native";
 import { COLORS, SIZES } from "../constants";
 import { AuthContext } from "../components/auth/AuthContext";
 import useFetch from "../hook/useFetch";
@@ -8,6 +11,7 @@ import LottieView from "lottie-react-native";
 import { RefreshControl } from "react-native-gesture-handler";
 
 const SystemMessages = () => {
+  const navigation = useNavigation();
   const [messages, setMessages] = useState([]);
   const { userData, userLogin } = useContext(AuthContext);
   const [userId, setUserId] = useState(null);
@@ -117,6 +121,19 @@ const SystemMessages = () => {
         source={require("../assets/images/chat-glass.png")}
         style={styles.backgroundImage}
       >
+        <SafeAreaView edges={["top"]} style={styles.header}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.circleButton}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+          >
+            <ChevronLeft size={20} color="#334155" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Notifications</Text>
+          <View style={{ width: 38 }} />
+        </SafeAreaView>
+
         {messages && (
           <Image
             source={require("../assets/icons/medivana-splash-256.png")} // Path to your static avatar image
@@ -149,6 +166,27 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  headerTitle: {
+    fontSize: SIZES.medium,
+    fontFamily: "bold",
+    letterSpacing: 1,
+    color: "#0F172A",
+  },
+  circleButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: COLORS.themew,
+    justifyContent: "center",
+    alignItems: "center",
   },
   avatar: {
     width: 30,
