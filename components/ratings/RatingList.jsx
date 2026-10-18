@@ -224,25 +224,23 @@ export default function RatingsList({ filterList, searchQuery1 = "", isSearching
         }
       >
         {isSearching && (
-          <View style={{ flexDirection: "row", justifyContent: "space-around", marginVertical: 10 }}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.filterRow}
+          >
             {["All", "Rated", "Pending Rating", "Not Completed"].map((status) => (
               <TouchableOpacity
                 key={status}
                 onPress={() => setSelectedStatus(status)}
-                style={{
-                  padding: 8,
-                  backgroundColor: selectedStatus === status ? COLORS.themey : "#ddd",
-                  borderRadius: 20,
-                }}
+                style={[styles.filterChip, selectedStatus === status && styles.filterChipActive]}
               >
-                <Text
-                  style={{ color: selectedStatus === status ? "#fff" : COLORS.themeb, fontSize: 12, fontWeight: 700 }}
-                >
+                <Text style={[styles.filterChipText, selectedStatus === status && styles.filterChipTextActive]}>
                   {status}
                 </Text>
               </TouchableOpacity>
             ))}
-          </View>
+          </ScrollView>
         )}
 
         <SafeAreaView>
@@ -363,6 +361,34 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   emptyText: { textAlign: "center", color: "#AAA", marginTop: 50 },
+  filterRow: {
+    flexDirection: "row",
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    gap: 8,
+    flexGrow: 0,
+  },
+  filterChip: {
+    paddingHorizontal: 18,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: COLORS.themew,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+  filterChipActive: {
+    backgroundColor: COLORS.themey,
+    borderColor: COLORS.themey,
+  },
+  filterChipText: {
+    fontSize: 13,
+    fontFamily: "medium",
+    color: "#475569",
+  },
+  filterChipTextActive: {
+    color: COLORS.themew,
+    fontFamily: "semibold",
+  },
   errorContainer: {
     flex: 1,
     alignItems: "center",
