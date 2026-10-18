@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { TOKEN_KEY, setUnauthorizedHandler } from "../../utils/api";
+import { TOKEN_KEY, REFRESH_KEY, setUnauthorizedHandler } from "../../utils/api";
 
 import { Buffer } from "buffer";
 // import { startPermissionCheck } from "./registerPushNotification";
@@ -70,11 +70,12 @@ const AuthProvider = ({ children }) => {
 
     axios.defaults.headers.common["Authorization"] = `Bearer ${data?.TOKEN}`;
     if (data?.TOKEN) await SecureStore.setItemAsync(TOKEN_KEY, data.TOKEN);
+    if (data?.REFRESH_TOKEN) await SecureStore.setItemAsync(REFRESH_KEY, data.REFRESH_TOKEN);
 
     await AsyncStorage.setItem("id", JSON.stringify(data?._id));
 
     // Persist the profile without the token - the token lives in SecureStore.
-    const { TOKEN, ...profile } = data;
+    const { TOKEN, REFRESH_TOKEN, ...profile } = data;
     await AsyncStorage.setItem(`user${data?._id}`, JSON.stringify(profile));
   }, []);
 
@@ -84,6 +85,7 @@ const AuthProvider = ({ children }) => {
 
     delete axios.defaults.headers.common["Authorization"];
     await SecureStore.deleteItemAsync(TOKEN_KEY);
+    await SecureStore.deleteItemAsync(REFRESH_KEY);
 
     try {
       const keys = await AsyncStorage.getAllKeys();
@@ -127,7 +129,8 @@ const AuthProvider = ({ children }) => {
 
     try {
       if (updatedData.TOKEN) await SecureStore.setItemAsync(TOKEN_KEY, updatedData.TOKEN);
-      const { TOKEN, ...profile } = updatedData;
+      if (updatedData.REFRESH_TOKEN) await SecureStore.setItemAsync(REFRESH_KEY, updatedData.REFRESH_TOKEN);
+      const { TOKEN, REFRESH_TOKEN, ...profile } = updatedData;
       await AsyncStorage.setItem(`user${updatedData._id}`, JSON.stringify(profile));
     } catch (error) {
       if (__DEV__) console.error("Error saving user data to AsyncStorage:", error);
