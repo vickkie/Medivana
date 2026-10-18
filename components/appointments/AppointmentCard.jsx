@@ -37,49 +37,50 @@ export default function AppointmentCard({ appointment, onPress }) {
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.8}>
-      <Image
-        source={
-          doctor?.profilePicture
-            ? { uri: doctor.profilePicture }
-            : require("../../assets/images/userDefault.webp")
-        }
-        style={styles.avatar}
-      />
+      <View style={styles.topRow}>
+        <Image
+          source={
+            doctor?.profilePicture
+              ? { uri: doctor.profilePicture }
+              : require("../../assets/images/userDefault.webp")
+          }
+          style={styles.avatar}
+        />
 
-      <View style={styles.info}>
-        <Text style={styles.name} numberOfLines={1}>
-          Dr. {doctor?.fullName || `${doctor?.firstname || ""} ${doctor?.lastname || ""}`.trim() || "Doctor"}
-        </Text>
-        <Text style={styles.specialty} numberOfLines={1}>
-          {specialty}
-        </Text>
-
-        <View style={[styles.statusPill, { backgroundColor: statusStyle.bg, borderColor: statusStyle.border }]}>
-          <View style={[styles.statusDot, { backgroundColor: statusStyle.text }]} />
-          <Text style={[styles.statusText, { color: statusStyle.text }]}>{status}</Text>
-        </View>
-
-        <View style={styles.divider} />
-
-        <View style={styles.metaRow}>
-          <View style={styles.metaItem}>
-            <Calendar1 size={15} color={COLORS.themey} />
-            <Text style={styles.metaText}>{formatDate(appointment?.appointmentDate)}</Text>
-          </View>
-          <View style={styles.metaItem}>
-            <Clock size={15} color={COLORS.themey} />
-            <Text style={styles.metaText}>{formatTime(appointment?.appointmentTime)}</Text>
-          </View>
-        </View>
-
-        <View style={styles.footerRow}>
-          <Text style={styles.refText}>
-            REF : <Text style={styles.refValue}>BOOKING_{appointment?.bookingId}</Text>
+        <View style={styles.info}>
+          <Text style={styles.name} numberOfLines={1}>
+            Dr. {doctor?.fullName || `${doctor?.firstname || ""} ${doctor?.lastname || ""}`.trim() || "Doctor"}
           </Text>
-          <View style={styles.detailsLink}>
-            <Text style={styles.detailsText}>{status === "Completed" ? "Summary" : "Details"}</Text>
-            <ChevronRight size={16} color={COLORS.themey} />
+          <Text style={styles.specialty} numberOfLines={1}>
+            {specialty}
+          </Text>
+
+          <View style={[styles.statusPill, { backgroundColor: statusStyle.bg, borderColor: statusStyle.border }]}>
+            <Text style={[styles.statusText, { color: statusStyle.text }]}>{status}</Text>
           </View>
+
+          <View style={styles.divider} />
+
+          <View style={styles.metaRow}>
+            <View style={styles.metaItem}>
+              <Calendar1 size={15} color={COLORS.themey} />
+              <Text style={styles.metaText}>{formatDate(appointment?.appointmentDate)}</Text>
+            </View>
+            <View style={styles.metaItem}>
+              <Clock size={15} color={COLORS.themey} />
+              <Text style={styles.metaText}>{formatTime(appointment?.appointmentTime)}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.footerRow}>
+        <Text style={styles.refText}>
+          REF : <Text style={styles.refValue}>BOOKING_{appointment?.bookingId}</Text>
+        </Text>
+        <View style={styles.detailsLink}>
+          <Text style={styles.detailsText}>{status === "Completed" ? "Summary" : "Details"}</Text>
+          <ChevronRight size={16} color={COLORS.themey} />
         </View>
       </View>
     </TouchableOpacity>
@@ -88,7 +89,6 @@ export default function AppointmentCard({ appointment, onPress }) {
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: "row",
     backgroundColor: COLORS.themew,
     borderRadius: 16,
     padding: 12,
@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowRadius: 8,
   },
+  topRow: { flexDirection: "row" },
   avatar: {
     width: 104,
     height: "100%",
