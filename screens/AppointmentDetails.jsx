@@ -72,7 +72,9 @@ const AppointmentDetails = () => {
     } catch (error) {
       console.error("Error fetching appointment:", error);
       setErrorState(true);
-      setErrorMessage(error.response?.data?.message || "Network error occurred");
+      setErrorMessage(
+        error.response?.data?.message || error.response?.data?.error || "Network error occurred",
+      );
     } finally {
       setIsLoading(false);
     }
