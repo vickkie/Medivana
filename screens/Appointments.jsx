@@ -1,67 +1,58 @@
-import React, { useContext, useState, useEffect, useCallback, useMemo } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Image, SafeAreaView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, SIZES } from "../constants";
-import Icon from "../constants/icons";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
-
+import { useNavigation } from "@react-navigation/native";
 import AppointmentPage from "./AppointmentList";
-import { CalendarClock, CalendarDays, SearchIcon } from "lucide-react-native";
+import { CalendarDays, Search, SlidersHorizontal, ChevronLeft } from "lucide-react-native";
 
 const Appointments = () => {
   const navigation = useNavigation();
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(true);
+  const [showSearch, setShowSearch] = useState(true);
 
   return (
-    <>
-      <SafeAreaView style={styles.containerx}>
-        <>
-          <View style={styles.wrapper}>
-            <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backBtn, styles.buttonWrap]}>
-              <Icon name="backbutton" size={26} />
-            </TouchableOpacity>
-            <View style={styles.upperRow}>
-              <View style={styles.upperButtons}>
-                <Text style={styles.heading}> Appointments</Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setIsSearching(!isSearching);
-                }}
-                style={styles.outWrap}
-              >
-                {isSearching ? (
-                  <CalendarDays size={25} color={COLORS.themey} />
-                ) : (
-                  <SearchIcon size={23} color={COLORS.themey} />
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
+    <SafeAreaView style={styles.container} edges={["top"]}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.circleButton}
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+        >
+          <ChevronLeft size={22} color="#0F172A" />
+        </TouchableOpacity>
 
-          <View style={{ marginTop: 78, flex: 1 }}>
-            {isSearching && (
-              <View style={styles.searchBarContainer}>
-                <TextInput
-                  style={styles.searchInput}
-                  placeholder="Search Appointments"
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                />
-                <TouchableOpacity style={styles.searchButton}>
-                  <Icon name="search" size={22} />
-                </TouchableOpacity>
-              </View>
-            )}
+        <Text style={styles.title}>APPOINTMENTS</Text>
 
-            <View style={styles.detailsWrapper}>
-              <AppointmentPage filterList={""} searchQuery1={searchQuery} isSearching={isSearching} />
-            </View>
-          </View>
-        </>
-      </SafeAreaView>
-    </>
+        <TouchableOpacity
+          onPress={() => setShowSearch((v) => !v)}
+          style={styles.circleButton}
+          accessibilityRole="button"
+          accessibilityLabel="Toggle search"
+        >
+          <CalendarDays size={20} color={COLORS.themey} />
+        </TouchableOpacity>
+      </View>
+
+      {showSearch && (
+        <View style={styles.searchBar}>
+          <Search size={18} color="#94A3B8" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search by doctor or specialty…"
+            placeholderTextColor="#94A3B8"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+          <SlidersHorizontal size={18} color="#94A3B8" />
+        </View>
+      )}
+
+      <View style={styles.listWrapper}>
+        <AppointmentPage searchQuery1={searchQuery} isSearching={showSearch} />
+      </View>
+    </SafeAreaView>
   );
 };
 
@@ -70,216 +61,56 @@ export default Appointments;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.themew,
+    backgroundColor: "#F8FAFC",
   },
-  wrapper: {
-    flexDirection: "column",
-    position: "absolute",
-    top: 2,
-  },
-  backBtn: {
-    left: 10,
-  },
-  buttonView: {
-    backgroundColor: COLORS.themew,
-    padding: 12,
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    width: 30,
-    height: 30,
-    transform: [{ rotate: "180deg" }],
-  },
-  buttonWrap: {
-    backgroundColor: COLORS.themeg,
-    padding: 12,
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    zIndex: 9,
-    top: 10,
-    left: 10,
-  },
-  upperRow: {
-    width: SIZES.width - 12,
-    marginHorizontal: 6,
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: COLORS.themew,
-    borderRadius: SIZES.large,
-    top: SIZES.xxSmall,
-    zIndex: 2,
-    minHeight: 70,
-  },
-  upperButtons: {
-    width: SIZES.width - 20,
+  header: {
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
-    marginTop: SIZES.medium,
-  },
-  topprofileheading: {
-    fontSize: SIZES.medium,
-    textAlign: "center",
-    color: COLORS.themeb,
-    fontFamily: "semibold",
-  },
-  outWrap: {
-    backgroundColor: COLORS.themeg,
-    padding: 12,
-    borderRadius: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    top: 5,
-    right: 10,
-  },
-  lowerheader: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    width: SIZES.width - 20,
-    marginTop: 15,
-    paddingTop: SIZES.xSmall,
-    paddingBottom: 20,
-  },
-  heading: {
-    fontFamily: "bold",
-    textTransform: "uppercase",
-    fontSize: SIZES.large,
-    textAlign: "left",
-    color: COLORS.themeb,
-    marginStart: 20,
-  },
-  statement: {
-    fontFamily: "regular",
-    paddingLeft: 20,
-    paddingVertical: 5,
-    color: COLORS.gray2,
-    textAlign: "center",
-  },
-  list: {
-    paddingHorizontal: 10,
-    gap: 10,
-    marginVertical: 10,
-  },
-  cardContent: {
-    flex: 1,
     justifyContent: "space-between",
-    flexDirection: "column",
-    padding: 15,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 6,
   },
-  image: {
-    position: "absolute",
+  circleButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: COLORS.themew,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 1,
+    shadowColor: "#213145",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
   },
   title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: COLORS.themeb,
+    fontSize: SIZES.large,
     fontFamily: "semibold",
+    color: "#0F172A",
+    letterSpacing: 1.2,
   },
-  shippingId: {
-    padding: 5,
-    backgroundColor: COLORS.themew,
-    borderRadius: SIZES.medium,
-    fontSize: 14,
-    color: "#cccca0",
-  },
-  detailsWrapper: {
-    flex: 1,
-    width: SIZES.width - 12,
-    marginHorizontal: 6,
-    marginTop: SIZES.xSmall,
-    backgroundColor: COLORS.themew,
-    borderRadius: SIZES.medium,
-    marginBottom: 60,
-  },
-  searchBarContainer: {
+  searchBar: {
     flexDirection: "row",
-    marginBottom: 16,
-    paddingHorizontal: 10,
-    justifyContent: "center",
     alignItems: "center",
+    backgroundColor: COLORS.themew,
+    borderRadius: 999,
+    marginHorizontal: 16,
+    marginTop: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 10,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
   },
   searchInput: {
     flex: 1,
-    padding: 8,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 100,
+    fontSize: 14,
+    fontFamily: "regular",
+    color: "#0F172A",
+    padding: 0,
   },
-  searchButton: {
-    position: "absolute",
-    right: 17,
-    padding: 3,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: COLORS.themey,
-  },
-  filterContainer: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    // backgroundColor: "red",
-    height: 50,
-  },
-  filterButton: {
-    marginHorizontal: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: COLORS.themew,
-    borderRadius: 16,
-    height: 33,
-  },
-  selectedFilter: {
-    backgroundColor: COLORS.themey,
-    color: COLORS.themew,
-  },
-  searchResultCard: {
-    padding: 10,
-    backgroundColor: COLORS.themew,
-    borderRadius: SIZES.medium,
-  },
-  searchResultTitle: {
-    fontSize: 16,
-    fontWeight: "semibold",
-    marginBottom: 8,
-  },
-  searchResultdetail: {
-    fontSize: SIZES.small,
-    fontWeight: "regular",
-    color: COLORS.gray,
-    marginBottom: 5,
-  },
-  searchResultStatus: {
-    marginTop: 5,
-    color: COLORS.gray,
-    fontStyle: "italic",
-  },
-  flexEnd: {
-    position: "absolute",
-    right: 10,
-  },
-  checkmark: { position: "absolute", top: 17, left: 18, height: 20, zIndex: 111 },
-  containLottie: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: SIZES.width - 20,
+  listWrapper: {
     flex: 1,
-  },
-  animationWrapper: {
-    width: 200,
-    height: 200,
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  animation: {
-    width: "100%",
-    height: "100%",
-  },
-  containerx: {
-    flex: 1,
-    // paddingTop: 26,
   },
 });
