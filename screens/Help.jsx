@@ -12,7 +12,9 @@ import {
 import { Animated, Easing } from "react-native";
 
 import { GiftedChat, Actions, InputToolbar, Bubble } from "react-native-gifted-chat";
-import { useRoute } from "@react-navigation/native";
+import { useRoute, useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ChevronLeft } from "lucide-react-native";
 import { AuthContext } from "../components/auth/AuthContext";
 import { db } from "../components/auth/firebase";
 import { ref, onValue, push, update } from "firebase/database";
@@ -24,6 +26,7 @@ import uuid from "react-native-uuid";
 import api from "../utils/api";
 
 const Help = () => {
+  const navigation = useNavigation();
   const [messages, setMessages] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
   const [prefilledMessage, setPrefilledMessage] = useState("");
@@ -262,6 +265,19 @@ const Help = () => {
         source={require("../assets/images/chat-glass.png")}
         style={styles.backgroundImage}
       >
+        <SafeAreaView edges={["top"]} style={styles.header}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.circleButton}
+            accessibilityRole="button"
+            accessibilityLabel="Go back"
+          >
+            <ChevronLeft size={20} color="#334155" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Help</Text>
+          <View style={{ width: 38 }} />
+        </SafeAreaView>
+
         <GiftedChat
           messages={messages}
           onSend={(newMessages) => handleSend(newMessages, "sent")}
@@ -358,6 +374,27 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  headerTitle: {
+    fontSize: SIZES.medium,
+    fontFamily: "bold",
+    letterSpacing: 1,
+    color: "#0F172A",
+  },
+  circleButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: COLORS.themew,
+    justifyContent: "center",
+    alignItems: "center",
   },
   actionsContainer: {
     position: "absolute",
